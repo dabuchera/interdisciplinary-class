@@ -3,6 +3,7 @@
     height: 95vh;
     margin-top: 25px !important;
     margin: auto;
+    
     /* Nur für Development */
     border: 5px solid #ECB216;
 }
