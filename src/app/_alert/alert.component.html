@@ -1,0 +1,10 @@
+<!-- The overlay -->
+<div id="overlay-alert" class="overlay-alert">
+    <!-- Overlay content -->
+    <div class="overlay-content-alert" style="width: 75%; margin-left: 15%;">
+        <div id="alert" *ngFor="let alert of alerts" class="{{cssClass(alert)}} alert-dismissable" (click)="removeAlert(alert)">
+            {{alert.message}}
+            <a class="close" (click)="removeAlert(alert)">&times;</a>
+        </div>
+    </div>
+</div>

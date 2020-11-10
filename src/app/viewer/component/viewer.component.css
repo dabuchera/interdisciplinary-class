@@ -1,0 +1,469 @@
+@import url('https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/style.min.css');
+/* #forge-viewer {
+    position: absolute; */
+
+/* Hier noch ändern wenn Buttons weg */
+
+/* width: 70%;
+    height: 90%;
+    overflow: hidden;
+} */
+
+.viewer {
+    background-color: #FE3123;
+    /* Gleiche Höhe wie PDF Viewer */
+    /* Immer angepasst an Box */
+    height: 100%;
+    width: 100%;
+    position: relative;
+    z-index: 0;
+}
+
+/* :host ::ng-deep .adsk-control.adsk-toolbar.adsk-toolbar-vertical {
+    right: unset;
+    left: 15px;
+} */
+
+:host ::ng-deep #my-custom-view-toolbar-multiselect {
+    right: unset;
+    left: 15px;
+}
+
+:host ::ng-deep #my-custom-view-toolbar-facade {
+    right: 15px;
+    left: unset;
+    width: 60px;
+}
+
+:host ::ng-deep #my-custom-view-toolbar-erp {
+    right: unset;
+    left: 15px;
+    width: 400px;
+}
+
+:host ::ng-deep #my-custom-view-toolbar-section {
+    right: 15px;
+    left: unset;
+    width: 410px;
+}
+
+:host ::ng-deep #my-custom-view-toolbar-mobile-facade {
+    right: unset;
+    left: 10px;
+    top: 10px;
+    width: 200px;
+}
+
+:host ::ng-deep #my-custom-view-toolbar-mobile-multiselect {
+    right: unset;
+    left: 10px;
+    width: 200px;
+}
+
+:host ::ng-deep #mobile-custom-toolbar-bottom {
+    margin-top: 50px;
+}
+
+:host ::ng-deep #mobile-custom-toolbar-status {
+    margin-top: 50px;
+}
+
+:host ::ng-deep #mobile-custom-toolbar-input {
+    width: 270px;
+    margin-top: 20px;
+}
+
+:host ::ng-deep #my-custom-view-toolbar-mobile-type {
+    right: unset;
+    left: 210px;
+    top: 10px;
+    width: 200px;
+}
+
+:host ::ng-deep #my-custom-view-toolbar-mobile-additionalParameter {
+    right: unset;
+    left: 410px;
+    top: 10px;
+    width: 200px;
+}
+
+:host ::ng-deep #my-custom-view-toolbar-mobile-additionalParameter {
+    right: unset;
+    left: 410px;
+    top: 10px;
+    width: 200px;
+}
+
+:host ::ng-deep #my-custom-view-toolbar-section-rotation {
+    right: 200px;
+    left: unset;
+    height: 300px;
+    visibility: hidden;
+}
+
+:host ::ng-deep #mobile-filterbox{
+    width: 170px;
+    float: left;
+    color: white;
+    background-color: #A80000;
+}
+
+:host ::ng-deep .filter-box.docking-panel-delimiter-shadow{
+    height: 50px !important;
+    width: 170px;
+    font-size: 16px !important;
+    color: white !important;
+    background-color: #A80000 !important;
+    border-bottom-color: rgba(255, 255, 255, 0) !important;
+}
+
+:host ::ng-deep .filter-box.docking-panel-delimiter-shadow:focus{
+    height: 50px !important;
+    width: 170px;
+    font-size: 16px !important;
+    color: white !important;
+    background-color: #A80000 !important;
+    border-bottom-color: none !important;
+    border: 2px solid #FE3123 !important;
+    /* border-bottom-color: rgba(255, 255, 255, 0) !important; */
+}
+
+/* Tooltip auf der rechten Seite */
+
+:host ::ng-deep .adsk-viewing-viewer .adsk-toolbar-vertical .adsk-control-tooltip {
+    right: unset;
+    left: 120%;
+}
+
+/* Tooltip Farbe geändert */
+
+:host ::ng-deep .adsk-control-tooltip {
+    background-color: #A80000 !important;
+    border: 1px solid #A80000;
+}
+
+/* Hoover des Buttons geändert */
+
+:host ::ng-deep .adsk-viewing-viewer.dark-theme .adsk-button:hover {
+    color: black;
+    border: 1px solid black;
+}
+
+/* Background des Buttons geändert */
+
+:host ::ng-deep .adsk-viewing-viewer.dark-theme .adsk-control-group {
+    background-color: #A80000;
+    content: "2";
+}
+
+/* Background des Buttons geändert */
+
+:host ::ng-deep .multiselect-button-list-length::before {
+    content: attr(data-before);
+    font-size: 20px;
+    color: white;
+}
+
+:host ::ng-deep .showing-panel {
+    width: 38px;
+}
+
+:host ::ng-deep .showing-panel:hover {
+    width: 38px;
+}
+
+/* Textfeld */
+
+:host ::ng-deep .erp-text-button::before {
+    content: attr(data-before);
+    font-size: 20px;
+    color: white;
+}
+
+:host ::ng-deep .section-text-button::before {
+    content: attr(data-before);
+    font-size: 20px;
+    color: white;
+}
+
+:host ::ng-deep .mobile-text-button-facade::before {
+    content: attr(data-before);
+    font-size: 20px;
+    color: white;
+}
+
+:host ::ng-deep .mobile-text-button-status::before {
+    content: attr(data-before);
+    font-size: 20px;
+    color: white;
+}
+
+:host ::ng-deep #enable-multiselect.active {
+    background-color: #FE3123 !important;
+}
+
+:host ::ng-deep .mobile-text-button-type::before {
+    content: attr(data-before);
+    font-size: 20px;
+    color: white;
+}
+
+:host ::ng-deep .mobile-text-button-u::before {
+    content: attr(data-before);
+    font-size: 20px;
+    color: white;
+}
+
+:host ::ng-deep .mobile-text-button-v::before {
+    content: attr(data-before);
+    font-size: 20px;
+    color: white;
+}
+
+:host ::ng-deep .mobile-text-button-instance::before {
+    content: attr(data-before);
+    font-size: 20px;
+    color: white;
+}
+
+:host ::ng-deep .mobile-text-button-additionalParameter::before {
+    content: attr(data-before);
+    font-size: 20px;
+    color: white;
+}
+
+:host ::ng-deep .mobile-button-counter::before {
+    content: attr(data-before);
+    font-size: 20px;
+    color: white;
+}
+
+:host ::ng-deep .erp-differentiate-types::before {
+    color: white;
+}
+
+/* Button selber */
+
+:host ::ng-deep #erp-text-button {
+    width: 200px;
+}
+
+:host ::ng-deep #mobile-text-button-facade {
+    width: 100px;
+}
+
+:host ::ng-deep #mobile-text-button-facade.active {
+    background-color: #FE3123 !important;
+}
+
+:host ::ng-deep #mobile-text-button-status {
+    width: 100px;
+}
+
+:host ::ng-deep #mobile-text-button-status.active {
+    background-color: #FE3123 !important;
+}
+
+:host ::ng-deep #mobile-text-button-type {
+    width: 100px;
+}
+
+:host ::ng-deep #mobile-text-button-type.active {
+    background-color: #FE3123 !important;
+}
+
+:host ::ng-deep #mobile-text-button-u {
+    width: 100px;
+}
+
+:host ::ng-deep #mobile-text-button-u.active {
+    background-color: #FE3123 !important;
+}
+
+:host ::ng-deep #mobile-text-button-v {
+    width: 100px;
+}
+
+:host ::ng-deep #mobile-text-button-v.active {
+    background-color: #FE3123 !important;
+}
+
+:host ::ng-deep #mobile-text-button-instance {
+    width: 100px;
+}
+
+:host ::ng-deep #mobile-text-button-instance.active {
+    background-color: #FE3123 !important;
+}
+
+:host ::ng-deep #mobile-text-button-additionalParameter {
+    width: 100px;
+}
+
+:host ::ng-deep #mobile-text-button-additionalParameter.active {
+    background-color: #FE3123 !important;
+}
+
+:host ::ng-deep #mobile-text-button-multiselect {
+    width: 100px;
+}
+
+:host ::ng-deep #section-text-button {
+    width: 220px;
+}
+
+/* Wenn aktiv dann nicht blau eingefärbt */
+
+:host ::ng-deep .adsk-button.active {
+    color: white !important;
+}
+
+/* Verschieben der unteren Toolbar mit den zwei Button für ERP */
+
+/* :host ::ng-deep #erp-custom-toolbar { */
+
+/* margin-top: 300px; */
+
+/* }  */
+
+:host ::ng-deep .crosshair {
+    cursor: crosshair;
+}
+
+/* Alle Buttons werden im GuiViewer3D ausgeblendet => Reihenfolge korrekt */
+
+:host ::ng-deep .adsk-viewing-viewer #toolbar-orbitTools {
+    display: none!important
+}
+
+:host ::ng-deep .adsk-viewing-viewer #toolbar-panTool {
+    display: none!important
+}
+
+:host ::ng-deep .adsk-viewing-viewer #toolbar-zoomTool {
+    display: none!important
+}
+
+:host ::ng-deep .adsk-viewing-viewer #toolbar-bimWalkTool {
+    display: none!important
+}
+
+:host ::ng-deep .adsk-viewing-viewer #toolbar-cameraSubmenuTool {
+    display: none!important
+}
+
+:host ::ng-deep .adsk-viewing-viewer #toolbar-measurementSubmenuTool {
+    display: none!important
+}
+
+:host ::ng-deep .adsk-viewing-viewer #toolbar-sectionTool {
+    display: none!important
+}
+
+:host ::ng-deep .adsk-viewing-viewer #toolbar-explodeTool {
+    display: none!important
+}
+
+:host ::ng-deep .adsk-viewing-viewer #toolbar-modelStructureTool {
+    display: none!important
+}
+
+:host ::ng-deep .adsk-viewing-viewer #toolbar-propertiesTool {
+    display: none!important
+}
+
+:host ::ng-deep .adsk-viewing-viewer #toolbar-settingsTool {
+    display: none!important
+}
+
+:host ::ng-deep .adsk-viewing-viewer #toolbar-layers-tool {
+    display: none!important
+}
+
+:host ::ng-deep .adsk-viewing-viewer #toolbar-fullscreenTool {
+    display: none!important
+}
+
+/* :host ::ng-deep .menu.docking-panel.docking-panel-container-solid-color-a {
+    visibility: hidden !important;
+} */
+
+/* .MyNavButton {
+    position: absolute;
+    top: 0;
+    z-index: 1;
+    padding: 1em;
+    font-size: 1em;
+    cursor: pointer;
+  }
+  #MyPrevButton {
+    left: 50;
+  }
+  #MyNextButton {
+    right: 0;
+  } */
+
+:host ::ng-deep label.markup {
+    position: absolute !important;
+    white-space: nowrap !important;
+    cursor: pointer !important;
+}
+
+:host ::ng-deep label.update {
+    z-index: 1;
+}
+
+:host ::ng-deep label.markupSection {
+    position: absolute !important;
+    white-space: nowrap !important;
+    cursor: pointer !important;
+}
+
+:host ::ng-deep label.updateSection {
+    z-index: 1;
+}
+
+@keyframes slideMe {
+    0% {
+        transform: skewX(53deg) translateX(-500px);
+        opacity: 0;
+    }
+    60% {
+        transform: translateX(0px);
+    }
+    62% {
+        transform: skewX(0deg) translateX(30px);
+    }
+    70% {
+        transform: skew(-20deg);
+        opacity: 1;
+    }
+    80% {
+        transform: skew(0deg) translate(0);
+    }
+    90% {
+        transform: skew(-5deg);
+    }
+    100% {
+        transform: skew(0deg);
+    }
+}
+
+:host ::ng-deep .geometry {
+    max-width: 200px;
+    opacity: .8;
+    height: 200px;
+    font-family: "Helvetica Neue Light", "Segoe UI Semilight", sans-serif;
+    font-size: 13px;
+    color: #333333;
+    display: inline-block;
+    margin-left: 1em;
+    -webkit-user-select: none;
+    /* Chrome/Safari */
+    -moz-user-select: none;
+    /* Firefox */
+    -ms-user-select: none;
+    cursor: pointer;
+    /* cursor: crosshair; */
+    margin-top: 10px;
+}

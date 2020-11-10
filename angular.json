@@ -119,6 +119,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "bim-leaning"
+    }
+  },
+  "defaultProject": "bim-leaning",
+  "cli": {
+    "analytics": false
+  }
 }

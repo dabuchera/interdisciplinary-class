@@ -1,0 +1,41 @@
+.box-custom-viewer {
+    width: 95%;
+    height: 95vh;
+    margin-top: 25px !important;
+    margin: auto;
+    /* Nur für Development */
+    border: 5px solid #ECB216;
+}
+
+@keyframes p-progress-spinner-color {
+    100%, 0% {
+        stroke: #ECB216;
+    }
+    10% {
+        stroke: #eeba2f;
+    }
+    20% {
+        stroke: #f0c349;
+    }
+    30% {
+        stroke: #f2cb63;
+    }
+    40% {
+        stroke: #f4d47d;
+    }
+    50% {
+        stroke: #f6dc97;
+    }
+    60% {
+        stroke: #f8e5b1;
+    }
+    70% {
+        stroke: #faedcb;
+    }
+    80% {
+        stroke: #fcf6e5;
+    }
+    90% {
+        stroke: #ffffff;
+    }
+}
