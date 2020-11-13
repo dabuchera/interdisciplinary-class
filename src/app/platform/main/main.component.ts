@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ComponentFactoryResolver } from '@angular/core';
 import { AppComponent } from 'src/app/app.component';
 
 import {
@@ -29,6 +29,8 @@ export class MainComponent implements OnInit {
 
   public viewerOptions3d: ViewerOptions;
   public encodedmodelurn: string;
+
+  @ViewChild(ViewerComponent, { static: false }) viewerComponent: ViewerComponent;
 
   constructor(private api: ApiService) {
     this.api.getspecificProject('5faa62b2079c07001454c421').then(res => {
@@ -93,8 +95,28 @@ export class MainComponent implements OnInit {
   }
 
   public async selectionChanged(event: SelectionChangedEventArgs) {
+    console.log(event);
     console.log('selectionChanged');
     const dbIdArray = (event as any).dbIdArray;
     console.log(dbIdArray);
+    const instanceTree = this.viewerComponent.viewer.model.getData().instanceTree;
+    const parentId = instanceTree.getNodeParentId(dbIdArray[0]);
+
+    let propertyArray = new Array();
+
+    this.viewerComponent.viewer.model.getProperties(parentId, res => {
+      console.log(res);
+      propertyArray = res.properties;
+      console.log(propertyArray);
+      const a = propertyArray.find(ele => {
+        if (ele.displayName === 'LAYERTHICKNESS') {
+          return true;
+        }
+      });
+      console.log(a);
+      console.log(a.displayValue);
+    }, err => {
+      console.log(err);
+    });
   }
 }

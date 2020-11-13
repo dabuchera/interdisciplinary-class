@@ -356,29 +356,29 @@
     display: none!important
 }
 
-:host ::ng-deep .adsk-viewing-viewer #toolbar-sectionTool {
+/* :host ::ng-deep .adsk-viewing-viewer #toolbar-sectionTool {
     display: none!important
-}
+} */
 
 :host ::ng-deep .adsk-viewing-viewer #toolbar-explodeTool {
     display: none!important
 }
-
+/* 
 :host ::ng-deep .adsk-viewing-viewer #toolbar-modelStructureTool {
     display: none!important
-}
+} */
 
-:host ::ng-deep .adsk-viewing-viewer #toolbar-propertiesTool {
+/* :host ::ng-deep .adsk-viewing-viewer #toolbar-propertiesTool {
     display: none!important
-}
+} */
 
 :host ::ng-deep .adsk-viewing-viewer #toolbar-settingsTool {
     display: none!important
 }
 
-:host ::ng-deep .adsk-viewing-viewer #toolbar-layers-tool {
+/* :host ::ng-deep .adsk-viewing-viewer #toolbar-layers-tool {
     display: none!important
-}
+} */
 
 :host ::ng-deep .adsk-viewing-viewer #toolbar-fullscreenTool {
     display: none!important
