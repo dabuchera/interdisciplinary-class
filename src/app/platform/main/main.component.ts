@@ -1,6 +1,8 @@
 import { Component, OnInit, Input, ViewChild, ComponentFactoryResolver } from '@angular/core';
 import { AppComponent } from 'src/app/app.component';
 
+import { CoordinatesAxesExtension } from "../extensions/coordinatesAxesExtension";
+
 import {
   ViewerOptions,
   ViewerInitializedEvent,
@@ -65,7 +67,7 @@ export class MainComponent implements OnInit {
       },
       viewerConfig: {
         // IconMarkupExtension wird bei onViewerInitialized geladen
-        extensions: ['Autodesk.Snapping', 'Autodesk.ModelStructure'],
+        extensions: ['Autodesk.Snapping', 'Autodesk.ModelStructure', CoordinatesAxesExtension.extensionName],
         //,'GetPositionExtension'], //[IconMarkupExtension.extensionName], // [GetParameterExtension.extensionName], 
         theme: 'dark-theme',
       },
@@ -93,9 +95,18 @@ export class MainComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // If the database is not set up -> we create all objects according to class Element
+    // 1 Get the instance tree
+    // 2 Get each object
+    // 3 Get all needed parameters for each object
+    
+    var wall = new Element()
   }
 
   public async scriptsLoaded() {
+    Extension.registerExtension('CoordinatesAxesExtension', CoordinatesAxesExtension);
+
+
     // Extension für das Markup bei der Facade Functionality
     // Extension.registerExtension('IconMarkupExtension', IconMarkupExtension);
     // Extension für die farbigen Achsen des World-Koordinatensystem
@@ -200,8 +211,18 @@ export class MainComponent implements OnInit {
     // console.log(dbIdArray);
 
 
-    // const instanceTree = this.viewerComponent.viewer.model.getData().instanceTree;
-    // const parentId = instanceTree.getNodeParentId(dbIdArray[0]);
+    const instanceTree = this.viewerComponent.viewer.model.getData().instanceTree;
+    const parentId = instanceTree.getNodeParentId(dbIdArray[0]);
+
+    this.viewerComponent.viewer.model.getBulkProperties([dbIdArray[0]], null, (data) => {
+      console.log('dbIdArray');
+      console.log(data);
+    });
+
+    this.viewerComponent.viewer.model.getBulkProperties([parentId], null, (data) => {
+      console.log('parentId');
+      console.log(data);
+    });
 
     // let propertyArray = new Array();
 
