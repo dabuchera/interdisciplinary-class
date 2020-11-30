@@ -1,8 +1,13 @@
 <div class="p-col-12">
-    <div class="p-grid">
-        <div class="box-custom-viewer">
-            <app-forge-viewer [viewerOptions]="viewerOptions3d" (onSelectionChanged)="selectionChanged($event)"
-                (onObjectTreeCreated)="storeLevelObjects()"></app-forge-viewer>
-        </div>
+  <div class="p-grid">
+    <div class="box-custom-viewer">
+      <app-forge-viewer
+        [viewerOptions]="viewerOptions3d"
+        (onSelectionChanged)="selectionChanged($event)"
+        (onObjectTreeCreated)="storeLevelObjects()"
+        (onObjectTreeCreated)="storeConcreteElements()"
+        (onObjectTreeCreated)="storeCategoryObjects()"
+      ></app-forge-viewer>
     </div>
+  </div>
 </div>

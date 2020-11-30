@@ -1,4 +1,4 @@
-@import url('https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/style.min.css');
+@import url("https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/style.min.css");
 /* #forge-viewer {
     position: absolute; */
 
@@ -10,13 +10,13 @@
 } */
 
 .viewer {
-    background-color: #ECB216;
-    /* Gleiche Höhe wie PDF Viewer */
-    /* Immer angepasst an Box */
-    height: 100%;
-    width: 100%;
-    position: relative;
-    z-index: 0;
+  background-color: #ecb216;
+  /* Gleiche Höhe wie PDF Viewer */
+  /* Immer angepasst an Box */
+  height: 100%;
+  width: 100%;
+  position: relative;
+  z-index: 0;
 }
 
 /* :host ::ng-deep .adsk-control.adsk-toolbar.adsk-toolbar-vertical {
@@ -27,91 +27,107 @@
 /* General Things */
 /* Tooltip Farbe geändert */
 :host ::ng-deep .adsk-control-tooltip {
-    background-color: #ECB216 !important;
-    border: 1px solid #ECB216;
+  background-color: #ecb216 !important;
+  border: 1px solid #ecb216;
 }
 
 /* Tooltip auf der rechten Seite */
-:host ::ng-deep .adsk-viewing-viewer .adsk-toolbar-vertical .adsk-control-tooltip {
-    right: unset;
-    left: 120%;
+:host
+  ::ng-deep
+  .adsk-viewing-viewer
+  .adsk-toolbar-vertical
+  .adsk-control-tooltip {
+  right: unset;
+  left: 120%;
 }
-
 /* Hoover des Buttons geändert */
 :host ::ng-deep .adsk-viewing-viewer.dark-theme .adsk-button:hover {
-    color: white;
-    border: 1px solid white;
+  color: white;
+  border: 1px solid white;
 }
 
 /* Background der Buttons geändert */
 :host ::ng-deep .adsk-viewing-viewer.dark-theme .adsk-control-group {
-    background-color: #ECB216;
-    content: "2";
-    color: black;
+  background-color: #ecb216;
+  content: "2";
+  color: black;
 }
 
 /* Wenn aktiv dann nicht blau eingefärbt */
 :host ::ng-deep .adsk-button.active {
-    color: white !important;
+  color: white !important;
 }
 /* End of General Things */
 
-
 /* Levels Toolbar -> Control Group -> Buttons */
 :host ::ng-deep #my-custom-view-toolbar-levels {
-    right: 15px;
-    left: unset;
-    width: 200px;
+  right: 15px; /*was 15*/
+  left: unset; /*was unset*/
+  width: 200px;
 }
 
 :host ::ng-deep .showing-levels {
-    width: 178px;
+  width: 178px;
 }
 
 :host ::ng-deep .showing-levels:hover {
-    width: 178px;
+  width: 178px;
 }
 
+:host ::ng-deep .crosshair {
+  cursor: crosshair;
+}
 
+/*Level Toolbar -> Control Group -> Buttons */
+:host ::ng-deep #my-custom-view-toolbar-material {
+  right: 15px;
+  left: unset;
+  width: 200px;
+}
 
+:host ::ng-deep .showing-concrete {
+  width: 178px;
+}
 
-
+:host ::ng-deep .showing-concrete:hover {
+  width: 178px;
+}
 
 :host ::ng-deep .crosshair {
-    cursor: crosshair;
+  cursor: crosshair;
 }
 
 /* Alle Buttons werden im GuiViewer3D ausgeblendet => Reihenfolge korrekt */
-:host ::ng-deep .adsk-viewing-viewer #toolbar-orbitTools {
-    display: none!important
+/* :host ::ng-deep .adsk-viewing-viewer #toolbar-orbitTools {
+  display: none !important;
 }
 
 :host ::ng-deep .adsk-viewing-viewer #toolbar-panTool {
-    display: none!important
+  display: none !important;
 }
 
 :host ::ng-deep .adsk-viewing-viewer #toolbar-zoomTool {
-    display: none!important
+  display: none !important;
 }
 
 :host ::ng-deep .adsk-viewing-viewer #toolbar-bimWalkTool {
-    display: none!important
+  display: none !important;
 }
 
 :host ::ng-deep .adsk-viewing-viewer #toolbar-cameraSubmenuTool {
-    display: none!important
+  display: none !important;
 }
 
 :host ::ng-deep .adsk-viewing-viewer #toolbar-measurementSubmenuTool {
-    display: none!important
+  display: none !important;
 }
 
 :host ::ng-deep .adsk-viewing-viewer #toolbar-sectionTool {
-    display: none!important
+  display: none !important;
 }
 
 :host ::ng-deep .adsk-viewing-viewer #toolbar-explodeTool {
-    display: none!important
+  display: none !important;
 }
 /* 
 :host ::ng-deep .adsk-viewing-viewer #toolbar-modelStructureTool {
@@ -121,18 +137,19 @@
 /* :host ::ng-deep .adsk-viewing-viewer #toolbar-propertiesTool {
     display: none!important
 } */
-
+/* 
 :host ::ng-deep .adsk-viewing-viewer #toolbar-settingsTool {
-    display: none!important
+  display: none !important;
 }
 
 /* :host ::ng-deep .adsk-viewing-viewer #toolbar-layers-tool {
     display: none!important
 } */
 
-:host ::ng-deep .adsk-viewing-viewer #toolbar-fullscreenTool {
-    display: none!important
-}
+/* :host ::ng-deep .adsk-viewing-viewer #toolbar-fullscreenTool {
+  display: none !important;
+} 
+*/
 
 /* :host ::ng-deep .menu.docking-panel.docking-panel-container-solid-color-a {
     visibility: hidden !important;
@@ -154,66 +171,66 @@
   } */
 
 :host ::ng-deep label.markup {
-    position: absolute !important;
-    white-space: nowrap !important;
-    cursor: pointer !important;
+  position: absolute !important;
+  white-space: nowrap !important;
+  cursor: pointer !important;
 }
 
 :host ::ng-deep label.update {
-    z-index: 1;
+  z-index: 1;
 }
 
 :host ::ng-deep label.markupSection {
-    position: absolute !important;
-    white-space: nowrap !important;
-    cursor: pointer !important;
+  position: absolute !important;
+  white-space: nowrap !important;
+  cursor: pointer !important;
 }
 
 :host ::ng-deep label.updateSection {
-    z-index: 1;
+  z-index: 1;
 }
 
 @keyframes slideMe {
-    0% {
-        transform: skewX(53deg) translateX(-500px);
-        opacity: 0;
-    }
-    60% {
-        transform: translateX(0px);
-    }
-    62% {
-        transform: skewX(0deg) translateX(30px);
-    }
-    70% {
-        transform: skew(-20deg);
-        opacity: 1;
-    }
-    80% {
-        transform: skew(0deg) translate(0);
-    }
-    90% {
-        transform: skew(-5deg);
-    }
-    100% {
-        transform: skew(0deg);
-    }
+  0% {
+    transform: skewX(53deg) translateX(-500px);
+    opacity: 0;
+  }
+  60% {
+    transform: translateX(0px);
+  }
+  62% {
+    transform: skewX(0deg) translateX(30px);
+  }
+  70% {
+    transform: skew(-20deg);
+    opacity: 1;
+  }
+  80% {
+    transform: skew(0deg) translate(0);
+  }
+  90% {
+    transform: skew(-5deg);
+  }
+  100% {
+    transform: skew(0deg);
+  }
 }
 
 :host ::ng-deep .geometry {
-    max-width: 200px;
-    opacity: .8;
-    height: 200px;
-    font-family: "Helvetica Neue Light", "Segoe UI Semilight", sans-serif;
-    font-size: 13px;
-    color: #333333;
-    display: inline-block;
-    margin-left: 1em;
-    -webkit-user-select: none;
-    /* Chrome/Safari */
-    -moz-user-select: none;
-    /* Firefox */
-    -ms-user-select: none;
-    cursor: pointer;
-    /* cursor: crosshair; */
-    margin-top: 10px;
+  max-width: 200px;
+  opacity: 0.8;
+  height: 200px;
+  font-family: "Helvetica Neue Light", "Segoe UI Semilight", sans-serif;
+  font-size: 13px;
+  color: #333333;
+  display: inline-block;
+  margin-left: 1em;
+  -webkit-user-select: none;
+  /* Chrome/Safari */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  cursor: pointer;
+  /* cursor: crosshair; */
+  margin-top: 10px;
 }

@@ -1,4 +1,4 @@
-import { homedir } from 'os';
+import { OnInit } from '@angular/core';
 
 export class Element {
   _id: string;
@@ -88,7 +88,7 @@ export class Element {
     this.thickness = thickness;
     this.csF = csF;
     this.prF = prF;
-    // First set with fixes values for PR & CS
+    // First set with fixed values for PR & CS
     this.csR = csR;
     this.prR = prR;
     this.csC = csC;
@@ -112,3 +112,4 @@ export class Element {
     this.WDsS = ((this.area + this.perimeter * this.thickness) * prS) / csS;
   }
 }
+// maybe find WD with a method WD=Q*PR/CS depending on the category
