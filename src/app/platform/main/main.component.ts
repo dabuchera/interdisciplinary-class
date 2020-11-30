@@ -24,6 +24,10 @@ import {
   IsolateEventArgs,
 } from '../../viewer/extensions/extension';
 import { Element } from '../models/element';
+import { Slab } from '../models/slab';
+import { Wall } from '../models/wall';
+import { Column } from '../models/column';
+
 
 import { AuthToken } from 'forge-apis';
 import { ApiService } from 'src/app/_services/api.service';
@@ -52,12 +56,12 @@ export class MainComponent implements OnInit {
 
   // Graphical Stuff
   public toolbarLevels: Autodesk.Viewing.UI.ToolBar;
-  public toolbarMaterial: Autodesk.Viewing.UI.ToolBar;
+  public toolbarConcrete: Autodesk.Viewing.UI.ToolBar;
 
   // Model stuff
   public objectsPerLevel: any[] = new Array();
   public concrObj: any[] = new Array();
-  public wallObj: any[] = new Array();
+  public walls: Wall[] = new Array();
   public floorObj: any[] = new Array();
   public colObj: any[] = new Array();
   public levObj: any[] = new Array();
@@ -99,6 +103,7 @@ export class MainComponent implements OnInit {
           args.viewerComponent.DocumentId = this.encodedmodelurn;
         }
         this.loadLevelToolbar();
+        this.loadConcreteToolbar();
 
         // this.replaceSpinner();
         // this.loadCustomToolbar();
@@ -115,14 +120,6 @@ export class MainComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // If the database is not set up -> we create all objects according to class Element
-    // var wall = new Element();
-    // var slab = new Element();
-    // var column = new Element();
-    // 1 Get the instance tree
-    // console.log(instanceTree)
-    // 2 Get each object
-    // 3 Get all needed parameters for each object
   }
 
   public async scriptsLoaded() {
@@ -145,24 +142,17 @@ export class MainComponent implements OnInit {
   }
 
   public loadLevelToolbar() {
-    // Button 1
+    // Button Levels
     const button1 = new Autodesk.Viewing.UI.Button('showing-levels');
     button1.addClass('showing-levels');
-    //Button2
-    const button2 = new Autodesk.Viewing.UI.Button('showing-concrete');
-    button2.addClass('showing-concrete');
     // @ts-ignore
     button1.container.children[0].classList.add('fas', 'fa-layer-group');
-    // @ts-ignore
-    button2.container.children[0].classList.add('fas', 'fa-layer-group');
-    // button2.setIcon('fas fa-construction');
 
     // SubToolbar
     const controlGroup = new Autodesk.Viewing.UI.ControlGroup(
       'my-custom-toolbar-levels-controlgroup'
     );
     controlGroup.addControl(button1);
-    controlGroup.addControl(button2);
     // Toolbar
     this.toolbarLevels = new Autodesk.Viewing.UI.ToolBar(
       'my-custom-view-toolbar-levels',
@@ -226,21 +216,21 @@ export class MainComponent implements OnInit {
           // tslint:disable-next-line: max-line-length
           $('#' + annexClass + object.id).append(
             '<style>.' +
-              annexClass +
-              object.id +
-              ':before{content: attr(data-before); font-size: 20px; color: white;}</style>'
+            annexClass +
+            object.id +
+            ':before{content: attr(data-before); font-size: 20px; color: white;}</style>'
           );
           $('#' + annexClass + object.id).append(
             '<style>.' +
-              annexClass +
-              object.id +
-              '{width: 178px !important}</style>'
+            annexClass +
+            object.id +
+            '{width: 178px !important}</style>'
           );
           $('#' + annexClass + object.id).append(
             '<style>.' +
-              annexClass +
-              object.id +
-              '{animation: slideMe .7s ease-in;}</style>'
+            annexClass +
+            object.id +
+            '{animation: slideMe .7s ease-in;}</style>'
           );
           $('#' + annexClass + object.id.toString()).attr(
             'data-before',
@@ -259,36 +249,50 @@ export class MainComponent implements OnInit {
     $(this.viewerComponent.viewer.container).append(
       this.toolbarLevels.container
     );
-    this.toolbarMaterial = new Autodesk.Viewing.UI.ToolBar(
-      'my-custom-view-toolbar-material',
+  }
+
+  public loadConcreteToolbar() {
+    //Button Concrete
+    const button1 = new Autodesk.Viewing.UI.Button('showing-concrete');
+    button1.addClass('showing-concrete');
+    // @ts-ignore
+    button1.container.children[0].classList.add('fas', 'fa-hammer');
+
+    // SubToolbar
+    const controlGroup = new Autodesk.Viewing.UI.ControlGroup(
+      'my-custom-toolbar-concrete-controlgroup'
+    );
+    controlGroup.addControl(button1);
+    // Toolbar
+    this.toolbarConcrete = new Autodesk.Viewing.UI.ToolBar(
+      'my-custom-view-toolbar-concrete',
       { collapsible: false, alignVertically: true }
     );
-    button2.onClick = (event) => {
-      if (button2.getState() === 1) {
-        button2.setState(0);
-
+    button1.onClick = (event) => {
+      if (button1.getState() === 1) {
+        button1.setState(0);
         this.concrObj.forEach((object) => {
-          if (!object.materialName) {
-            object.materialName = 'null';
+          if (!object.levelName) {
+            object.levelName = 'null';
           }
           // Braucht einen Anhang an jede Klasse, da CSS Klasse nicht mit [0-9] beginnen kann
           var annexClass = 'Class_';
 
           // iterative Button
-          var buttonIterativ2 = new Autodesk.Viewing.UI.Button(
+          var buttonIterativ = new Autodesk.Viewing.UI.Button(
             annexClass + object.id
           );
 
           // Click Event !! Important !!
-          buttonIterativ2.onClick = () => {
-            if (buttonIterativ2.getState() === 1) {
+          buttonIterativ.onClick = () => {
+            if (buttonIterativ.getState() === 1) {
               // $('#' + annexClass + object.id).css('background-color', '#FE3123');
-              buttonIterativ2.setState(0);
+              buttonIterativ.setState(0);
               const selected = this.viewerComponent.viewer.getSelection();
               const newselected = selected.concat(object.dbIds);
               this.viewerComponent.viewer.select(newselected);
             } else {
-              buttonIterativ2.setState(1);
+              buttonIterativ.setState(1);
               const selected = this.viewerComponent.viewer.getSelection();
               const newselected = selected.filter((item) => {
                 return object.dbIds.indexOf(item) === -1;
@@ -298,26 +302,26 @@ export class MainComponent implements OnInit {
             }
           };
 
-          buttonIterativ2.addClass(annexClass + object.id);
-          controlGroup.addControl(buttonIterativ2);
+          buttonIterativ.addClass(annexClass + object.id);
+          controlGroup.addControl(buttonIterativ);
           // tslint:disable-next-line: max-line-length
           $('#' + annexClass + object.id).append(
             '<style>.' +
-              annexClass +
-              object.id +
-              ':before{content: attr(data-before); font-size: 20px; color: white;}</style>'
+            annexClass +
+            object.id +
+            ':before{content: attr(data-before); font-size: 20px; color: white;}</style>'
           );
           $('#' + annexClass + object.id).append(
             '<style>.' +
-              annexClass +
-              object.id +
-              '{width: 178px !important}</style>'
+            annexClass +
+            object.id +
+            '{width: 178px !important}</style>'
           );
           $('#' + annexClass + object.id).append(
             '<style>.' +
-              annexClass +
-              object.id +
-              '{animation: slideMe .7s ease-in;}</style>'
+            annexClass +
+            object.id +
+            '{animation: slideMe .7s ease-in;}</style>'
           );
           $('#' + annexClass + object.id.toString()).attr(
             'data-before',
@@ -325,21 +329,25 @@ export class MainComponent implements OnInit {
           );
         });
       } else {
-        button2.setState(1);
+        button1.setState(1);
         while (controlGroup.getNumberOfControls() > 1) {
           var tempID = controlGroup.getControlId(1);
           controlGroup.removeControl(tempID);
         }
       }
     };
-    this.toolbarMaterial.addControl(controlGroup);
-    $(this.viewerComponent.viewer.container).append(
-      this.toolbarMaterial.container
+    this.toolbarConcrete = new Autodesk.Viewing.UI.ToolBar(
+      'my-custom-view-toolbar-concrete',
+      { collapsible: false, alignVertically: true }
     );
-    // console.log(this.toolbarLevels.getPosition());
+    this.toolbarConcrete.addControl(controlGroup);
+    $(this.viewerComponent.viewer.container).append(
+      this.toolbarConcrete.container
+    );
   }
 
   public async selectionChanged(event: SelectionChangedEventArgs) {
+    console.log(this.walls);
     // console.log(event);
     console.log('selectionChanged');
     const dbIdArray = (event as any).dbIdArray;
@@ -470,6 +478,13 @@ export class MainComponent implements OnInit {
   //   });
   // }
 
+  public runDifferentFunc() {
+    this.storeLevelObjects();
+    this.storeConcreteElements();
+    this.storeCategoryObjects();
+    // Do a function for filling more attributes to the object of the this.walls
+  }
+
   public storeLevelObjects() {
     this.app.openSpinner();
     setTimeout(() => {
@@ -497,7 +512,7 @@ export class MainComponent implements OnInit {
                     id: this.makeid(5),
                   });
                 },
-                (err) => {},
+                (err) => { },
                 ['LcOaNode:LcOaNodeLayer']
               );
             }).then(() => {
@@ -531,21 +546,22 @@ export class MainComponent implements OnInit {
               item.includes('Beton')
             );
 
-            asyncForEach(concrValues, async (material) => {
+            console.log(concrValues);
+
+            asyncForEach(concrValues, async (value: string) => {
               await this.viewerComponent.viewer.search(
-                material,
+                value,
                 (idArray) => {
                   this.concrObj.push({
-                    materialName: material,
+                    materialName: value,
                     dbIds: idArray,
                     id: this.makeid(5),
                   });
                 },
-                (err) => {},
+                (err) => { },
                 ['LcOaNode:LcOaNodeMaterial']
               );
             });
-            // console.log(this.concrObj);
             // this.viewerComponent.viewer.isolate(this.concrIds[1].dbIds);
           });
         }
@@ -563,15 +579,11 @@ export class MainComponent implements OnInit {
         allDbIds,
         ['Category'],
         (data) => {
-          // console.log(data1);
 
           asyncForEach(data, (element) => {
             if (element.properties[0].displayValue === 'Walls') {
-              this.wallObj.push({
-                categoryName: element.properties[0].displayValue,
-                dbId: element.dbId,
-                id: this.makeid(5),
-              });
+              var wall = new Wall(this.makeid(5), element.dbId);
+              this.walls.push(wall);
             }
             if (element.properties[0].displayValue === 'Floors') {
               this.floorObj.push({

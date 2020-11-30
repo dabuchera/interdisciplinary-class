@@ -4,9 +4,7 @@
       <app-forge-viewer
         [viewerOptions]="viewerOptions3d"
         (onSelectionChanged)="selectionChanged($event)"
-        (onObjectTreeCreated)="storeLevelObjects()"
-        (onObjectTreeCreated)="storeConcreteElements()"
-        (onObjectTreeCreated)="storeCategoryObjects()"
+        (onObjectTreeCreated)="runDifferentFunc()"
       ></app-forge-viewer>
     </div>
   </div>

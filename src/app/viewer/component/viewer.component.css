@@ -61,8 +61,15 @@
 
 /* Levels Toolbar -> Control Group -> Buttons */
 :host ::ng-deep #my-custom-view-toolbar-levels {
-  right: 15px; /*was 15*/
-  left: unset; /*was unset*/
+  right: 15px; 
+  left: unset;
+  width: 200px;
+}
+
+/* Levels Toolbar -> Control Group -> Buttons */
+:host ::ng-deep #my-custom-view-toolbar-concrete {
+  right: unset;
+  left: 15px;
   width: 200px;
 }
 
