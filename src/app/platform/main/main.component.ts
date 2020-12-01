@@ -28,13 +28,13 @@ import { Slab } from '../models/slab';
 import { Wall } from '../models/wall';
 import { Column } from '../models/column';
 
-
 import { AuthToken } from 'forge-apis';
 import { ApiService } from 'src/app/_services/api.service';
 
 import * as $ from 'jquery';
 import { Xliff } from '@angular/compiler';
 import { async } from '@angular/core/testing';
+import { valHooks } from 'jquery';
 
 // Function for async forEach
 const asyncForEach = async (array, callback) => {
@@ -62,9 +62,8 @@ export class MainComponent implements OnInit {
   public objectsPerLevel: any[] = new Array();
   public concrObj: any[] = new Array();
   public walls: Wall[] = new Array();
-  public floorObj: any[] = new Array();
-  public colObj: any[] = new Array();
-  public levObj: any[] = new Array();
+  public slabs: Slab[] = new Array();
+  public columns: Column[] = new Array();
 
   @ViewChild(ViewerComponent, { static: false })
   viewerComponent: ViewerComponent;
@@ -119,8 +118,7 @@ export class MainComponent implements OnInit {
     };
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   public async scriptsLoaded() {
     Extension.registerExtension(
@@ -216,21 +214,21 @@ export class MainComponent implements OnInit {
           // tslint:disable-next-line: max-line-length
           $('#' + annexClass + object.id).append(
             '<style>.' +
-            annexClass +
-            object.id +
-            ':before{content: attr(data-before); font-size: 20px; color: white;}</style>'
+              annexClass +
+              object.id +
+              ':before{content: attr(data-before); font-size: 20px; color: white;}</style>'
           );
           $('#' + annexClass + object.id).append(
             '<style>.' +
-            annexClass +
-            object.id +
-            '{width: 178px !important}</style>'
+              annexClass +
+              object.id +
+              '{width: 178px !important}</style>'
           );
           $('#' + annexClass + object.id).append(
             '<style>.' +
-            annexClass +
-            object.id +
-            '{animation: slideMe .7s ease-in;}</style>'
+              annexClass +
+              object.id +
+              '{animation: slideMe .7s ease-in;}</style>'
           );
           $('#' + annexClass + object.id.toString()).attr(
             'data-before',
@@ -307,21 +305,21 @@ export class MainComponent implements OnInit {
           // tslint:disable-next-line: max-line-length
           $('#' + annexClass + object.id).append(
             '<style>.' +
-            annexClass +
-            object.id +
-            ':before{content: attr(data-before); font-size: 20px; color: white;}</style>'
+              annexClass +
+              object.id +
+              ':before{content: attr(data-before); font-size: 20px; color: white;}</style>'
           );
           $('#' + annexClass + object.id).append(
             '<style>.' +
-            annexClass +
-            object.id +
-            '{width: 178px !important}</style>'
+              annexClass +
+              object.id +
+              '{width: 178px !important}</style>'
           );
           $('#' + annexClass + object.id).append(
             '<style>.' +
-            annexClass +
-            object.id +
-            '{animation: slideMe .7s ease-in;}</style>'
+              annexClass +
+              object.id +
+              '{animation: slideMe .7s ease-in;}</style>'
           );
           $('#' + annexClass + object.id.toString()).attr(
             'data-before',
@@ -347,9 +345,19 @@ export class MainComponent implements OnInit {
   }
 
   public async selectionChanged(event: SelectionChangedEventArgs) {
-    console.log(this.walls);
     // console.log(event);
     console.log('selectionChanged');
+    const s3 = this.defineAllProp(this.slabs);
+    const w3 = this.defineAllProp(this.walls);
+    const c3 = this.defineAllProp(this.columns);
+    console.log(s3);
+    console.log(w3);
+    console.log(c3);
+    // const w = this.getAndSetProperties(this.walls);
+    // console.log(w);
+    // const c = this.getAndSetProperties(this.columns);
+    // console.log(c);
+
     const dbIdArray = (event as any).dbIdArray;
     // console.log(dbIdArray);
 
@@ -358,19 +366,37 @@ export class MainComponent implements OnInit {
     // console.log(instanceTree);
     // const nodeTyp = instanceTree.getNodeType(dbIdArray[0]);
     // console.log(nodeTyp);
+
     const parentId = instanceTree.getNodeParentId(dbIdArray[0]);
     const parentId2 = instanceTree.getNodeParentId(parentId);
     const parentId3 = instanceTree.getNodeParentId(parentId2);
-
+    // console.log(parentId);
+    // asyncForEach(this.slabs, async (item) => {
+    //   await this.viewerComponent.viewer.model.getBulkProperties(
+    //     [item.dbID],
+    //     null,
+    //     (data) => {
+    //       // console.log(item.dbID);
+    //       asyncForEach(data, (element) => {
+    //         console.log(data);
+    //         asyncForEach(element.properties, (prop) => {
+    //           if (prop.displayName === 'GrossArea') {
+    //             item.area = parseFloat(prop.displayValue);
+    //             // console.log(item);
+    //           }
+    //         });
+    //       });
+    //     }
+    //   );
+    // });
     this.viewerComponent.viewer.model.getBulkProperties(
       [dbIdArray[0]],
       null,
       (data) => {
-        console.log('dbIdArray');
+        console.log('dbdArray');
         console.log(data);
       }
     );
-
     this.viewerComponent.viewer.model.getBulkProperties(
       [parentId3],
       null,
@@ -482,6 +508,12 @@ export class MainComponent implements OnInit {
     this.storeLevelObjects();
     this.storeConcreteElements();
     this.storeCategoryObjects();
+    // const s = this.getAndSetProperties(this.slabs);
+    // console.log(s);
+    // const s2 = this.setfixedPRAndCS(this.slabs);
+    // console.log(s2);
+    // const s3 = this.calcWD(this.slabs);
+    // console.log(s3);
     // Do a function for filling more attributes to the object of the this.walls
   }
 
@@ -512,7 +544,7 @@ export class MainComponent implements OnInit {
                     id: this.makeid(5),
                   });
                 },
-                (err) => { },
+                (err) => {},
                 ['LcOaNode:LcOaNodeLayer']
               );
             }).then(() => {
@@ -545,9 +577,7 @@ export class MainComponent implements OnInit {
             const concrValues = uniqMat.filter((item) =>
               item.includes('Beton')
             );
-
-            console.log(concrValues);
-
+            // console.log(concrValues);
             asyncForEach(concrValues, async (value: string) => {
               await this.viewerComponent.viewer.search(
                 value,
@@ -558,7 +588,7 @@ export class MainComponent implements OnInit {
                     id: this.makeid(5),
                   });
                 },
-                (err) => { },
+                (err) => {},
                 ['LcOaNode:LcOaNodeMaterial']
               );
             });
@@ -579,63 +609,38 @@ export class MainComponent implements OnInit {
         allDbIds,
         ['Category'],
         (data) => {
-
           asyncForEach(data, (element) => {
             if (element.properties[0].displayValue === 'Walls') {
               var wall = new Wall(this.makeid(5), element.dbId);
               this.walls.push(wall);
             }
             if (element.properties[0].displayValue === 'Floors') {
-              this.floorObj.push({
-                categoryName: element.properties[0].displayValue,
-                dbId: element.dbId,
-                id: this.makeid(5),
-              });
+              var slab = new Slab(this.makeid(5), element.dbId);
+              this.slabs.push(slab);
             }
+
             if (element.properties[0].displayValue === 'Structural Columns') {
-              this.colObj.push({
-                categoryName: element.properties[0].displayValue,
-                dbId: element.dbId,
-                id: this.makeid(5),
-              });
-            }
-            if (element.properties[0].displayValue === 'Levels') {
-              this.levObj.push({
-                categoryName: element.properties[0].displayValue,
-                dbId: element.dbId,
-                id: this.makeid(5),
-              });
+              var column = new Column(this.makeid(5), element.dbId);
+              this.columns.push(column);
             }
           });
         }
       );
-      console.log(this.levObj);
-      this.levObj.forEach((element) => {
-        element = new Element(element.id, element.dbId);
-        console.log(element);
-        const instanceTree = this.viewerComponent.viewer.model.getData()
-          .instanceTree;
-        console.log(instanceTree);
-        // const nodeTyp = instanceTree.getNodeType(dbIdArray[0]);
-        // console.log(nodeTyp);
-        const parentId = instanceTree.getNodeParentId(element.dbId);
-        const parentId2 = instanceTree.getNodeParentId(parentId);
-        const parentId3 = instanceTree.getNodeParentId(parentId2);
-
-        this.viewerComponent.viewer.model.getBulkProperties(
-          [element.dbId],
-          null,
-          (data) => {
-            console.log('dbIdArray');
-            console.log(data);
-          }
-        );
-      });
+      this.viewerComponent.viewer.model.getBulkProperties(
+        allDbIds,
+        ['PREDEFINEDTYPE'],
+        (data) => {
+          asyncForEach(data, (element) => {
+            if (element.properties[0].displayValue === 'ROOF') {
+              var slab = new Slab(this.makeid(5), element.dbId);
+              this.slabs.push(slab);
+            }
+          });
+        }
+      );
     }, 1000);
-    // console.log(this.wallObj);
-    // console.log(this.floorObj);
-    // console.log(this.colObj);
   }
+
   public getAllDbIds() {
     const instanceTree = this.viewerComponent.viewer.model.getData()
       .instanceTree;
@@ -652,5 +657,154 @@ export class MainComponent implements OnInit {
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
     return result;
+  }
+
+  public getAndSetProperties(category) {
+    asyncForEach(category, (item) => {
+      const instanceTree = this.viewerComponent.viewer.model.getData()
+        .instanceTree;
+      this.viewerComponent.viewer.model.getBulkProperties(
+        [item.dbID],
+        null,
+        (data) => {
+          // console.log(item.dbID);
+          asyncForEach(data, (element) => {
+            asyncForEach(element.properties, (prop) => {
+              if (
+                prop.displayName === 'GrossVolume' ||
+                prop.displayName === 'Volume'
+              ) {
+                item.volume = parseFloat(prop.displayValue);
+                // console.log(item);
+              }
+              if (
+                prop.displayName === 'GrossArea' || // GrossArea is taekn from Quantities
+                prop.displayName === 'Area' // Area is taken from Dimensions, but it's the same value
+              ) {
+                item.area = parseFloat(prop.displayValue);
+              }
+              if (prop.displayName === 'Thickness') {
+                item.thickness = parseFloat(prop.displayValue);
+              }
+              if (
+                prop.displayName === 'Perimeter' ||
+                prop.displayName === 'Umfang' //not all columns especially prefabricated have property perimeter
+              ) {
+                item.perimeter = parseFloat(prop.displayValue);
+              }
+              if (prop.displayName === 'GrossSideArea') {
+                item.sideArea = parseFloat(prop.displayValue);
+              }
+              if (prop.displayName === 'Width') {
+                item.width = parseFloat(prop.displayValue);
+              }
+              if (prop.displayName === 'Height') {
+                item.height = parseFloat(prop.displayValue);
+              }
+              if (
+                prop.displayName === 'Length' &&
+                prop.displayCategory === 'Quantities' //There is the same property in the category of dimensions [especially for WALLS] and it's not the same value
+              ) {
+                item._length = parseFloat(prop.displayValue);
+              }
+            });
+          });
+        }
+      );
+    });
+    return category;
+  }
+
+  public setfixedPRAndCS(category) {
+    switch (category) {
+      case this.walls:
+        asyncForEach(this.walls, (element) => {
+          element.csF = 3;
+          element.csR = 3;
+          element.csC = 3;
+          element.csS = 3;
+          element.prF = 0.12; // values taken from Semester Project
+          element.prR = 16;
+          element.prC = 0.14;
+          element.prS = 0.12;
+        });
+      case this.columns:
+        asyncForEach(this.columns, (element) => {
+          element.csF = 3;
+          element.csR = 3;
+          element.csC = 3;
+          element.csS = 3;
+          element.prF = 0.12;
+          element.prR = 16;
+          element.prC = 0.14;
+          element.prS = 0.12;
+        });
+      case this.slabs:
+        asyncForEach(this.slabs, (element) => {
+          element.csF = 3;
+          element.csR = 3;
+          element.csC = 3;
+          element.csS = 3;
+          element.prF = 0.12;
+          element.prR = 16;
+          element.prC = 0.14;
+          element.prS = 0.12;
+        });
+    }
+    return category;
+  }
+
+  public calcWD(category) {
+    switch (category) {
+      case this.walls:
+        asyncForEach(this.walls, (element) => {
+          element.WDwF =
+            (2 *
+              (element.sideArea + element.width * element.height) *
+              element.prF) /
+            element.csF;
+          element.WDwR = (0.17 * element.volume * element.prR) / element.csR; // ?* 0.17tons/m3
+          element.WDwC = (element.volume * element.prC) / element.csC; // ?* tons
+          element.WDwS =
+            (2 *
+              (element.sideArea + element.width * element.height) *
+              element.prS) /
+            element.csS;
+        });
+
+      case this.columns:
+        asyncForEach(this.columns, (element) => {
+          element.WDcF =
+            (element.perimeter * element._length * element.prF) / element.csF;
+          element.WDcR = (0.11 * element.volume * element.prR) / element.csR;
+          element.WDcC = (element.volume * element.prC) / element.csC;
+          element.WDcS =
+            (element.perimeter * element._length * element.prS) / element.csS;
+        });
+
+      case this.slabs:
+        asyncForEach(this.slabs, (element) => {
+          if (!element.thickness) {
+            element.thickness = element.width;
+          }
+          element.WDsF =
+            ((element.area + element.perimeter * element.thickness) *
+              element.prF) /
+            element.csF;
+          element.WDsR = (0.12 * element.volume * element.prR) / element.csR;
+          element.WDsC = (element.volume * element.prC) / element.csC;
+          element.WDsS =
+            ((element.area + element.perimeter * element.thickness) *
+              element.prS) /
+            element.csS;
+        });
+    }
+    return category;
+  }
+  public defineAllProp(category) {
+    this.getAndSetProperties(category);
+    this.setfixedPRAndCS(category);
+    this.calcWD(category);
+    return category;
   }
 }
