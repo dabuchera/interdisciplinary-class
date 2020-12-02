@@ -1,15 +1,15 @@
 import { Element } from './element';
 
-export class Slab extends Element {
+export class Foundation extends Element {
   area: number;
   thickness: number;
   perimeter: number;
   width: number;
-  WDsF: number;
-  WDsR: number;
-  WDsC: number;
-  WDsCR: number;
-  WDsS: number;
+  WDfF: number;
+  WDfR: number;
+  WDfC: number;
+  WDfCR: number;
+  WDfS: number;
 
   // INPUTS
   // While testing first set with fixed values for PR & CS
@@ -31,11 +31,11 @@ export class Slab extends Element {
     thickness?: number,
     perimeter?: number,
     width?: number,
-    WDsF?: number,
-    WDsR?: number,
-    WDsC?: number,
-    WDsCR?: number,
-    WDsS?: number,
+    WDfF?: number,
+    WDfR?: number,
+    WDfC?: number,
+    WDfCR?: number,
+    WDfS?: number,
     csF?: number,
     prF?: number,
     csR?: number,
@@ -63,10 +63,10 @@ export class Slab extends Element {
     this.csS = csS;
     this.prS = prS;
 
-    this.WDsF = WDsF;
-    this.WDsR = WDsR;
-    this.WDsC = WDsC;
-    this.WDsCR = WDsCR;
-    this.WDsS = WDsS;
+    this.WDfF = WDfF;
+    this.WDfR = WDfR;
+    this.WDfC = WDfC;
+    this.WDfCR = WDfCR;
+    this.WDfS = WDfS;
   }
 }
