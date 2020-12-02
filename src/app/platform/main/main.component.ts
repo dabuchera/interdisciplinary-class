@@ -688,7 +688,8 @@ export class MainComponent implements OnInit {
               }
               if (
                 prop.displayName === 'Perimeter' ||
-                prop.displayName === 'Umfang' //not all columns especially prefabricated have property perimeter
+                prop.displayName === 'Umfang' ||
+                prop.displayName === 'Umfang_Kreis' //not all columns especially prefabricated have property perimeter
               ) {
                 item.perimeter = parseFloat(prop.displayValue);
               }
@@ -704,6 +705,11 @@ export class MainComponent implements OnInit {
               if (
                 prop.displayName === 'Length' &&
                 prop.displayCategory === 'Quantities' //There is the same property in the category of dimensions [especially for WALLS] and it's not the same value
+              ) {
+                item._length = parseFloat(prop.displayValue);
+              }
+              if (
+                prop.displayName === 'Stützenhöhe' //There is the same property in the category of dimensions [especially for WALLS] and it's not the same value
               ) {
                 item._length = parseFloat(prop.displayValue);
               }
