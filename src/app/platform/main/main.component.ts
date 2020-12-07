@@ -118,7 +118,7 @@ export class MainComponent implements OnInit {
     };
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   public async scriptsLoaded() {
     Extension.registerExtension(
@@ -214,21 +214,21 @@ export class MainComponent implements OnInit {
           // tslint:disable-next-line: max-line-length
           $('#' + annexClass + object.id).append(
             '<style>.' +
-              annexClass +
-              object.id +
-              ':before{content: attr(data-before); font-size: 20px; color: white;}</style>'
+            annexClass +
+            object.id +
+            ':before{content: attr(data-before); font-size: 20px; color: white;}</style>'
           );
           $('#' + annexClass + object.id).append(
             '<style>.' +
-              annexClass +
-              object.id +
-              '{width: 178px !important}</style>'
+            annexClass +
+            object.id +
+            '{width: 178px !important}</style>'
           );
           $('#' + annexClass + object.id).append(
             '<style>.' +
-              annexClass +
-              object.id +
-              '{animation: slideMe .7s ease-in;}</style>'
+            annexClass +
+            object.id +
+            '{animation: slideMe .7s ease-in;}</style>'
           );
           $('#' + annexClass + object.id.toString()).attr(
             'data-before',
@@ -305,21 +305,21 @@ export class MainComponent implements OnInit {
           // tslint:disable-next-line: max-line-length
           $('#' + annexClass + object.id).append(
             '<style>.' +
-              annexClass +
-              object.id +
-              ':before{content: attr(data-before); font-size: 20px; color: white;}</style>'
+            annexClass +
+            object.id +
+            ':before{content: attr(data-before); font-size: 20px; color: white;}</style>'
           );
           $('#' + annexClass + object.id).append(
             '<style>.' +
-              annexClass +
-              object.id +
-              '{width: 178px !important}</style>'
+            annexClass +
+            object.id +
+            '{width: 178px !important}</style>'
           );
           $('#' + annexClass + object.id).append(
             '<style>.' +
-              annexClass +
-              object.id +
-              '{animation: slideMe .7s ease-in;}</style>'
+            annexClass +
+            object.id +
+            '{animation: slideMe .7s ease-in;}</style>'
           );
           $('#' + annexClass + object.id.toString()).attr(
             'data-before',
@@ -504,10 +504,28 @@ export class MainComponent implements OnInit {
   //   });
   // }
 
-  public runDifferentFunc() {
-    this.storeLevelObjects();
-    this.storeConcreteElements();
-    this.storeCategoryObjects();
+  public async runDifferentFunc() {
+    this.app.openSpinner();
+    // SetTimeout only for vizualization purposes
+    setTimeout(async () => {
+      const allDbIds = this.getAllDbIds();
+      await this.storeLevelObjects().then(async () => {
+        await this.storeConcreteElements().then(async () => {
+          await this.storeCategoryObjects().then(() => {
+            console.log(this.objectsPerLevel);
+            console.log(this.concrObj);
+            console.log(this.walls);
+            console.log(this.slabs);
+            console.log(this.columns);
+            console.log('finished');
+            this.app.closeSpinner();
+          });
+        });
+        // this.storeCategoryObjects();
+      });
+    }, 1000);
+
+
     // const s = this.getAndSetProperties(this.slabs);
     // console.log(s);
     // const s2 = this.setfixedPRAndCS(this.slabs);
@@ -517,128 +535,120 @@ export class MainComponent implements OnInit {
     // Do a function for filling more attributes to the object of the this.walls
   }
 
-  public storeLevelObjects() {
-    this.app.openSpinner();
-    setTimeout(() => {
-      const allDbIds = this.getAllDbIds();
-      // @ts-ignore
-      this.viewerComponent.viewer.model.getBulkProperties(
-        allDbIds,
-        ['LcOaNode:LcOaNodeLayer'],
-        (data) => {
-          const allValues = new Array();
-          asyncForEach(data, (element) => {
-            allValues.push(element.properties[0].displayValue);
-          }).then(() => {
-            const unique = allValues.filter(
-              (item, i, ar) => ar.indexOf(item) === i
-            );
-            // console.log(unique);
-            asyncForEach(unique, async (level) => {
-              await this.viewerComponent.viewer.search(
-                level,
-                (idArray) => {
-                  this.objectsPerLevel.push({
-                    levelName: level,
-                    dbIds: idArray,
-                    id: this.makeid(5),
-                  });
-                },
-                (err) => {},
-                ['LcOaNode:LcOaNodeLayer']
-              );
-            }).then(() => {
-              this.app.closeSpinner();
+  public async storeLevelObjects(): Promise<boolean> {
+    const allDbIds = this.getAllDbIds();
+    return await this.getBulkProperties(allDbIds, 'LcOaNode:LcOaNodeLayer').then(res => {
+      const allValues = new Array();
+      return asyncForEach(res, (element) => {
+        allValues.push(element.properties[0].displayValue);
+      }).then(() => {
+        const unique = allValues.filter(
+          (item, i, ar) => ar.indexOf(item) === i
+        );
+        return asyncForEach(unique, async (level) => {
+          await this.search(level, 'LcOaNode:LcOaNodeLayer').then(idArray => {
+            this.objectsPerLevel.push({
+              levelName: level,
+              dbIds: idArray,
+              id: this.makeid(5),
             });
           });
-        }
-      );
-    }, 1000);
+        }).then(() => {
+          return true;
+        });
+      });
+    });
   }
 
-  public storeConcreteElements() {
-    // this.app.openSpinner();
-    setTimeout(() => {
-      const allDbIds = this.getAllDbIds();
-      // @ts-ignore
-      this.viewerComponent.viewer.model.getBulkProperties(
-        allDbIds,
-        ['LcOaNode:LcOaNodeMaterial'],
-        (data) => {
-          const allValues = new Array();
-          asyncForEach(data, (element) => {
-            allValues.push(element.properties[0].displayValue);
-            // console.log(data);
-          }).then(() => {
-            // console.log(data);
-            const uniqMat = allValues.filter(
-              (value, i, ar) => ar.indexOf(value) === i
-            );
-            const concrValues = uniqMat.filter((item) =>
-              item.includes('Beton')
-            );
-            // console.log(concrValues);
-            asyncForEach(concrValues, async (value: string) => {
-              await this.viewerComponent.viewer.search(
-                value,
-                (idArray) => {
-                  this.concrObj.push({
-                    materialName: value,
-                    dbIds: idArray,
-                    id: this.makeid(5),
-                  });
-                },
-                (err) => {},
-                ['LcOaNode:LcOaNodeMaterial']
-              );
+  public async storeConcreteElements(): Promise<boolean> {
+    const allDbIds = this.getAllDbIds();
+    return await this.getBulkProperties(allDbIds, 'LcOaNode:LcOaNodeMaterial').then(res => {
+      const allValues = new Array();
+      return asyncForEach(res, (element) => {
+        allValues.push(element.properties[0].displayValue);
+      }).then(() => {
+        const uniqMat = allValues.filter(
+          (item, i, ar) => ar.indexOf(item) === i
+        );
+        const concrValues = uniqMat.filter((item) =>
+          item.includes('Beton')
+        );
+        return asyncForEach(concrValues, async (value) => {
+          await this.search(value, 'LcOaNode:LcOaNodeMaterial').then(idArray => {
+            this.concrObj.push({
+              materialName: value,
+              dbIds: idArray,
+              id: this.makeid(5),
             });
-            // this.viewerComponent.viewer.isolate(this.concrIds[1].dbIds);
           });
-        }
-      );
-    }, 1000);
-    // console.log(this.concrObj);
-    // this.viewerComponent.viewer.isolate(this.concrIds[1]);
-    // this.viewerComponent.viewer.isolate(this.concrIds[1].dbIds);
+        }).then(() => {
+          return true;
+        });
+      });
+    });
   }
 
-  public storeCategoryObjects() {
-    setTimeout(() => {
-      const allDbIds = this.getAllDbIds();
-      this.viewerComponent.viewer.model.getBulkProperties(
-        allDbIds,
-        ['Category'],
-        (data) => {
-          asyncForEach(data, (element) => {
-            if (element.properties[0].displayValue === 'Walls') {
-              var wall = new Wall(this.makeid(5), element.dbId);
-              this.walls.push(wall);
-            }
-            if (element.properties[0].displayValue === 'Floors') {
-              var slab = new Slab(this.makeid(5), element.dbId);
-              this.slabs.push(slab);
-            }
-
-            if (element.properties[0].displayValue === 'Structural Columns') {
-              var column = new Column(this.makeid(5), element.dbId);
-              this.columns.push(column);
-            }
-          });
+  public async storeCategoryObjects() {
+    const allDbIds = this.getAllDbIds();
+    return await this.getBulkProperties(allDbIds, 'Category').then(res => {
+      const allValues = new Array();
+      return asyncForEach(res, (element) => {
+        if (element.properties[0].displayValue === 'Walls') {
+          const wall = new Wall(this.makeid(5), element.dbId);
+          this.walls.push(wall);
         }
-      );
-      this.viewerComponent.viewer.model.getBulkProperties(
-        allDbIds,
-        ['PREDEFINEDTYPE'],
-        (data) => {
-          asyncForEach(data, (element) => {
+        else if (element.properties[0].displayValue === 'Floors') {
+          const slab = new Slab(this.makeid(5), element.dbId);
+          this.slabs.push(slab);
+        }
+
+        else if (element.properties[0].displayValue === 'Structural Columns') {
+          const column = new Column(this.makeid(5), element.dbId);
+          this.columns.push(column);
+        }
+      }).then(async () => {
+        return await this.getBulkProperties(allDbIds, 'PREDEFINEDTYPE').then(res => {
+          asyncForEach(res, (element) => {
             if (element.properties[0].displayValue === 'ROOF') {
               var slab = new Slab(this.makeid(5), element.dbId);
               this.slabs.push(slab);
             }
+          }).then(() => {
+            return true;
           });
+        });
+      });
+    });
+  }
+
+  public async getBulkProperties(ids: number[], propFilter: string) {
+    return new Promise((resolve, rejected) => {
+      this.viewerComponent.viewer.model.getBulkProperties(
+        ids,
+        [propFilter],
+        (data) => {
+          resolve(data);
+        },
+        (err) => {
+          rejected(err);
         }
       );
-    }, 1000);
+    });
+  }
+
+  public async search(text: string, attributeNames: string) {
+    return new Promise((resolve, rejected) => {
+      this.viewerComponent.viewer.search(
+        text,
+        (data) => {
+          resolve(data);
+        },
+        (err) => {
+          rejected(err);
+        },
+        [attributeNames]
+      );
+    });
   }
 
   public getAllDbIds() {
