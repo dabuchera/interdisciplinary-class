@@ -61,15 +61,8 @@
 
 /* Levels Toolbar -> Control Group -> Buttons */
 :host ::ng-deep #my-custom-view-toolbar-levels {
-  right: 15px; 
+  right: 15px;
   left: unset;
-  width: 200px;
-}
-
-/* Levels Toolbar -> Control Group -> Buttons */
-:host ::ng-deep #my-custom-view-toolbar-concrete {
-  right: unset;
-  left: 15px;
   width: 200px;
 }
 
@@ -86,9 +79,28 @@
 }
 
 /*Level Toolbar -> Control Group -> Buttons */
-:host ::ng-deep #my-custom-view-toolbar-material {
-  right: 15px;
-  left: unset;
+:host ::ng-deep #my-custom-view-toolbar-test {
+  right: unset;
+  left: 300px;
+  width: 200px;
+}
+
+:host ::ng-deep .showing-testing {
+  width: 178px;
+}
+
+:host ::ng-deep .showing-testing:hover {
+  width: 178px;
+}
+
+:host ::ng-deep .crosshair {
+  cursor: crosshair;
+}
+
+/* Levels Toolbar -> Control Group -> Buttons */
+:host ::ng-deep #my-custom-view-toolbar-concrete {
+  right: unset;
+  left: 15px;
   width: 200px;
 }
 

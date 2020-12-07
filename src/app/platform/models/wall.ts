@@ -7,6 +7,7 @@ export class Wall extends Element {
   WDwF: number;
   WDwR: number;
   WDwC: number;
+  WDwCR: number;
   WDwS: number;
   // INPUTS
   csF: number; // crew size setting Formwork
@@ -30,6 +31,7 @@ export class Wall extends Element {
     WDwF?: number,
     WDwR?: number,
     WDwC?: number,
+    WDwCR?: number,
     WDwS?: number,
     csF?: number,
     prF?: number,
@@ -60,6 +62,7 @@ export class Wall extends Element {
     this.WDwF = WDwF;
     this.WDwR = WDwR;
     this.WDwC = WDwC;
+    this.WDwCR = WDwCR;
     this.WDwS = WDwS;
   }
 }

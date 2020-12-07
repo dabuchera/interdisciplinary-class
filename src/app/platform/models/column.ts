@@ -6,6 +6,7 @@ export class Column extends Element {
   WDcF: number;
   WDcR: number;
   WDcC: number;
+  WDcCR: number;
   WDcS: number;
   // INPUTS
   csF: number; // crew size setting Formwork
@@ -28,6 +29,7 @@ export class Column extends Element {
     WDcF?: number,
     WDcR?: number,
     WDcC?: number,
+    WDcCR?: number,
     WDcS?: number,
     csF?: number,
     prF?: number,
@@ -57,6 +59,7 @@ export class Column extends Element {
     this.WDcF = WDcF;
     this.WDcR = WDcR;
     this.WDcC = WDcC;
+    this.WDcCR = WDcCR;
     this.WDcS = WDcS;
   }
 }
