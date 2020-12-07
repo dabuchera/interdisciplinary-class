@@ -22,7 +22,7 @@ export class Slab extends Element {
 
   constructor(
     id: string,
-    dbID: string,
+    dbId: number,
     volume?: number,
     category?: string,
     area?: number,
@@ -41,8 +41,8 @@ export class Slab extends Element {
     csS?: number,
     prS?: number
   ) {
-    super(id, dbID, volume, category);
-    this.dbID = dbID;
+    super(id, dbId, volume, category);
+    this.dbId = dbId;
     this.volume = volume;
     this.category = category;
     this.area = area;

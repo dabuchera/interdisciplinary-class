@@ -3,9 +3,124 @@
     height: 95vh;
     margin-top: 25px !important;
     margin: auto;
-    
     /* Nur für Development */
     border: 5px solid #ECB216;
+}
+
+:host ::ng-deep .lds-roller {
+    /* added */
+    margin: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    visibility: visible;
+    text-align: center;
+    /* modified */
+    display: inline-block;
+    width: 640px;
+    height: 640px;
+    transform: rotate(45deg);
+    transform-origin: 320px 320px;
+    opacity: 1 !important;
+}
+
+:host ::ng-deep .lds-roller div {
+    animation: lds-roller 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    transform-origin: 400px 400px;
+    opacity: 1 !important;
+}
+
+:host ::ng-deep .lds-roller div:after {
+    content: " ";
+    display: block;
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: #ECB216;
+    margin: -40px 0 0 -40px;
+    opacity: 1 !important;
+}
+
+:host ::ng-deep .lds-roller div:nth-child(1) {
+    animation-delay: -0.036s;
+}
+
+:host ::ng-deep .lds-roller div:nth-child(1):after {
+    top: 630px;
+    left: 630px;
+}
+
+:host ::ng-deep .lds-roller div:nth-child(2) {
+    animation-delay: -0.072s;
+}
+
+:host ::ng-deep .lds-roller div:nth-child(2):after {
+    top: 680px;
+    left: 560px;
+}
+
+:host ::ng-deep .lds-roller div:nth-child(3) {
+    animation-delay: -0.108s;
+}
+
+:host ::ng-deep .lds-roller div:nth-child(3):after {
+    top: 710px;
+    left: 480px;
+}
+
+:host ::ng-deep .lds-roller div:nth-child(4) {
+    animation-delay: -0.144s;
+}
+
+:host ::ng-deep .lds-roller div:nth-child(4):after {
+    top: 720px;
+    left: 400px;
+}
+
+:host ::ng-deep .lds-roller div:nth-child(5) {
+    animation-delay: -0.18s;
+}
+
+:host ::ng-deep .lds-roller div:nth-child(5):after {
+    top: 710px;
+    left: 320px;
+}
+
+:host ::ng-deep .lds-roller div:nth-child(6) {
+    animation-delay: -0.216s;
+}
+
+:host ::ng-deep .lds-roller div:nth-child(6):after {
+    top: 680px;
+    left: 240px;
+}
+
+:host ::ng-deep .lds-roller div:nth-child(7) {
+    animation-delay: -0.252s;
+}
+
+:host ::ng-deep .lds-roller div:nth-child(7):after {
+    top: 630px;
+    left: 170px;
+}
+
+:host ::ng-deep .lds-roller div:nth-child(8) {
+    animation-delay: -0.288s;
+}
+
+:host ::ng-deep .lds-roller div:nth-child(8):after {
+    top: 560px;
+    left: 120px;
+}
+
+@keyframes lds-roller {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 @keyframes p-progress-spinner-color {

@@ -21,9 +21,10 @@ import {
   SelectionChangedEventArgs,
   /* Für Development/Neu gebraucht */
   ExtensionLoadedEventArgs,
-
+  ViewerStateRestoredEventArgs,
   ShowEventArgs,
   ViewerEventArgs,
+  LayerVisibilityEventArgs,
 } from '../extensions/extension';
 import { BasicExtension } from '../extensions/basic-extension';
 import { AuthToken } from 'forge-apis';
@@ -84,6 +85,8 @@ export class ViewerComponent implements OnDestroy {
 
   /* Für Development/Neu gebraucht */
   @Output() public onExtensionLoaded = new EventEmitter<ExtensionLoadedEventArgs>();
+  @Output() public onViewerRestored = new EventEmitter<ViewerStateRestoredEventArgs>();
+  @Output() public layerVisibilityChanged = new EventEmitter<LayerVisibilityEventArgs>();
 
   // Debugging
   @Input() public showDebugMessages = false;
@@ -320,29 +323,47 @@ export class ViewerComponent implements OnDestroy {
 
         if (item instanceof FitToViewEventArgs) {
           this.onFitToView.emit(item);
+          // console.log('FitToViewEventArgs');
         } else if (item instanceof FullscreenEventArgs) {
           this.onFullscreen.emit(item);
+          // console.log('FullscreenEventArgs');
         } else if (item instanceof GeometryLoadedEventArgs) {
           this.onGeometryLoaded.emit(item);
+          // console.log('GeometryLoadedEventArgs');
         } else if (item instanceof HideEventArgs) {
           this.onHide.emit(item);
+          // console.log('HideEventArgs');
         } else if (item instanceof IsolateEventArgs) {
           this.onIsolate.emit(item);
+          // console.log('IsolateEventArgs');
         } else if (item instanceof ObjectTreeCreatedEventArgs) {
           this.onObjectTreeCreated.emit(item);
+          // console.log('ObjectTreeCreatedEventArgs');
         } else if (item instanceof ObjectTreeUnavailableEventArgs) {
           this.onObjectTreeUnavailable.emit(item);
+          // console.log('ObjectTreeUnavailableEventArgs');
         } else if (item instanceof ResetEventArgs) {
           this.onReset.emit(item);
+          // console.log('ResetEventArgs');
         } else if (item instanceof SelectionChangedEventArgs) {
           this.onSelectionChanged.emit(item);
+          // console.log('SelectionChangedEventArgs');
         } else if (item instanceof ShowEventArgs) {
           this.onShow.emit(item);
+          // console.log('ShowEventArgs');
         }
 
         /* Für Development/Neu gebraucht */
         else if (item instanceof ExtensionLoadedEventArgs) {
           this.onExtensionLoaded.emit(item);
+        }
+        else if (item instanceof ViewerStateRestoredEventArgs) {
+          this.onViewerRestored.emit(item);
+          console.log('onViewerRestored');
+        }
+        else if (item instanceof LayerVisibilityEventArgs) {
+          this.layerVisibilityChanged.emit(item);
+          console.log('layerVisibilityChanged');
         }
       }
       );

@@ -3,7 +3,6 @@ import {
   OnInit,
   Input,
   ViewChild,
-  ComponentFactoryResolver,
 } from '@angular/core';
 import { AppComponent } from 'src/app/app.component';
 
@@ -58,6 +57,9 @@ export class MainComponent implements OnInit {
   public toolbarLevels: Autodesk.Viewing.UI.ToolBar;
   public toolbarConcrete: Autodesk.Viewing.UI.ToolBar;
 
+  public isolatedNodesConcrete: number[] = new Array();
+  public isolatedNodesLevels: number[] = new Array();
+
   // Model stuff
   public objectsPerLevel: any[] = new Array();
   public concrObj: any[] = new Array();
@@ -90,7 +92,7 @@ export class MainComponent implements OnInit {
         extensions: [
           'Autodesk.Snapping',
           'Autodesk.ModelStructure',
-          CoordinatesAxesExtension.extensionName,
+          // CoordinatesAxesExtension.extensionName,
         ],
         //,'GetPositionExtension'], //[IconMarkupExtension.extensionName], // [GetParameterExtension.extensionName],
         theme: 'dark-theme',
@@ -101,9 +103,17 @@ export class MainComponent implements OnInit {
         if (this.encodedmodelurn) {
           args.viewerComponent.DocumentId = this.encodedmodelurn;
         }
+        // Hide container where model is in
+        // Will be shown after runDifferentFunc()
+        $('canvas').hide();
+        this.replaceSpinner();
+        $('.lds-roller').show();
+        // this.app.openSpinner();
         this.loadLevelToolbar();
         this.loadConcreteToolbar();
-
+        console.log(this.viewerComponent.viewer)
+        // this.viewerComponent.viewer.showModel.subscribe((value) => { 
+        // console.log(value);
         // this.replaceSpinner();
         // this.loadCustomToolbar();
         // this.loadFacadeToolbar();
@@ -121,22 +131,10 @@ export class MainComponent implements OnInit {
   ngOnInit(): void { }
 
   public async scriptsLoaded() {
-    Extension.registerExtension(
-      'CoordinatesAxesExtension',
-      CoordinatesAxesExtension
-    );
-
-    // Extension für das Markup bei der Facade Functionality
-    // Extension.registerExtension('IconMarkupExtension', IconMarkupExtension);
-    // Extension für die farbigen Achsen des World-Koordinatensystem
-    // Extension.registerExtension('CoordinatesAxesExtension', CoordinatesAxesExtension);
-    // Extension für die Section Functionality
-    // Extension.registerExtension('SectionExtension', SectionExtension);
-
-    // Extension.registerExtension(GetParameterExtension.extensionName, GetParameterExtension);
-    // @ts-ignore
-    // Extension.registerExtension('Autodesk.Snapping', Autodesk.Viewing.Extensions.Snapper);
-    // Extension.registerExtension('GetPositionExtension', GetPositionExtension);
+    // Extension.registerExtension(
+    //   'CoordinatesAxesExtension',
+    //   CoordinatesAxesExtension
+    // );
   }
 
   public loadLevelToolbar() {
@@ -159,24 +157,6 @@ export class MainComponent implements OnInit {
     button1.onClick = (event) => {
       if (button1.getState() === 1) {
         button1.setState(0);
-        // this.instanceTree = this.viewerComponent.viewer.model.getInstanceTree();
-        // console.log(this.instanceTree);
-        // console.log(this.viewerComponent.viewer.model);
-        // console.log(this.viewerComponent.viewer.model.getDocumentNode());
-        // console.log(this.viewerComponent.viewer.model.getData());
-        // console.log(this.viewerComponent.viewer.model.getRoot());
-        // console.log(this.viewerComponent.viewer.getExtension('Autodesk.ModelStructure'));
-
-        // // @ts-ignore
-        // console.log(this.viewerComponent.viewer.model.findProperty('LcOaNode:LcOaNodeLayer'));
-
-        // this.viewerComponent.viewer.model.getBulkProperties(dbIds,
-        //   [name], (data) => {
-        //     console.log(data);
-        //   });
-        // valuesOfParameter = res;
-        // // console.log('valuesOfParameter');
-        // // console.log(valuesOfParameter);
 
         this.objectsPerLevel.forEach((object) => {
           if (!object.levelName) {
@@ -193,19 +173,58 @@ export class MainComponent implements OnInit {
           // Click Event !! Important !!
           buttonIterativ.onClick = () => {
             if (buttonIterativ.getState() === 1) {
-              // $('#' + annexClass + object.id).css('background-color', '#FE3123');
               buttonIterativ.setState(0);
-              const selected = this.viewerComponent.viewer.getSelection();
-              const newselected = selected.concat(object.dbIds);
-              this.viewerComponent.viewer.select(newselected);
-            } else {
+              if (this.isolatedNodesLevels.length === 0 && this.isolatedNodesConcrete.length === 0) {
+                this.isolatedNodesLevels = object.dbIds;
+                this.viewerComponent.viewer.isolate(this.isolatedNodesLevels);
+              }
+              else if (this.isolatedNodesLevels.length !== 0 && this.isolatedNodesConcrete.length === 0) {
+                this.isolatedNodesLevels = this.isolatedNodesLevels.concat(object.dbIds);
+                this.viewerComponent.viewer.isolate(this.isolatedNodesLevels);
+              }
+              else if (this.isolatedNodesLevels.length === 0 && this.isolatedNodesConcrete.length !== 0) {
+                this.isolatedNodesLevels = this.isolatedNodesConcrete.filter((item) => {
+                  return object.dbIds.indexOf(item) !== -1;
+                });
+                if (this.isolatedNodesLevels.length === 0) {
+                  return null;
+                }
+                else {
+                  this.viewerComponent.viewer.isolate(this.isolatedNodesLevels);
+                }
+              }
+              // this.isolatedNodesLevels.length !== 0 && this.isolatedNodesConcrete.length !== 0
+              else {
+                this.isolatedNodesLevels = this.isolatedNodesLevels.concat(object.dbIds);
+                this.isolatedNodesLevels = this.isolatedNodesConcrete.filter((item) => {
+                  return this.isolatedNodesLevels.indexOf(item) !== -1;
+                });
+                this.viewerComponent.viewer.isolate(this.isolatedNodesLevels);
+              }
+            }
+            else {
               buttonIterativ.setState(1);
-              const selected = this.viewerComponent.viewer.getSelection();
-              const newselected = selected.filter((item) => {
-                return object.dbIds.indexOf(item) === -1;
-              });
-              this.viewerComponent.viewer.select(newselected);
-              // $('#' + annexClass + object.id).css('background-color', '#A80000');
+              if (this.isolatedNodesConcrete.length === 0) {
+                this.isolatedNodesLevels = this.isolatedNodesLevels.filter((item) => {
+                  return object.dbIds.indexOf(item) === -1;
+                });
+                this.viewerComponent.viewer.isolate(this.isolatedNodesLevels);
+              }
+              // this.isolatedNodesConcrete.length !== 0
+              else {
+                this.isolatedNodesLevels = this.isolatedNodesLevels.filter((item) => {
+                  return object.dbIds.indexOf(item) === -1;
+                });
+                this.isolatedNodesLevels = this.isolatedNodesConcrete.filter((item) => {
+                  return this.isolatedNodesLevels.indexOf(item) !== -1;
+                });
+                if (this.isolatedNodesLevels.length === 0) {
+                  this.viewerComponent.viewer.isolate(this.isolatedNodesConcrete);
+                }
+                else {
+                  this.viewerComponent.viewer.isolate(this.isolatedNodesLevels);
+                }
+              }
             }
           };
 
@@ -237,6 +256,7 @@ export class MainComponent implements OnInit {
         });
       } else {
         button1.setState(1);
+        this.isolatedNodesLevels = new Array();
         while (controlGroup.getNumberOfControls() > 1) {
           var tempID = controlGroup.getControlId(1);
           controlGroup.removeControl(tempID);
@@ -250,6 +270,7 @@ export class MainComponent implements OnInit {
   }
 
   public loadConcreteToolbar() {
+    console.log()
     //Button Concrete
     const button1 = new Autodesk.Viewing.UI.Button('showing-concrete');
     button1.addClass('showing-concrete');
@@ -284,19 +305,53 @@ export class MainComponent implements OnInit {
           // Click Event !! Important !!
           buttonIterativ.onClick = () => {
             if (buttonIterativ.getState() === 1) {
-              // $('#' + annexClass + object.id).css('background-color', '#FE3123');
               buttonIterativ.setState(0);
-              const selected = this.viewerComponent.viewer.getSelection();
-              const newselected = selected.concat(object.dbIds);
-              this.viewerComponent.viewer.select(newselected);
-            } else {
+              if (this.isolatedNodesLevels.length === 0 && this.isolatedNodesConcrete.length === 0) {
+                this.isolatedNodesConcrete = object.dbIds;
+                this.viewerComponent.viewer.isolate(this.isolatedNodesConcrete);
+              }
+              else if (this.isolatedNodesLevels.length === 0 && this.isolatedNodesConcrete.length !== 0) {
+                this.isolatedNodesConcrete = this.isolatedNodesConcrete.concat(object.dbIds);
+                this.viewerComponent.viewer.isolate(this.isolatedNodesConcrete);
+              }
+              else if (this.isolatedNodesLevels.length !== 0 && this.isolatedNodesConcrete.length === 0) {
+                this.isolatedNodesConcrete = this.isolatedNodesLevels.filter((item) => {
+                  return object.dbIds.indexOf(item) !== -1;
+                });
+                this.viewerComponent.viewer.isolate(this.isolatedNodesConcrete);
+              }
+              // this.isolatedNodesLevels.length !== 0 && this.isolatedNodesConcrete.length !== 0
+              else {
+                this.isolatedNodesConcrete = this.isolatedNodesConcrete.concat(object.dbIds);
+                this.isolatedNodesConcrete = this.isolatedNodesLevels.filter((item) => {
+                  return this.isolatedNodesConcrete.indexOf(item) !== -1;
+                });
+                this.viewerComponent.viewer.isolate(this.isolatedNodesConcrete);
+              }
+            }
+            else {
               buttonIterativ.setState(1);
-              const selected = this.viewerComponent.viewer.getSelection();
-              const newselected = selected.filter((item) => {
-                return object.dbIds.indexOf(item) === -1;
-              });
-              this.viewerComponent.viewer.select(newselected);
-              // $('#' + annexClass + object.id).css('background-color', '#A80000');
+              if (this.isolatedNodesLevels.length === 0) {
+                this.isolatedNodesConcrete = this.isolatedNodesConcrete.filter((item) => {
+                  return this.isolatedNodesConcrete.indexOf(item) === -1;
+                });
+                this.viewerComponent.viewer.isolate(this.isolatedNodesConcrete);
+              }
+              // this.isolatedNodesConcrete.length !== 0
+              else {
+                this.isolatedNodesConcrete = this.isolatedNodesConcrete.filter((item) => {
+                  return object.dbIds.indexOf(item) === -1;
+                });
+                this.isolatedNodesConcrete = this.isolatedNodesLevels.filter((item) => {
+                  return this.isolatedNodesConcrete.indexOf(item) !== -1;
+                });
+                if (this.isolatedNodesConcrete.length === 0) {
+                  this.viewerComponent.viewer.isolate(this.isolatedNodesLevels);
+                }
+                else {
+                  this.viewerComponent.viewer.isolate(this.isolatedNodesConcrete);
+                }
+              }
             }
           };
 
@@ -328,6 +383,7 @@ export class MainComponent implements OnInit {
         });
       } else {
         button1.setState(1);
+        this.isolatedNodesConcrete = new Array();
         while (controlGroup.getNumberOfControls() > 1) {
           var tempID = controlGroup.getControlId(1);
           controlGroup.removeControl(tempID);
@@ -344,200 +400,48 @@ export class MainComponent implements OnInit {
     );
   }
 
-  public async selectionChanged(event: SelectionChangedEventArgs) {
-    // console.log(event);
-    console.log('selectionChanged');
-    const s3 = this.defineAllProp(this.slabs);
-    const w3 = this.defineAllProp(this.walls);
-    const c3 = this.defineAllProp(this.columns);
-    console.log(s3);
-    console.log(w3);
-    console.log(c3);
-    // const w = this.getAndSetProperties(this.walls);
-    // console.log(w);
-    // const c = this.getAndSetProperties(this.columns);
-    // console.log(c);
-
-    const dbIdArray = (event as any).dbIdArray;
-    // console.log(dbIdArray);
-
-    const instanceTree = this.viewerComponent.viewer.model.getData()
-      .instanceTree;
-    // console.log(instanceTree);
-    // const nodeTyp = instanceTree.getNodeType(dbIdArray[0]);
-    // console.log(nodeTyp);
-
-    const parentId = instanceTree.getNodeParentId(dbIdArray[0]);
-    const parentId2 = instanceTree.getNodeParentId(parentId);
-    const parentId3 = instanceTree.getNodeParentId(parentId2);
-    // console.log(parentId);
-    // asyncForEach(this.slabs, async (item) => {
-    //   await this.viewerComponent.viewer.model.getBulkProperties(
-    //     [item.dbID],
-    //     null,
-    //     (data) => {
-    //       // console.log(item.dbID);
-    //       asyncForEach(data, (element) => {
-    //         console.log(data);
-    //         asyncForEach(element.properties, (prop) => {
-    //           if (prop.displayName === 'GrossArea') {
-    //             item.area = parseFloat(prop.displayValue);
-    //             // console.log(item);
-    //           }
-    //         });
-    //       });
-    //     }
-    //   );
-    // });
-    this.viewerComponent.viewer.model.getBulkProperties(
-      [dbIdArray[0]],
-      null,
-      (data) => {
-        console.log('dbdArray');
-        console.log(data);
-      }
-    );
-    this.viewerComponent.viewer.model.getBulkProperties(
-      [parentId3],
-      null,
-      (data) => {
-        console.log('parentId');
-        console.log(data);
-      }
-    );
-
-    // let propertyArray = new Array();
-
-    // this.viewerComponent.viewer.model.getProperties(parentId, res => {
-    //   console.log(res);
-    //   propertyArray = res.properties;
-    //   console.log(propertyArray);
-    //   const a = propertyArray.find(ele => {
-    //     if (ele.displayName === 'LAYERTHICKNESS') {
-    //       return true;
-    //     }
-    //   });
-    //   console.log(a);
-    //   console.log(a.displayValue);
-    // }, err => {
-    //   console.log(err);
-    // });
-  }
-
-  //  Complete Isolate function
-  // Example of use:
-  // isolateFull(viewer, viewer.model, [39, 45, 61])
-
-  // public isolateFull(viewer, model = null, dbIds = []) {
-  //   return new Promise(async (resolve, reject) => {
-  //     try {
-  //       model = model || viewer.model;
-
-  //       // First we call the native isolate function
-  //       // so hidden components will not interfere
-  //       // with selection
-  //       viewer.isolate(dbIds);
-
-  //       const targetIds = Array.isArray(dbIds) ? dbIds : [dbIds];
-
-  //       const targetLeafIds = await ViewerToolkit.getLeafNodes(
-  //         model,
-  //         targetIds
-  //       );
-
-  //       const leafIds = await ViewerToolkit.getLeafNodes(model);
-
-  //       const leafTasks = leafIds.map((dbId) => {
-  //         return new Promise((resolveLeaf) => {
-  //           const show =
-  //             !targetLeafIds.length || targetLeafIds.indexOf(dbId) > -1;
-
-  //           viewer.impl.visibilityManager.setNodeOff(dbId, !show);
-
-  //           resolveLeaf();
-  //         });
-  //       });
-
-  //       return Promise.all(leafTasks);
-  //     } catch (ex) {
-  //       return reject(ex);
-  //     }
-  //   });
-  // }
-
-  // // Helper method: returns all leaf node dbIds for
-  // // given input dbIds. A leaf node is a node that
-  // // doesn't have any children
-  // public getLeafNodes(model, dbIds) {
-  //   return new Promise((resolve, reject) => {
-  //     try {
-  //       const instanceTree = model.getData().instanceTree;
-
-  //       dbIds = dbIds || instanceTree.getRootId();
-
-  //       const dbIdArray = Array.isArray(dbIds) ? dbIds : [dbIds];
-
-  //       let leafIds = [];
-
-  //       const getLeafNodesRec = (id) => {
-  //         var childCount = 0;
-
-  //         instanceTree.enumNodeChildren(id, (childId) => {
-  //           getLeafNodesRec(childId);
-
-  //           ++childCount;
-  //         });
-
-  //         if (childCount == 0) {
-  //           leafIds.push(id);
-  //         }
-  //       };
-
-  //       for (var i = 0; i < dbIdArray.length; ++i) {
-  //         getLeafNodesRec(dbIdArray[i]);
-  //       }
-
-  //       return resolve(leafIds);
-  //     } catch (ex) {
-  //       return reject(ex);
-  //     }
-  //   });
-  // }
-
   public async runDifferentFunc() {
-    this.app.openSpinner();
+    $('.lds-roller').show();
     // SetTimeout only for vizualization purposes
     setTimeout(async () => {
       const allDbIds = this.getAllDbIds();
       await this.storeLevelObjects().then(async () => {
         await this.storeConcreteElements().then(async () => {
-          await this.storeCategoryObjects().then(() => {
-            console.log(this.objectsPerLevel);
-            console.log(this.concrObj);
-            console.log(this.walls);
-            console.log(this.slabs);
-            console.log(this.columns);
-            console.log('finished');
-            this.app.closeSpinner();
-          });
+          $('canvas').show();
+          $('.lds-roller').hide();
+          //   await this.storeCategoryObjects().then(async () => {
+          //     console.log(this.walls);
+          //     console.log(this.columns);
+          //     console.log(this.slabs);
+          //     // Integrate here the database connection
+          //     await this.getAndSetProperties(this.slabs).then(async () => {
+          //       await this.getAndSetProperties(this.walls).then(async () => {
+          //         await this.getAndSetProperties(this.columns).then(async () => {
+          //           this.setfixedPRAndCS(this.slabs);
+          //           this.setfixedPRAndCS(this.walls);
+          //           this.setfixedPRAndCS(this.columns);
+          //           this.calcWD(this.slabs);
+          //           this.calcWD(this.walls);
+          //           this.calcWD(this.columns);
+          //           console.log('finished');
+          //           $('canvas').show();
+          //           $('.lds-roller').hide();
+          //           console.log(this.walls);
+          //           console.log(this.slabs);
+          //           console.log(this.columns);
+          //           // this.storeCategoryObjects();
+          //         });
+          //       });
+          //     });
+          //   });
         });
-        // this.storeCategoryObjects();
       });
     }, 1000);
-
-
-    // const s = this.getAndSetProperties(this.slabs);
-    // console.log(s);
-    // const s2 = this.setfixedPRAndCS(this.slabs);
-    // console.log(s2);
-    // const s3 = this.calcWD(this.slabs);
-    // console.log(s3);
-    // Do a function for filling more attributes to the object of the this.walls
   }
 
   public async storeLevelObjects(): Promise<boolean> {
     const allDbIds = this.getAllDbIds();
-    return await this.getBulkProperties(allDbIds, 'LcOaNode:LcOaNodeLayer').then(res => {
+    return await this.getBulkProperties(allDbIds, ['LcOaNode:LcOaNodeLayer']).then(res => {
       const allValues = new Array();
       return asyncForEach(res, (element) => {
         allValues.push(element.properties[0].displayValue);
@@ -562,7 +466,7 @@ export class MainComponent implements OnInit {
 
   public async storeConcreteElements(): Promise<boolean> {
     const allDbIds = this.getAllDbIds();
-    return await this.getBulkProperties(allDbIds, 'LcOaNode:LcOaNodeMaterial').then(res => {
+    return await this.getBulkProperties(allDbIds, ['LcOaNode:LcOaNodeMaterial']).then(res => {
       const allValues = new Array();
       return asyncForEach(res, (element) => {
         allValues.push(element.properties[0].displayValue);
@@ -590,24 +494,27 @@ export class MainComponent implements OnInit {
 
   public async storeCategoryObjects() {
     const allDbIds = this.getAllDbIds();
-    return await this.getBulkProperties(allDbIds, 'Category').then(res => {
+    return await this.getBulkProperties(allDbIds, ['Category']).then(res => {
       const allValues = new Array();
       return asyncForEach(res, (element) => {
         if (element.properties[0].displayValue === 'Walls') {
           const wall = new Wall(this.makeid(5), element.dbId);
+          wall.category = 'Wall';
           this.walls.push(wall);
         }
         else if (element.properties[0].displayValue === 'Floors') {
           const slab = new Slab(this.makeid(5), element.dbId);
+          slab.category = 'Slab';
           this.slabs.push(slab);
         }
 
         else if (element.properties[0].displayValue === 'Structural Columns') {
           const column = new Column(this.makeid(5), element.dbId);
+          column.category = 'Column';
           this.columns.push(column);
         }
       }).then(async () => {
-        return await this.getBulkProperties(allDbIds, 'PREDEFINEDTYPE').then(res => {
+        return await this.getBulkProperties(allDbIds, ['PREDEFINEDTYPE']).then(res => {
           asyncForEach(res, (element) => {
             if (element.properties[0].displayValue === 'ROOF') {
               var slab = new Slab(this.makeid(5), element.dbId);
@@ -621,11 +528,25 @@ export class MainComponent implements OnInit {
     });
   }
 
-  public async getBulkProperties(ids: number[], propFilter: string) {
+  public async getBulkProperties(ids: number[], propFilter: string[]) {
     return new Promise((resolve, rejected) => {
       this.viewerComponent.viewer.model.getBulkProperties(
         ids,
-        [propFilter],
+        propFilter,
+        (data) => {
+          resolve(data);
+        },
+        (err) => {
+          rejected(err);
+        }
+      );
+    });
+  }
+
+  public async getProperties(dbId: number) {
+    return new Promise((resolve, rejected) => {
+      this.viewerComponent.viewer.getProperties(
+        dbId,
         (data) => {
           resolve(data);
         },
@@ -652,8 +573,7 @@ export class MainComponent implements OnInit {
   }
 
   public getAllDbIds() {
-    const instanceTree = this.viewerComponent.viewer.model.getData()
-      .instanceTree;
+    const instanceTree = this.viewerComponent.viewer.model.getData().instanceTree;
     const allDbIdsStr = Object.keys(instanceTree.nodeAccess.dbIdToIndex);
     // tslint:disable-next-line: radix
     return allDbIdsStr.map((id) => parseInt(id));
@@ -669,66 +589,70 @@ export class MainComponent implements OnInit {
     return result;
   }
 
-  public getAndSetProperties(category) {
-    asyncForEach(category, (item) => {
-      const instanceTree = this.viewerComponent.viewer.model.getData()
-        .instanceTree;
-      this.viewerComponent.viewer.model.getBulkProperties(
-        [item.dbID],
-        null,
-        (data) => {
-          // console.log(item.dbID);
-          asyncForEach(data, (element) => {
-            asyncForEach(element.properties, (prop) => {
-              if (
-                prop.displayName === 'GrossVolume' ||
-                prop.displayName === 'Volume'
-              ) {
-                item.volume = parseFloat(prop.displayValue);
-                // console.log(item);
-              }
-              if (
-                prop.displayName === 'GrossArea' || // GrossArea is taekn from Quantities
-                prop.displayName === 'Area' // Area is taken from Dimensions, but it's the same value
-              ) {
-                item.area = parseFloat(prop.displayValue);
-              }
-              if (prop.displayName === 'Thickness') {
-                item.thickness = parseFloat(prop.displayValue);
-              }
-              if (
-                prop.displayName === 'Perimeter' ||
-                prop.displayName === 'Umfang' ||
-                prop.displayName === 'Umfang_Kreis' //not all columns especially prefabricated have property perimeter
-              ) {
-                item.perimeter = parseFloat(prop.displayValue);
-              }
-              if (prop.displayName === 'GrossSideArea') {
-                item.sideArea = parseFloat(prop.displayValue);
-              }
-              if (prop.displayName === 'Width') {
-                item.width = parseFloat(prop.displayValue);
-              }
-              if (prop.displayName === 'Height') {
-                item.height = parseFloat(prop.displayValue);
-              }
-              if (
-                prop.displayName === 'Length' &&
-                prop.displayCategory === 'Quantities' //There is the same property in the category of dimensions [especially for WALLS] and it's not the same value
-              ) {
-                item._length = parseFloat(prop.displayValue);
-              }
-              if (
-                prop.displayName === 'Stützenhöhe' //There is the same property in the category of dimensions [especially for WALLS] and it's not the same value
-              ) {
-                item._length = parseFloat(prop.displayValue);
-              }
-            });
+  public async getAndSetProperties(categoryitems) {
+    return await asyncForEach(categoryitems, async (item) => {
+      return await this.getBulkProperties([item.dbId], null).then(async (data) => {
+        return await asyncForEach(data, async (element) => {
+          return await asyncForEach(element.properties, (prop) => {
+            if (
+              prop.displayName === 'GrossVolume' ||
+              prop.displayName === 'Volume'
+            ) {
+              item.volume = parseFloat(prop.displayValue);
+              // console.log(item);
+            }
+            else if (
+              prop.displayName === 'GrossArea' || // GrossArea is taekn from Quantities
+              prop.displayName === 'Area' // Area is taken from Dimensions, but it's the same value
+            ) {
+              item.area = parseFloat(prop.displayValue);
+            }
+            else if (prop.displayName === 'Thickness') {
+              item.thickness = parseFloat(prop.displayValue);
+            }
+            else if (
+              prop.displayName === 'Perimeter' ||
+              prop.displayName === 'Umfang' ||
+              // not all columns especially prefabricated have property perimeter
+              prop.displayName === 'Umfang_Kreis'
+            ) {
+              item.perimeter = parseFloat(prop.displayValue);
+            }
+            else if (prop.displayName === 'GrossSideArea') {
+              item.sideArea = parseFloat(prop.displayValue);
+            }
+            else if (prop.displayName === 'Width') {
+              item.width = parseFloat(prop.displayValue);
+            }
+            else if (prop.displayName === 'Height') {
+              item.height = parseFloat(prop.displayValue);
+            }
+            else if (
+              prop.displayName === 'Length' &&
+              // There is the same property in the category of dimensions [especially for WALLS] and it's not the same value
+              prop.displayCategory === 'Quantities'
+            ) {
+              item.length = parseFloat(prop.displayValue);
+            }
+            else if (
+              // There is the same property in the category of dimensions [especially for WALLS] and it's not the same value
+              prop.displayName === 'Stützenhöhe'
+            ) {
+              item.length = parseFloat(prop.displayValue);
+            }
+          }).then(() => {
+            // console.log('End element.properties');
+            return true;
           });
-        }
-      );
+        }).then(() => {
+          // console.log('2');
+          return true;
+        });
+      });
+    }).then(() => {
+      // console.log('9999999999999999');
+      return true;
     });
-    return category;
   }
 
   public setfixedPRAndCS(category) {
@@ -744,6 +668,7 @@ export class MainComponent implements OnInit {
           element.prC = 0.14;
           element.prS = 0.12;
         });
+        break;
       case this.columns:
         asyncForEach(this.columns, (element) => {
           element.csF = 3;
@@ -755,6 +680,7 @@ export class MainComponent implements OnInit {
           element.prC = 0.14;
           element.prS = 0.12;
         });
+        break;
       case this.slabs:
         asyncForEach(this.slabs, (element) => {
           element.csF = 3;
@@ -791,11 +717,11 @@ export class MainComponent implements OnInit {
       case this.columns:
         asyncForEach(this.columns, (element) => {
           element.WDcF =
-            (element.perimeter * element._length * element.prF) / element.csF;
+            (element.perimeter * element.length * element.prF) / element.csF;
           element.WDcR = (0.11 * element.volume * element.prR) / element.csR;
           element.WDcC = (element.volume * element.prC) / element.csC;
           element.WDcS =
-            (element.perimeter * element._length * element.prS) / element.csS;
+            (element.perimeter * element.length * element.prS) / element.csS;
         });
 
       case this.slabs:
@@ -817,10 +743,59 @@ export class MainComponent implements OnInit {
     }
     return category;
   }
-  public defineAllProp(category) {
-    this.getAndSetProperties(category);
-    this.setfixedPRAndCS(category);
-    this.calcWD(category);
-    return category;
+
+  public replaceSpinner() {
+    const spinners = document.getElementsByClassName('forge-spinner');
+    if (spinners.length === 0) {
+      return;
+    }
+    const spinner = spinners[0];
+    spinner.classList.remove('forge-spinner');
+    spinner.classList.add('lds-roller');
+    spinner.innerHTML = '<div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>';
+  }
+
+  public async selectionChanged(event: SelectionChangedEventArgs) {
+    console.log('selectionChanged');
+    const dbIdArray = (event as any).dbIdArray;
+    console.log(this.viewerComponent.viewer.anyLayerHidden());
   }
 }
+
+///////////////////////////////////// NOT USED ///////////////////////////////////////////////////
+
+// let correctLevel = true;
+    // const id = dbIdArray[0];
+    // while (correctLevel) {
+    //   const parentId = this.viewerComponent.viewer.model.getInstanceTree().getNodeParentId(dbIdArray[0]);
+    //   this.getProperties(parentId).then(res => {
+    //     console.log(res);
+    //     // @ts-ignore
+    //     if (res.properties.displayName === 'IFCBUILDINGSTOREY') {
+    //       console.log('IFCBUILDINGSTOREY');
+    //       correctLevel = false;
+    //     }
+    //   });
+    // }
+    // var root = this.viewerComponent.viewer.model.getInstanceTree().getRootId();
+    // console.log(root);
+    // var parent = this.viewerComponent.viewer.model.getInstanceTree().getNodeParentId(dbIdArray[0]);
+    // console.log(parent);
+    // var parentOfParent = this.viewerComponent.viewer.model.getInstanceTree().getNodeParentId(parent);
+    // console.log(parentOfParent);
+    // var parentOfParentOfParent = this.viewerComponent.viewer.model.getInstanceTree().getNodeParentId(parentOfParent);
+    // console.log(parentOfParentOfParent);
+    // var parentOfParentOfParentOfParent = this.viewerComponent.viewer.model.getInstanceTree().getNodeParentId(parentOfParentOfParent);
+    // console.log(parentOfParentOfParentOfParent);
+    // // console.log(this.slabs);
+    // this.getProperties(parentOfParentOfParentOfParent).then(res => {
+    //   console.log(res);
+    // });
+    // displayName: "Type"
+    // displayValue: "IFCBUILDING"
+    // console.log(parentOfParentOfParentOfParent);
+
+    // IFCBUILDINGSTOREY
+    // console.log(this.walls);
+    // console.log(this.columns);
+    // console.log(this.viewerComponent.viewer.getIsolatedNodes());

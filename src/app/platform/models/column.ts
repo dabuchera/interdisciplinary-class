@@ -2,7 +2,7 @@ import { Element } from './element';
 
 export class Column extends Element {
   perimeter: number;
-  _length: number;
+  length: number;
   WDcF: number;
   WDcR: number;
   WDcC: number;
@@ -20,7 +20,7 @@ export class Column extends Element {
 
   constructor(
     id: string,
-    dbID: string,
+    dbId: number,
     volume?: number,
     category?: string,
     perimeter?: number,
@@ -38,12 +38,12 @@ export class Column extends Element {
     csS?: number,
     prS?: number
   ) {
-    super(id, dbID, volume, category);
-    this.dbID = dbID;
+    super(id, dbId, volume, category);
+    this.dbId = dbId;
     this.volume = volume;
     this.category = category;
     this.perimeter = perimeter;
-    this._length = length;
+    this.length = length;
     // First set with fixed values for PR & CS
     this.csF = csF;
     this.prF = prF;

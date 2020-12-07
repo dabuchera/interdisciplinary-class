@@ -21,7 +21,7 @@ export class Wall extends Element {
 
   constructor(
     id: string,
-    dbID: string,
+    dbId: number,
     volume?: number,
     category?: string,
     sideArea?: number,
@@ -40,8 +40,8 @@ export class Wall extends Element {
     csS?: number,
     prS?: number
   ) {
-    super(id, dbID, volume, category);
-    this.dbID = dbID;
+    super(id, dbId, volume, category);
+    this.dbId = dbId;
     this.volume = volume;
     this.category = category;
     this.sideArea = sideArea;
