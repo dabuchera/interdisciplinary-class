@@ -1296,6 +1296,10 @@ export class MainComponent implements OnInit {
   public async selectionChanged(event: SelectionChangedEventArgs) {
     console.log('selectionChanged');
     const dbIdArray = (event as any).dbIdArray;
+    if (this.panel) {
+      // @ts-ignore
+      $(this.panel.container).find('#legend')[0].childNodes[1].innerHTML = '<div class=\'box\'>' + dbIdArray + '</div>';
+    }
   }
 }
 
