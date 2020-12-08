@@ -158,6 +158,9 @@ export class ViewerStateRestoredEventArgs extends ViewerEventArgs {
 export class ViewerUnInitializedEventArgs extends ViewerEventArgs {
   type = Autodesk.Viewing.VIEWER_UNINITIALIZED;
 }
+export class ViewerToolbarCreatedEventArgs extends ViewerEventArgs {
+  type = Autodesk.Viewing.TOOLBAR_CREATED_EVENT;
+}
 
 /**
  * Base extension that all other extensions can inherit from
@@ -234,6 +237,7 @@ export abstract class Extension {
     this.eventArgsTypeMap[Autodesk.Viewing.VIEWER_RESIZE_EVENT] = ViewerResizeEventArgs;
     this.eventArgsTypeMap[Autodesk.Viewing.VIEWER_STATE_RESTORED_EVENT] = ViewerStateRestoredEventArgs;
     this.eventArgsTypeMap[Autodesk.Viewing.VIEWER_UNINITIALIZED] = ViewerUnInitializedEventArgs;
+    this.eventArgsTypeMap[Autodesk.Viewing.TOOLBAR_CREATED_EVENT] = ViewerToolbarCreatedEventArgs;
     // tslint:enable:max-line-length
   }
 

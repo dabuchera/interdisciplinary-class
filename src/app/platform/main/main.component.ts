@@ -8,6 +8,7 @@ import { AppComponent } from 'src/app/app.component';
 
 import { CoordinatesAxesExtension } from '../extensions/coordinatesAxesExtension';
 
+
 import {
   ViewerOptions,
   ViewerInitializedEvent,
@@ -32,10 +33,9 @@ import { AuthToken } from 'forge-apis';
 import { ApiService } from 'src/app/_services/api.service';
 
 import * as $ from 'jquery';
-import { Xliff } from '@angular/compiler';
-import { async } from '@angular/core/testing';
-import { valHooks } from 'jquery';
 declare var THREE: any;
+
+import html from './legendTemplate.html';
 
 // Function for async forEach
 const asyncForEach = async (array, callback) => {
@@ -71,16 +71,11 @@ export class MainComponent implements OnInit {
   public slabs: Slab[] = new Array();
   public columns: Column[] = new Array();
   public foundations: Foundation[] = new Array();
-  public wallsConc: Wall[] = new Array();
-  public slabsConc: Slab[] = new Array();
-  public columnsConc: Column[] = new Array();
-  public foundationsConc: Foundation[] = new Array();
+
   public panel: Autodesk.Viewing.UI.DockingPanel;
 
   @ViewChild(ViewerComponent, { static: false })
   viewerComponent: ViewerComponent;
-
-  protected rigthClickEventListener: EventListener;
 
   constructor(private api: ApiService) {
     this.api.getspecificProject('5faa62b2079c07001454c421').then((res) => {
@@ -104,6 +99,7 @@ export class MainComponent implements OnInit {
         extensions: [
           'Autodesk.Snapping',
           'Autodesk.ModelStructure',
+
           // CoordinatesAxesExtension.extensionName,
         ],
         //,'GetPositionExtension'], //[IconMarkupExtension.extensionName], // [GetParameterExtension.extensionName],
@@ -125,10 +121,6 @@ export class MainComponent implements OnInit {
         this.loadConcreteToolbar();
         this.loadTestToolbar();
 
-        // this.replaceSpinner();
-        // this.loadCustomToolbar();
-        // this.loadFacadeToolbar();
-        // this.loadSectionToolbar();
         // Graphische Anpassung
         // $('#forge-viewer').hide();
       },
@@ -292,7 +284,6 @@ export class MainComponent implements OnInit {
   }
 
   public loadConcreteToolbar() {
-    console.log()
     //Button Concrete
     const button1 = new Autodesk.Viewing.UI.Button('showing-concrete');
     button1.addClass('showing-concrete');
@@ -435,22 +426,23 @@ export class MainComponent implements OnInit {
     );
     controlGroup.addControl(button1);
     // Toolbar
-    this.toolbarTest = new Autodesk.Viewing.UI.ToolBar(
-      'my-custom-view-toolbar-test',
-      { collapsible: false, alignVertically: true }
-    );
+    // this.toolbarTest = new Autodesk.Viewing.UI.ToolBar(
+    //   'my-custom-view-toolbar-test',
+    //   { collapsible: false, alignVertically: false }
+    // );
 
     button1.onClick = (event) => {
       if (button1.getState() === 1) {
         button1.setState(0);
         //Test functions
         console.log('Test started');
+        this.showPropLegend();
         // this.defineAllProp(this.slabs);
         // this.defineAllProp(this.walls);
         // this.defineAllProp(this.columns);
         // this.defineAllProp(this.foundations);
 
-        this.workDensityColorMap();
+        // this.workDensityColorMap();
         console.log(this.walls);
         // this.defineAllProp(this.walls);
         // test coloring for slabs based on  WD formwork
@@ -474,9 +466,11 @@ export class MainComponent implements OnInit {
         }
       }
     };
-    console.log(this.toolbarTest);
-    this.toolbarTest.addControl(controlGroup);
-    $(this.viewerComponent.viewer.container).append(this.toolbarTest.container);
+    // There we have to wait since the toolbar is not loaded
+    setTimeout(() => {
+      this.viewerComponent.viewer.toolbar.addControl(controlGroup);
+    }, 5000);
+    $('#guiviewer3d-toolbar').append(controlGroup.container);
   }
 
   public async runDifferentFunc() {
@@ -516,6 +510,50 @@ export class MainComponent implements OnInit {
         });
       });
     }, 1000);
+  }
+
+  public async getBulkProperties(ids: number[], propFilter: string[]) {
+    return new Promise((resolve, rejected) => {
+      this.viewerComponent.viewer.model.getBulkProperties(
+        ids,
+        propFilter,
+        (data) => {
+          resolve(data);
+        },
+        (err) => {
+          rejected(err);
+        }
+      );
+    });
+  }
+
+  public async getProperties(dbId: number) {
+    return new Promise((resolve, rejected) => {
+      this.viewerComponent.viewer.getProperties(
+        dbId,
+        (data) => {
+          resolve(data);
+        },
+        (err) => {
+          rejected(err);
+        }
+      );
+    });
+  }
+
+  public async search(text: string, attributeNames: string) {
+    return new Promise((resolve, rejected) => {
+      this.viewerComponent.viewer.search(
+        text,
+        (data) => {
+          resolve(data);
+        },
+        (err) => {
+          rejected(err);
+        },
+        [attributeNames]
+      );
+    });
   }
 
   public async storeLevelObjects(): Promise<boolean> {
@@ -574,7 +612,6 @@ export class MainComponent implements OnInit {
   public async storeCategoryObjects() {
     const allDbIds = this.getAllDbIds();
     return await this.getBulkProperties(allDbIds, ['Category']).then(res => {
-      const allValues = new Array();
       return asyncForEach(res, (element) => {
         if (element.properties[0].displayValue === 'Walls') {
           const wall = new Wall(this.makeid(5), element.dbId);
@@ -586,7 +623,6 @@ export class MainComponent implements OnInit {
           slab.category = 'Slab';
           this.slabs.push(slab);
         }
-
         else if (element.properties[0].displayValue === 'Structural Columns') {
           const column = new Column(this.makeid(5), element.dbId);
           column.category = 'Column';
@@ -596,7 +632,7 @@ export class MainComponent implements OnInit {
         return await this.getBulkProperties(allDbIds, ['PREDEFINEDTYPE']).then(res => {
           asyncForEach(res, (element) => {
             if (element.properties[0].displayValue === 'ROOF') {
-              var slab = new Slab(this.makeid(5), element.dbId);
+              const slab = new Slab(this.makeid(5), element.dbId);
               this.slabs.push(slab);
             }
           }).then(() => {
@@ -604,50 +640,6 @@ export class MainComponent implements OnInit {
           });
         });
       });
-    });
-  }
-
-  public async getBulkProperties(ids: number[], propFilter: string[]) {
-    return new Promise((resolve, rejected) => {
-      this.viewerComponent.viewer.model.getBulkProperties(
-        ids,
-        propFilter,
-        (data) => {
-          resolve(data);
-        },
-        (err) => {
-          rejected(err);
-        }
-      );
-    });
-  }
-
-  public async getProperties(dbId: number) {
-    return new Promise((resolve, rejected) => {
-      this.viewerComponent.viewer.getProperties(
-        dbId,
-        (data) => {
-          resolve(data);
-        },
-        (err) => {
-          rejected(err);
-        }
-      );
-    });
-  }
-
-  public async search(text: string, attributeNames: string) {
-    return new Promise((resolve, rejected) => {
-      this.viewerComponent.viewer.search(
-        text,
-        (data) => {
-          resolve(data);
-        },
-        (err) => {
-          rejected(err);
-        },
-        [attributeNames]
-      );
     });
   }
 
@@ -855,21 +847,8 @@ export class MainComponent implements OnInit {
     }
     return category;
   }
-  // public async defineAllProp(category) {
-  //   //walls
-  //   const categ = await this.getAndSetProperties(category);
-  //   const categor = await this.setfixedPRAndCS(categ);
-  //   const cat = await this.calcWD(categor);
-  //   console.log(cat);
-  //   return cat;
-  // }
 
   public async workDensityColorMap() {
-    // await this.defineAllProp(this.walls);
-    // await this.defineAllProp(this.columns);
-    // await this.defineAllProp(this.slabs);
-    // await this.defineAllProp(this.foundations);
-    // console.log(slabstemp);
     this.colorWdObjects(this.walls, 'WDwCR');
     this.colorWdObjects(this.columns, 'WDcCR');
     this.colorWdObjects(this.slabs, 'WDsCR');
@@ -885,7 +864,7 @@ export class MainComponent implements OnInit {
       // debugger;
       if (item[wd] <= 4) {
         //
-        let color = new THREE.Vector4(255 / 256, 245 / 256, 204 / 256, 1);
+        const color = new THREE.Vector4(255 / 256, 245 / 256, 204 / 256, 1);
         this.viewerComponent.viewer.setThemingColor(
           item.dbID,
           color,
@@ -895,7 +874,7 @@ export class MainComponent implements OnInit {
       }
       if (4 < item[wd] && item[wd] <= 8) {
         //
-        let color = new THREE.Vector4(255 / 256, 237 / 256, 160 / 256, 1);
+        const color = new THREE.Vector4(255 / 256, 237 / 256, 160 / 256, 1);
         this.viewerComponent.viewer.setThemingColor(
           item.dbID,
           color,
@@ -905,7 +884,7 @@ export class MainComponent implements OnInit {
       }
       if (8 < item[wd] && item[wd] <= 12) {
         //
-        let color = new THREE.Vector4(254 / 256, 217 / 256, 118 / 256, 1);
+        const color = new THREE.Vector4(254 / 256, 217 / 256, 118 / 256, 1);
         this.viewerComponent.viewer.setThemingColor(
           item.dbID,
           color,
@@ -915,7 +894,7 @@ export class MainComponent implements OnInit {
       }
       if (12 < item[wd] && item[wd] <= 16) {
         //
-        let color = new THREE.Vector4(254 / 256, 178 / 256, 76 / 256, 1);
+        const color = new THREE.Vector4(254 / 256, 178 / 256, 76 / 256, 1);
         this.viewerComponent.viewer.setThemingColor(
           item.dbID,
           color,
@@ -925,7 +904,7 @@ export class MainComponent implements OnInit {
       }
       if (16 < item[wd] && item[wd] <= 20) {
         //
-        let color = new THREE.Vector4(253 / 256, 141 / 256, 60 / 256, 1);
+        const color = new THREE.Vector4(253 / 256, 141 / 256, 60 / 256, 1);
         this.viewerComponent.viewer.setThemingColor(
           item.dbID,
           color,
@@ -935,7 +914,7 @@ export class MainComponent implements OnInit {
       }
       if (20 < item[wd] && item[wd] <= 24) {
         //
-        let color = new THREE.Vector4(252 / 256, 78 / 256, 42 / 256, 1);
+        const color = new THREE.Vector4(252 / 256, 78 / 256, 42 / 256, 1);
         this.viewerComponent.viewer.setThemingColor(
           item.dbID,
           color,
@@ -945,7 +924,7 @@ export class MainComponent implements OnInit {
       }
       if (24 < item[wd] && item[wd] <= 28) {
         //
-        let color = new THREE.Vector4(227 / 256, 26 / 256, 28 / 256, 1);
+        const color = new THREE.Vector4(227 / 256, 26 / 256, 28 / 256, 1);
         this.viewerComponent.viewer.setThemingColor(
           item.dbID,
           color,
@@ -955,7 +934,7 @@ export class MainComponent implements OnInit {
       }
       if (28 < item[wd] && item[wd] <= 32) {
         //
-        let color = new THREE.Vector4(189 / 256, 0 / 256, 38 / 256, 1);
+        const color = new THREE.Vector4(189 / 256, 0 / 256, 38 / 256, 1);
         this.viewerComponent.viewer.setThemingColor(
           item.dbID,
           color,
@@ -965,7 +944,7 @@ export class MainComponent implements OnInit {
       }
       if (32 < item[wd] && item[wd] <= 36) {
         //
-        let color = new THREE.Vector4(128 / 256, 0 / 256, 38 / 256, 1);
+        const color = new THREE.Vector4(128 / 256, 0 / 256, 38 / 256, 1);
         this.viewerComponent.viewer.setThemingColor(
           item.dbID,
           color,
@@ -975,7 +954,7 @@ export class MainComponent implements OnInit {
       }
       if (36 < item[wd] && item[wd] <= 40) {
         //
-        let color = new THREE.Vector4(103 / 256, 0 / 256, 13 / 256, 1);
+        const color = new THREE.Vector4(103 / 256, 0 / 256, 13 / 256, 1);
         this.viewerComponent.viewer.setThemingColor(
           item.dbID,
           color,
@@ -985,7 +964,7 @@ export class MainComponent implements OnInit {
       }
       if (40 < item[wd]) {
         //
-        let color = new THREE.Vector4(37 / 256, 37 / 256, 37 / 256, 1);
+        const color = new THREE.Vector4(37 / 256, 37 / 256, 37 / 256, 1);
         this.viewerComponent.viewer.setThemingColor(
           item.dbID,
           color,
@@ -996,405 +975,267 @@ export class MainComponent implements OnInit {
     });
   }
 
-  // public showPropLegend(
-  //   parameter: string,
-  //   valuesOfParameter: any[],
-  //   additionalParameter: boolean
-  // ) {
-  //   // Alle Objekte hidden und dann Farbe ändern
-  //   $('.spinner').show();
-  //   // DO NOT Rigth Click while LOADING
-  //   this.viewerComponent.viewer.container.addEventListener(
-  //     'contextmenu',
-  //     this.rigthClickEventListener
-  //   );
+  public showPropLegend() {
+    const container = this.viewerComponent.viewer.container as HTMLElement;
+    this.panel = new Autodesk.Viewing.UI.DockingPanel(container, 'categoryLegend', 'Lean Legend', { localizeTitle: true, addFooter: true });
+    this.panel.setVisible(true);
+    this.panel.content = document.createElement('div');
+    const contentDiv = this.panel.content as HTMLElement;
+    contentDiv.classList.add('container', 'border-box');
+    contentDiv.style.boxSizing = 'border-box';
+    // html imported from ./legendTemplate.html
+    $(this.panel.content).append(html);
+    contentDiv.style.overflowY = 'hidden';
+    contentDiv.style.height = 'calc(100% - 90px)';
+    contentDiv.style.color = 'black';
+    this.panel.container.classList.add('docking-panel-container-solid-color-a');
+    this.panel.container.style.height = '350px';
+    this.panel.container.style.width = '600px';
+    this.panel.container.style.minWidth = '600px';
+    this.panel.container.style.resize = 'none';
 
-  //   this.viewerComponent.viewer.setGhosting(false);
-  //   this.viewerComponent.viewer.hide(
-  //     this.viewerComponent.viewer.model.getRootId()
-  //   );
+    // FOOTER ==> Orginal Grösse 20 px
+    // this.panel.footer.style.height = '40px';
+    // this.panel.footer.style.paddingLeft = '14px';
+    // this.panel.footer.style.paddingTop = '10px';
+    // var valuesDivFooter = document.createElement('div');
+    // valuesDivFooter.setAttribute('class', 'p-grid');
+    // valuesDivFooter.innerHTML =
+    //   '<div class="p-col">' +
+    //   'Number of Values: ' +
+    //   valuesOfParameter.length.toString() +
+    //   '</div>';
+    // valuesDivFooter.innerHTML += '<div class="p-col-1">Sum: </div>';
+    // valuesDivFooter.innerHTML +=
+    //   '<div class="p-col-1" id="summedInputsColoring"></div>';
+    // valuesDivFooter.innerHTML +=
+    //   '<div class="p-col">' +
+    //   'Total Elements: ' +
+    //   this.inputs.length.toString() +
+    //   '</div>';
+    // this.panel.footer.append(valuesDivFooter as HTMLElement);
 
-  //   var container = this.viewerComponent.viewer.container as HTMLElement;
-  //   this.panel = new Autodesk.Viewing.UI.DockingPanel(
-  //     container,
-  //     'categoryLegend',
-  //     'Category Legend: ' + parameter,
-  //     { localizeTitle: true, addFooter: true }
-  //   );
-  //   this.panel.setVisible(true);
-  //   this.panel.content = document.createElement('div');
-  //   const contentDiv = this.panel.content as HTMLElement;
-  //   contentDiv.classList.add('container', 'border-box');
-  //   contentDiv.style.boxSizing = 'border-box';
-  //   $(this.panel.content).append(html); // html impotred from ./legendTemplate.html
-  //   contentDiv.style.overflowY = 'scroll';
-  //   contentDiv.style.height = 'calc(100% - 90px)';
-  //   contentDiv.style.color = 'black';
-  //   this.panel.container.classList.add('docking-panel-container-solid-color-a');
-  //   this.panel.container.style.height = '350px';
-  //   this.panel.container.style.width = '600px';
-  //   this.panel.container.style.minWidth = '600px';
-  //   this.panel.container.style.resize = 'none';
+    this.panel.container.appendChild(this.panel.content as HTMLElement);
 
-  //   // FOOTER ==> Orginal Grösse 20 px
-  //   // this.panel.footer.style.height = '40px';
-  //   // this.panel.footer.style.paddingLeft = '14px';
-  //   // this.panel.footer.style.paddingTop = '10px';
-  //   // var valuesDivFooter = document.createElement('div');
-  //   // valuesDivFooter.setAttribute('class', 'p-grid');
-  //   // valuesDivFooter.innerHTML =
-  //   //   '<div class="p-col">' +
-  //   //   'Number of Values: ' +
-  //   //   valuesOfParameter.length.toString() +
-  //   //   '</div>';
-  //   // valuesDivFooter.innerHTML += '<div class="p-col-1">Sum: </div>';
-  //   // valuesDivFooter.innerHTML +=
-  //   //   '<div class="p-col-1" id="summedInputsColoring"></div>';
-  //   // valuesDivFooter.innerHTML +=
-  //   //   '<div class="p-col">' +
-  //   //   'Total Elements: ' +
-  //   //   this.inputs.length.toString() +
-  //   //   '</div>';
-  //   // this.panel.footer.append(valuesDivFooter as HTMLElement);
+    var textDivHeader = document.createElement('div');
+    textDivHeader.setAttribute('class', 'p-col-2');
+    textDivHeader.setAttribute('style', 'margin-right: 10px');
+    textDivHeader.innerHTML = '<div class="box">' + 'Property Name' + '</div>';
+    textDivHeader.style.color = 'black';
+    $(this.panel.container).find('#legend')[0].appendChild(textDivHeader as HTMLElement);
 
-  //   this.panel.container.appendChild(this.panel.content as HTMLElement);
+    // var textDivHeader = document.createElement('div');
+    // textDivHeader.setAttribute('class', 'p-col-1');
+    // textDivHeader.innerHTML = '<div class="box"></div>';
+    // $(this.panel.container).find('#legend')[0].appendChild(textDivHeader as HTMLElement);
 
-  //   var textDivHeader = document.createElement('div');
-  //   textDivHeader.setAttribute('class', 'p-col-2');
-  //   textDivHeader.setAttribute('style', 'margin-right: 10px');
-  //   textDivHeader.innerHTML = '<div class="box">' + 'Property' + '</div>';
-  //   textDivHeader.style.color = 'black';
-  //   $(this.panel.container)
-  //     .find('#legend')[0]
-  //     .appendChild(textDivHeader as HTMLElement);
+    var textDivHeader2 = document.createElement('div');
+    textDivHeader2.setAttribute('class', 'p-col-2');
+    textDivHeader2.innerHTML = '<div class="box">' + 'Property Value' + '</div>';
+    textDivHeader2.style.color = 'red';
+    $(this.panel.container).find('#legend')[0].appendChild(textDivHeader2 as HTMLElement);
 
-  //   // var textDivHeader = document.createElement('div');
-  //   // textDivHeader.setAttribute('class', 'p-col-1');
-  //   // textDivHeader.innerHTML = '<div class="box"></div>';
-  //   // $(this.panel.container).find('#legend')[0].appendChild(textDivHeader as HTMLElement);
 
-  //   var textDivHeader2 = document.createElement('div');
-  //   textDivHeader2.setAttribute('class', 'p-col-2');
-  //   textDivHeader2.innerHTML = '<div class="box">' + 'Value' + '</div>';
-  //   textDivHeader2.style.color = 'red';
-  //   $(this.panel.container)
-  //     .find('#legend')[0]
-  //     .appendChild(textDivHeader2 as HTMLElement);
+    // var iterator = 0;
 
-  //   // Event Listener bei Schliessen des Panels -> alle Farben ausgeblendet
-  //   // let tempViewerComponent = this.viewerComponent;
-  //   // $(this.panel.container)
-  //   //   .find('.docking-panel-close')
-  //   //   .click((e) => {
-  //   //     tempViewerComponent.viewer.clearThemingColors(
-  //   //       this.viewerComponent.viewer.model
-  //   //     );
-  //   //     return false;
-  //   //   });
+    // valuesOfParameter.forEach((value, index) => {
+    //   if (value === 'null') {
+    //     value = null;
+    //   }
 
-  //   if (typeof valuesOfParameter[0] !== 'boolean') {
-  //     valuesOfParameter = valuesOfParameter.sort((a, b) => a - b);
-  //   }
-  //   // Dies ist die Sortierung für den Parameter Status
-  //   if (parameter === 'status') {
-  //     valuesOfParameter = [
-  //       'none',
-  //       'fabricated started',
-  //       'fabricated',
-  //       'sent',
-  //       'installed',
-  //       'broken',
-  //     ];
-  //   }
+    //   // Wenn ein additional Parameter
+    //   if (additionalParameter) {
+    //     var idx = this.customizedParameters.findIndex(
+    //       (findParameterIdx) => findParameterIdx.field === parameter
+    //     );
+    //     var coloredElements: InputObject[] = this.inputs.filter(
+    //       (input, index1) => {
+    //         // console.log(input.additionalParameter[idx].value);
+    //         // console.log(index1);
+    //         return input.additionalParameter[idx].value === value;
+    //       }
+    //     );
+    //   } else {
+    //     var coloredElements: InputObject[] = this.inputs.filter((input) => {
+    //       return input[parameter] === value;
+    //     });
+    //   }
 
-  //   // console.log(valuesOfParameter);
+    //   // console.log(coloredElements);
 
-  //   // definies colors according to the parameter -> rgb + Vector4
-  //   let colors: Array<any> = this.setColor(parameter);
+    //   // Farbe definieren
+    //   let random1 = Math.floor(Math.random() * 256);
+    //   let random2 = Math.floor(Math.random() * 256);
+    //   let random3 = Math.floor(Math.random() * 256);
+    //   var hue = 'rgb(' + random1 + ',' + random2 + ',' + random3 + ')';
 
-  //   var iterator = 0;
+    //   if (
+    //     parameter === 'elevation' ||
+    //     parameter === 'opened' ||
+    //     parameter === 'lengthAB'
+    //   ) {
+    //     hue = colors[0][index];
+    //     if (hue === undefined) {
+    //       // Farbe definieren
+    //       let undefined1 = Math.floor(Math.random() * 256);
+    //       let undefined2 = Math.floor(Math.random() * 256);
+    //       let undefined3 = Math.floor(Math.random() * 256);
+    //       var hue =
+    //         'rgb(' + undefined1 + ',' + undefined2 + ',' + undefined3 + ')';
+    //     }
+    //   }
+    //   var colorDiv = document.createElement('div');
+    //   colorDiv.setAttribute('class', 'p-col-2');
+    //   colorDiv.setAttribute('style', 'margin-right: 10px');
+    //   colorDiv.setAttribute('id', index.toString() + '0');
+    //   colorDiv.innerHTML =
+    //     '<div class="box" style="background-color: ' +
+    //     hue +
+    //     ' ; height: 20px"></div>';
+    //   // colorDiv.innerHTML = '<div class="box" style="background-color: ' + hue + ' ; height: 20px"><p-colorPicker [(ngModel)]="archtypecolor"></p-colorPicker></div>';
+    //   var box = colorDiv.children[0];
+    //   box.setAttribute('value', value);
 
-  //   valuesOfParameter.forEach((value, index) => {
-  //     if (value === 'null') {
-  //       value = null;
-  //     }
+    //   // Event Listeners
+    //   box.addEventListener(
+    //     'mouseover',
+    //     (event) => {
+    //       var targetElement = event.target as HTMLElement;
+    //       targetElement.style.backgroundColor = 'rgb(255, 0, 0)';
+    //     },
+    //     false
+    //   );
+    //   box.addEventListener(
+    //     'mouseout',
+    //     (event) => {
+    //       var targetElement = event.target as HTMLElement;
+    //       targetElement.style.backgroundColor = hue;
+    //     },
+    //     false
+    //   );
 
-  //     // Wenn ein additional Parameter
-  //     if (additionalParameter) {
-  //       var idx = this.customizedParameters.findIndex(
-  //         (findParameterIdx) => findParameterIdx.field === parameter
-  //       );
-  //       var coloredElements: InputObject[] = this.inputs.filter(
-  //         (input, index1) => {
-  //           // console.log(input.additionalParameter[idx].value);
-  //           // console.log(index1);
-  //           return input.additionalParameter[idx].value === value;
-  //         }
-  //       );
-  //     } else {
-  //       var coloredElements: InputObject[] = this.inputs.filter((input) => {
-  //         return input[parameter] === value;
-  //       });
-  //     }
+    // $(this.panel.container).find('#legend')[0].appendChild(colorDiv as HTMLElement);
 
-  //     // console.log(coloredElements);
+    //   var textDiv = document.createElement('div');
+    //   textDiv.setAttribute('class', 'p-col-2');
+    //   textDiv.setAttribute('id', index.toString() + '1');
+    //   textDiv.innerHTML = '<div class="box">' + value + '</div>';
+    //   // set style
+    //   textDiv.style.color = 'red';
+    // $(this.panel.container).find('#legend')[0].appendChild(textDiv as HTMLElement);
 
-  //     // Farbe definieren
-  //     let random1 = Math.floor(Math.random() * 256);
-  //     let random2 = Math.floor(Math.random() * 256);
-  //     let random3 = Math.floor(Math.random() * 256);
-  //     var hue = 'rgb(' + random1 + ',' + random2 + ',' + random3 + ')';
+    //   // Abstandbox
+    //   // var textDiv = document.createElement('div');
+    //   // textDiv.setAttribute('class', 'p-col-1');
+    //   // textDiv.innerHTML = '<div class="box"></div>';
+    //   // $(this.panel.container).find('#legend')[0].appendChild(textDiv as HTMLElement);
 
-  //     if (
-  //       parameter === 'elevation' ||
-  //       parameter === 'opened' ||
-  //       parameter === 'lengthAB'
-  //     ) {
-  //       hue = colors[0][index];
-  //       if (hue === undefined) {
-  //         // Farbe definieren
-  //         let undefined1 = Math.floor(Math.random() * 256);
-  //         let undefined2 = Math.floor(Math.random() * 256);
-  //         let undefined3 = Math.floor(Math.random() * 256);
-  //         var hue =
-  //           'rgb(' + undefined1 + ',' + undefined2 + ',' + undefined3 + ')';
-  //       }
-  //     }
-  //     var colorDiv = document.createElement('div');
-  //     colorDiv.setAttribute('class', 'p-col-2');
-  //     colorDiv.setAttribute('style', 'margin-right: 10px');
-  //     colorDiv.setAttribute('id', index.toString() + '0');
-  //     colorDiv.innerHTML =
-  //       '<div class="box" style="background-color: ' +
-  //       hue +
-  //       ' ; height: 20px"></div>';
-  //     // colorDiv.innerHTML = '<div class="box" style="background-color: ' + hue + ' ; height: 20px"><p-colorPicker [(ngModel)]="archtypecolor"></p-colorPicker></div>';
-  //     var box = colorDiv.children[0];
-  //     box.setAttribute('value', value);
+    //   var textDiv = document.createElement('div');
+    //   textDiv.setAttribute('class', 'p-col-2');
+    //   textDiv.setAttribute('id', index.toString() + '2');
+    //   textDiv.innerHTML =
+    //     '<div class="box">' + coloredElements.length + '</div>';
+    //   // set style
+    //   textDiv.style.color = 'brown';
+    //   $(this.panel.container)
+    //     .find('#legend')[0]
+    //     .appendChild(textDiv as HTMLElement);
 
-  //     // Event Listeners
-  //     box.addEventListener(
-  //       'mouseover',
-  //       (event) => {
-  //         var targetElement = event.target as HTMLElement;
-  //         targetElement.style.backgroundColor = 'rgb(255, 0, 0)';
-  //       },
-  //       false
-  //     );
-  //     box.addEventListener(
-  //       'mouseout',
-  //       (event) => {
-  //         var targetElement = event.target as HTMLElement;
-  //         targetElement.style.backgroundColor = hue;
-  //       },
-  //       false
-  //     );
+    //   // Test
+    //   var textDiv = document.createElement('div');
+    //   textDiv.setAttribute('class', 'p-col-2');
+    //   textDiv.setAttribute('id', index.toString() + '3');
+    //   textDiv.innerHTML =
+    //     '<div class="box">' +
+    //     ((coloredElements.length / this.inputs.length) * 100).toFixed(3) +
+    //     ' %' +
+    //     '</div>';
+    //   // set style
+    //   textDiv.style.color = 'violet';
+    //   $(this.panel.container)
+    //     .find('#legend')[0]
+    //     .appendChild(textDiv as HTMLElement);
 
-  //     // Event Listener für Click auf Farb Box
-  //     box.addEventListener(
-  //       'click',
-  //       (event) => {
-  //         // Border Top
-  //         $('#' + index.toString() + '0').css('border-top', '2px solid red');
-  //         $('#' + index.toString() + '1').css('border-top', '2px solid red');
-  //         $('#' + index.toString() + '2').css('border-top', '2px solid red');
-  //         $('#' + index.toString() + '3').css('border-top', '2px solid red');
-  //         $('#' + index.toString() + '4').css('border-top', '2px solid red');
-  //         // Border Bottom
-  //         $('#' + index.toString() + '0').css('border-bottom', '2px solid red');
-  //         $('#' + index.toString() + '1').css('border-bottom', '2px solid red');
-  //         $('#' + index.toString() + '2').css('border-bottom', '2px solid red');
-  //         $('#' + index.toString() + '3').css('border-bottom', '2px solid red');
-  //         $('#' + index.toString() + '4').css('border-bottom', '2px solid red');
-  //         setTimeout(() => {
-  //           // Border Top
-  //           $('#' + index.toString() + '0').css('border-top', '');
-  //           $('#' + index.toString() + '1').css('border-top', '');
-  //           $('#' + index.toString() + '2').css('border-top', '');
-  //           $('#' + index.toString() + '3').css('border-top', '');
-  //           $('#' + index.toString() + '4').css('border-top', '');
-  //           // Border Bottom
-  //           $('#' + index.toString() + '0').css('border-bottom', '');
-  //           $('#' + index.toString() + '1').css('border-bottom', '');
-  //           $('#' + index.toString() + '2').css('border-bottom', '');
-  //           $('#' + index.toString() + '3').css('border-bottom', '');
-  //           $('#' + index.toString() + '4').css('border-bottom', '');
-  //         }, 5000);
+    //   // Test
+    //   var textDiv = document.createElement('div');
+    //   textDiv.setAttribute('class', 'p-col-2');
+    //   textDiv.setAttribute('id', index.toString() + '4');
+    //   var sumArea = 0;
+    //   coloredElements.forEach((coloredElement) => {
+    //     sumArea += coloredElement.area;
+    //   });
+    //   textDiv.innerHTML = '<div class="box">' + sumArea.toFixed(3) + '</div>';
+    //   // set style
+    //   textDiv.style.color = 'green';
+    //   $(this.panel.container)
+    //     .find('#legend')[0]
+    //     .appendChild(textDiv as HTMLElement);
 
-  //         coloredElements.forEach((element) => {
-  //           // @ts-ignore
-  //           this.viewerComponent.viewer.clearThemingColors(
-  //             this.viewerComponent.viewer.getHiddenModels()[0]
-  //           );
-  //           var name = '';
-  //           if (element.objectPath.indexOf('/')) {
-  //             name = element.objectPath.split('/')[
-  //               element.objectPath.split('/').length - 1
-  //             ];
-  //           } else {
-  //             name = element.objectPath;
-  //           }
-  //           // let color = new THREE.Vector4(random1 / 256, random2 / 256, random3 / 256, 1);
-  //           let color = new THREE.Vector4(256 / 256, 0 / 256, 0 / 256, 1);
-  //           if (
-  //             parameter === 'elevation' ||
-  //             parameter === 'opened' ||
-  //             parameter === 'lengthAB'
-  //           ) {
-  //             // color = colors[1][index];
-  //             color = new THREE.Vector4(256 / 256, 0 / 256, 0 / 256, 1);
-  //           }
-  //           let dbId = this.viewerComponent.viewer.search(
-  //             name,
-  //             (idArray) => {
-  //               this.viewerComponent.viewer.setThemingColor(
-  //                 idArray[0],
-  //                 color,
-  //                 this.viewerComponent.viewer.model,
-  //                 true
-  //               );
-  //               this.redSelectedDbIDs.push(idArray[0]);
-  //             },
-  //             (err) => {
-  //               this.messageService.add({
-  //                 key: 'warning',
-  //                 severity: 'error',
-  //                 summary: 'Error',
-  //                 detail: 'Something with COLORING went wrong: ' + err,
-  //               });
-  //             },
-  //             ['name']
-  //           );
-  //         });
-  //       },
-  //       false
-  //     );
-  //     $(this.panel.container)
-  //       .find('#legend')[0]
-  //       .appendChild(colorDiv as HTMLElement);
-
-  //     var textDiv = document.createElement('div');
-  //     textDiv.setAttribute('class', 'p-col-2');
-  //     textDiv.setAttribute('id', index.toString() + '1');
-  //     textDiv.innerHTML = '<div class="box">' + value + '</div>';
-  //     // set style
-  //     textDiv.style.color = 'red';
-  //     $(this.panel.container)
-  //       .find('#legend')[0]
-  //       .appendChild(textDiv as HTMLElement);
-
-  //     // Abstandbox
-  //     // var textDiv = document.createElement('div');
-  //     // textDiv.setAttribute('class', 'p-col-1');
-  //     // textDiv.innerHTML = '<div class="box"></div>';
-  //     // $(this.panel.container).find('#legend')[0].appendChild(textDiv as HTMLElement);
-
-  //     var textDiv = document.createElement('div');
-  //     textDiv.setAttribute('class', 'p-col-2');
-  //     textDiv.setAttribute('id', index.toString() + '2');
-  //     textDiv.innerHTML =
-  //       '<div class="box">' + coloredElements.length + '</div>';
-  //     // set style
-  //     textDiv.style.color = 'brown';
-  //     $(this.panel.container)
-  //       .find('#legend')[0]
-  //       .appendChild(textDiv as HTMLElement);
-
-  //     // Test
-  //     var textDiv = document.createElement('div');
-  //     textDiv.setAttribute('class', 'p-col-2');
-  //     textDiv.setAttribute('id', index.toString() + '3');
-  //     textDiv.innerHTML =
-  //       '<div class="box">' +
-  //       ((coloredElements.length / this.inputs.length) * 100).toFixed(3) +
-  //       ' %' +
-  //       '</div>';
-  //     // set style
-  //     textDiv.style.color = 'violet';
-  //     $(this.panel.container)
-  //       .find('#legend')[0]
-  //       .appendChild(textDiv as HTMLElement);
-
-  //     // Test
-  //     var textDiv = document.createElement('div');
-  //     textDiv.setAttribute('class', 'p-col-2');
-  //     textDiv.setAttribute('id', index.toString() + '4');
-  //     var sumArea = 0;
-  //     coloredElements.forEach((coloredElement) => {
-  //       sumArea += coloredElement.area;
-  //     });
-  //     textDiv.innerHTML = '<div class="box">' + sumArea.toFixed(3) + '</div>';
-  //     // set style
-  //     textDiv.style.color = 'green';
-  //     $(this.panel.container)
-  //       .find('#legend')[0]
-  //       .appendChild(textDiv as HTMLElement);
-
-  //     coloredElements.forEach((element, idx) => {
-  //       this.summedInputsColoring += 1;
-  //       var name = '';
-  //       if (element.objectPath.indexOf('/')) {
-  //         name = element.objectPath.split('/')[
-  //           element.objectPath.split('/').length - 1
-  //         ];
-  //       } else {
-  //         name = element.objectPath;
-  //       }
-  //       let color = new THREE.Vector4(
-  //         random1 / 256,
-  //         random2 / 256,
-  //         random3 / 256,
-  //         1
-  //       );
-  //       if (
-  //         parameter === 'elevation' ||
-  //         parameter === 'opened' ||
-  //         parameter === 'lengthAB'
-  //       ) {
-  //         color = colors[1][index];
-  //       }
-  //       this.viewerComponent.viewer.search(
-  //         name,
-  //         (idArray) => {
-  //           // console.log(element.instance);
-  //           // console.log(idArray);
-  //           this.viewerComponent.viewer.setThemingColor(
-  //             idArray[0],
-  //             color,
-  //             this.viewerComponent.viewer.model,
-  //             true
-  //           );
-  //           iterator += 1;
-  //           // Wenn iterator gleich die Länge ist dass alle Objekte wieder zeigen
-  //           // Korrektion für coloredElements.length !== this.inputs.length
-  //           if (iterator === this.inputs.length - 50) {
-  //             $('.spinner').hide();
-  //             this.viewerComponent.viewer.showAll();
-  //             this.viewerComponent.viewer.container.removeEventListener(
-  //               'contextmenu',
-  //               this.rigthClickEventListener
-  //             );
-  //             this.messageService.clear();
-  //             setTimeout(() => {
-  //               $('#summedInputsColoring').text(
-  //                 this.summedInputsColoring.toString()
-  //               );
-  //             }, 3000);
-  //           }
-  //         },
-  //         (err) => {
-  //           this.messageService.add({
-  //             key: 'warning',
-  //             severity: 'error',
-  //             summary: 'Error',
-  //             detail: 'Something with COLORING went wrong: ' + err,
-  //           });
-  //         },
-  //         ['name']
-  //       );
-  //     });
-  //   });
-  // }
+    //   coloredElements.forEach((element, idx) => {
+    //     this.summedInputsColoring += 1;
+    //     var name = '';
+    //     if (element.objectPath.indexOf('/')) {
+    //       name = element.objectPath.split('/')[
+    //         element.objectPath.split('/').length - 1
+    //       ];
+    //     } else {
+    //       name = element.objectPath;
+    //     }
+    //     let color = new THREE.Vector4(
+    //       random1 / 256,
+    //       random2 / 256,
+    //       random3 / 256,
+    //       1
+    //     );
+    //     if (
+    //       parameter === 'elevation' ||
+    //       parameter === 'opened' ||
+    //       parameter === 'lengthAB'
+    //     ) {
+    //       color = colors[1][index];
+    //     }
+    //     this.viewerComponent.viewer.search(
+    //       name,
+    //       (idArray) => {
+    //         // console.log(element.instance);
+    //         // console.log(idArray);
+    //         this.viewerComponent.viewer.setThemingColor(
+    //           idArray[0],
+    //           color,
+    //           this.viewerComponent.viewer.model,
+    //           true
+    //         );
+    //         iterator += 1;
+    //         // Wenn iterator gleich die Länge ist dass alle Objekte wieder zeigen
+    //         // Korrektion für coloredElements.length !== this.inputs.length
+    //         if (iterator === this.inputs.length - 50) {
+    //           $('.spinner').hide();
+    //           this.viewerComponent.viewer.showAll();
+    //           this.viewerComponent.viewer.container.removeEventListener(
+    //             'contextmenu',
+    //             this.rigthClickEventListener
+    //           );
+    //           this.messageService.clear();
+    //           setTimeout(() => {
+    //             $('#summedInputsColoring').text(
+    //               this.summedInputsColoring.toString()
+    //             );
+    //           }, 3000);
+    //         }
+    //       },
+    //       (err) => {
+    //         this.messageService.add({
+    //           key: 'warning',
+    //           severity: 'error',
+    //           summary: 'Error',
+    //           detail: 'Something with COLORING went wrong: ' + err,
+    //         });
+    //       },
+    //       ['name']
+    //     );
+    //   });
+    // });
+  }
 
   //try to find all visible ids
   public getAllLeafComponents(viewer, callback) {
@@ -1456,6 +1297,7 @@ export class MainComponent implements OnInit {
     console.log('selectionChanged');
     const dbIdArray = (event as any).dbIdArray;
   }
+}
 
 ///////////////////////////////////// NOT USED ///////////////////////////////////////////////////
 

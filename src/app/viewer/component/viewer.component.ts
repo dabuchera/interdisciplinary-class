@@ -25,6 +25,7 @@ import {
   ShowEventArgs,
   ViewerEventArgs,
   LayerVisibilityEventArgs,
+  ViewerToolbarCreatedEventArgs,
 } from '../extensions/extension';
 import { BasicExtension } from '../extensions/basic-extension';
 import { AuthToken } from 'forge-apis';
@@ -87,6 +88,8 @@ export class ViewerComponent implements OnDestroy {
   @Output() public onExtensionLoaded = new EventEmitter<ExtensionLoadedEventArgs>();
   @Output() public onViewerRestored = new EventEmitter<ViewerStateRestoredEventArgs>();
   @Output() public layerVisibilityChanged = new EventEmitter<LayerVisibilityEventArgs>();
+  @Output() public toolbarCreated = new EventEmitter<ViewerToolbarCreatedEventArgs>();
+
 
   // Debugging
   @Input() public showDebugMessages = false;
@@ -364,6 +367,10 @@ export class ViewerComponent implements OnDestroy {
         else if (item instanceof LayerVisibilityEventArgs) {
           this.layerVisibilityChanged.emit(item);
           console.log('layerVisibilityChanged');
+        }
+        else if (item instanceof ViewerToolbarCreatedEventArgs) {
+          this.toolbarCreated.emit(item);
+          console.log('toolbarCreated');
         }
       }
       );

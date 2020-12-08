@@ -86,11 +86,11 @@
 }
 
 :host ::ng-deep .showing-testing {
-  width: 178px;
+  width: 28px;
 }
 
 :host ::ng-deep .showing-testing:hover {
-  width: 178px;
+  width: 28px;
 }
 
 :host ::ng-deep .crosshair {

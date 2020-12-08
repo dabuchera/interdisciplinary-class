@@ -7,6 +7,20 @@
     border: 5px solid #ECB216;
 }
 
+:host ::ng-deep #categoryLegend {
+    top: 50px;
+    left: 100px;
+    width: 350px;
+    height: 230px;
+    min-width: 270px;
+    min-height: 230px;
+    background-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+:host ::ng-deep .docking-panel-container-solid-color-a {
+    background-color: rgba(255, 0, 0, 0) !important;
+}
+
 :host ::ng-deep .lds-roller {
     /* added */
     margin: auto;
