@@ -22,6 +22,7 @@ export class Column extends Element {
   constructor(
     id: string,
     dbId: number,
+    viewerdbId?: number,
     volume?: number,
     category?: string,
     perimeter?: number,
@@ -40,8 +41,9 @@ export class Column extends Element {
     csS?: number,
     prS?: number
   ) {
-    super(id, dbId, volume, category);
+    super(id, dbId, viewerdbId, volume, category);
     this.dbId = dbId;
+    this.viewerdbId = viewerdbId;
     this.volume = volume;
     this.category = category;
     this.perimeter = perimeter;

@@ -23,6 +23,7 @@ export class Wall extends Element {
   constructor(
     id: string,
     dbId: number,
+    viewerdbId: number,
     volume?: number,
     category?: string,
     sideArea?: number,
@@ -42,8 +43,9 @@ export class Wall extends Element {
     csS?: number,
     prS?: number
   ) {
-    super(id, dbId, volume, category);
+    super(id, dbId, viewerdbId, volume, category);
     this.dbId = dbId;
+    this.viewerdbId = viewerdbId;
     this.volume = volume;
     this.category = category;
     this.sideArea = sideArea;

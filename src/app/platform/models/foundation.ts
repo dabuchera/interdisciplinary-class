@@ -25,6 +25,7 @@ export class Foundation extends Element {
   constructor(
     id: string,
     dbId: number,
+    viewerdbId?: number,
     volume?: number,
     category?: string,
     area?: number,
@@ -45,8 +46,9 @@ export class Foundation extends Element {
     csS?: number,
     prS?: number
   ) {
-    super(id, dbId, volume, category);
+    super(id, dbId, viewerdbId, volume, category);
     this.dbId = dbId;
+    this.viewerdbId = viewerdbId;
     this.volume = volume;
     this.category = category;
     this.area = area;
