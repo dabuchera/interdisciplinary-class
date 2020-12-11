@@ -259,6 +259,8 @@ export class MainComponent implements OnInit {
             }
           };
 
+          // test
+
           buttonIterativ.addClass(annexClass + object.id);
           controlGroup.addControl(buttonIterativ);
           // tslint:disable-next-line: max-line-length
