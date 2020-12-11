@@ -107,14 +107,14 @@ export class MainComponent implements OnInit {
         }
         // Hide container where model is in
         // Will be shown after runDifferentFunc()
-        $('canvas').hide();
-        this.replaceSpinner();
-        $('.lds-roller').show();
+        // $('canvas').hide();
+        // this.replaceSpinner();
+        // $('.lds-roller').show();
         // this.app.openSpinner();
-        this.loadLevelToolbar();
-        this.loadConcreteToolbar();
-        this.loadTestToolbar();
-        this.loadWDToolbar();
+        // this.loadLevelToolbar();
+        // this.loadConcreteToolbar();
+        // this.loadTestToolbar();
+        // this.loadWDToolbar();
         this.viewerComponent.viewer.setGhosting(false);
 
         // Graphische Anpassung
@@ -1793,6 +1793,12 @@ export class MainComponent implements OnInit {
     console.log('selectionChanged');
     const dbIdArray = (event as any).dbIdArray;
     // this.storeConcrCategObjects();
+    ///////////////////////////// TESTING /////////////////////////////////////////
+
+    var meshInfo = this.getComponentGeometry(dbIdArray[0]);
+    console.log(meshInfo);
+
+    ///////////////////////////// TESTING /////////////////////////////////////////
 
     this.viewerComponent.viewer.model.getProperties(dbIdArray[0], (data) =>
       console.log(data)
@@ -2022,6 +2028,50 @@ export class MainComponent implements OnInit {
           "<div class='box'>" + correspondingSlab.WDsS.toFixed(2) + '</div>';
       }
     }
+  }
+
+  public getLeafFragIds(model, leafId) {
+    const instanceTree = model.getData().instanceTree;
+    const fragIds = [];
+
+    instanceTree.enumNodeFragments(leafId, function (fragId) {
+      fragIds.push(fragId);
+    });
+
+    return fragIds;
+  }
+
+  public getComponentGeometry(dbId) {
+    const viewer = this.viewerComponent.viewer;
+    const fragIds = this.getLeafFragIds(viewer.model, dbId);
+
+    let matrixWorld = null;
+
+    const meshes = fragIds.map(function (fragId) {
+      const renderProxy = viewer.impl.getRenderProxy(viewer.model, fragId);
+
+      const geometry = renderProxy.geometry;
+      const attributes = geometry.attributes;
+      const positions = geometry.vb ? geometry.vb : attributes.position.array;
+
+      const indices = attributes.index.array || geometry.ib;
+      const stride = geometry.vb ? geometry.vbstride : 3;
+      const offsets = geometry.offsets;
+
+      matrixWorld = matrixWorld || renderProxy.matrixWorld.elements;
+
+      return {
+        positions,
+        indices,
+        offsets,
+        stride,
+      };
+    });
+
+    return {
+      matrixWorld,
+      meshes,
+    };
   }
 }
 
