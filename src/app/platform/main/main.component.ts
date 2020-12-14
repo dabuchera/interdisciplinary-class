@@ -29,7 +29,10 @@ import { ApiService } from 'src/app/_services/api.service';
 import * as $ from 'jquery';
 declare var THREE: any;
 
+import { Utils } from '../../utils';
+
 import html from './legendTemplate.html';
+import { LeanBoxesExtension } from '../extensions/leanBoxes';
 
 // Function for async forEach
 const asyncForEach = async (array, callback) => {
@@ -93,6 +96,7 @@ export class MainComponent implements OnInit {
         extensions: [
           'Autodesk.Snapping',
           'Autodesk.ModelStructure',
+          LeanBoxesExtension.extensionName,
 
           // CoordinatesAxesExtension.extensionName,
         ],
@@ -127,9 +131,13 @@ export class MainComponent implements OnInit {
     };
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   public async scriptsLoaded() {
+    Extension.registerExtension(
+      'LeanBoxesExtension',
+      LeanBoxesExtension
+    );
     // Extension.registerExtension(
     //   'CoordinatesAxesExtension',
     //   CoordinatesAxesExtension
@@ -266,21 +274,21 @@ export class MainComponent implements OnInit {
           // tslint:disable-next-line: max-line-length
           $('#' + annexClass + object.id).append(
             '<style>.' +
-              annexClass +
-              object.id +
-              ':before{content: attr(data-before); font-size: 20px; color: white;}</style>'
+            annexClass +
+            object.id +
+            ':before{content: attr(data-before); font-size: 20px; color: white;}</style>'
           );
           $('#' + annexClass + object.id).append(
             '<style>.' +
-              annexClass +
-              object.id +
-              '{width: 178px !important}</style>'
+            annexClass +
+            object.id +
+            '{width: 178px !important}</style>'
           );
           $('#' + annexClass + object.id).append(
             '<style>.' +
-              annexClass +
-              object.id +
-              '{animation: slideMe .7s ease-in;}</style>'
+            annexClass +
+            object.id +
+            '{animation: slideMe .7s ease-in;}</style>'
           );
           $('#' + annexClass + object.id.toString()).attr(
             'data-before',
@@ -413,21 +421,21 @@ export class MainComponent implements OnInit {
           // tslint:disable-next-line: max-line-length
           $('#' + annexClass + object.id).append(
             '<style>.' +
-              annexClass +
-              object.id +
-              ':before{content: attr(data-before); font-size: 20px; color: white;}</style>'
+            annexClass +
+            object.id +
+            ':before{content: attr(data-before); font-size: 20px; color: white;}</style>'
           );
           $('#' + annexClass + object.id).append(
             '<style>.' +
-              annexClass +
-              object.id +
-              '{width: 178px !important}</style>'
+            annexClass +
+            object.id +
+            '{width: 178px !important}</style>'
           );
           $('#' + annexClass + object.id).append(
             '<style>.' +
-              annexClass +
-              object.id +
-              '{animation: slideMe .7s ease-in;}</style>'
+            annexClass +
+            object.id +
+            '{animation: slideMe .7s ease-in;}</style>'
           );
           $('#' + annexClass + object.id.toString()).attr(
             'data-before',
@@ -750,8 +758,17 @@ export class MainComponent implements OnInit {
         await this.storeConcreteElements().then(async () => {
           // $('canvas').show();
           // $('.lds-roller').hide();
+          if (Utils.getColumns() && Utils.getFoundations() && Utils.getSlabs() && Utils.getWalls()) {
+            this.columns = Utils.getColumns();
+            this.foundations = Utils.getFoundations();
+            this.slabs = Utils.getSlabs();
+            this.walls = Utils.getWalls();
+            $('canvas').show();
+            $('.lds-roller').hide();
+            return null;
+          }
           await this.storeCategoryObjects().then(async () => {
-            // console.log(this.walls);
+            console.log('storeCategoryObjects');
             // console.log(this.columns);
             // console.log(this.slabs);
             // Integrate here the database connection
@@ -764,6 +781,11 @@ export class MainComponent implements OnInit {
                   this.calcWD(this.slabs);
                   this.calcWD(this.walls);
                   this.calcWD(this.columns);
+                  // Store Objects to localstorage
+                  Utils.setColumns(this.columns);
+                  Utils.setFoundations(this.foundations);
+                  Utils.setSlabs(this.slabs);
+                  Utils.setWalls(this.walls);
                   console.log('finished');
                   $('canvas').show();
                   $('.lds-roller').hide();
@@ -1280,6 +1302,7 @@ export class MainComponent implements OnInit {
       }
     });
   }
+
   public async workDensityColorMap() {
     // console.log('walls');
     this.colorWdObjects(this.walls, 'WDwCR');
@@ -1306,7 +1329,7 @@ export class MainComponent implements OnInit {
     // html imported from ./legendTemplate.html
     $(this.panel.content).append(html);
     contentDiv.style.marginLeft = '10px';
-    contentDiv.style.overflowY = 'hidden';
+    contentDiv.style.overflowY = 'scroll';
     contentDiv.style.overflowX = 'hidden';
     contentDiv.style.height = 'calc(100% - 90px)';
     contentDiv.style.color = 'black';
@@ -1711,7 +1734,6 @@ export class MainComponent implements OnInit {
       .find('#wdStrProp')[0]
       .appendChild(textDivS2 as HTMLElement);
   }
-
   //try to find all last children dbids
   public getAllLeafComponents(viewer, callback) {
     var cbCount = 0; // count pending callbacks
@@ -1799,6 +1821,7 @@ export class MainComponent implements OnInit {
       return false;
     }
   }
+
   public isColumn(id) {
     if (this.columns.find((el) => el.viewerdbId === id)) {
       return true;
@@ -1806,6 +1829,7 @@ export class MainComponent implements OnInit {
       return false;
     }
   }
+
   public isSlab(id) {
     if (this.slabs.find((el) => el.viewerdbId === id)) {
       return true;
@@ -1813,6 +1837,7 @@ export class MainComponent implements OnInit {
       return false;
     }
   }
+
   public handleMouseMove(event) {
     const screenPoint = {
       x: event.clientX,
@@ -1830,17 +1855,223 @@ export class MainComponent implements OnInit {
     return false;
   }
 
+  public changePanelValue(dbIdArray) {
+    if (this.isWall(dbIdArray[0])) {
+      var correspondingWall = this.walls.find(
+        (obj) => obj.viewerdbId === dbIdArray[0]
+      );
+      // console.log(correspondingWall);
+      if (this.panel) {
+        // @ts-ignore
+        $(this.panel.container).find('#idProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingWall.id + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#dbIdProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingWall.dbId + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#volumeProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingWall.volume.toFixed(2) + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#areaProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' +
+          correspondingWall.sideArea.toFixed(2) +
+          '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#heightProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingWall.height.toFixed(2) + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#widthProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingWall.width.toFixed(2) + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#prFormProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingWall.prF + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#prReinProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingWall.prR + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#prConcProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingWall.prC + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#prStrProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingWall.prS + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#csFormProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingWall.csF + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#csReinProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingWall.csR + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#csConcProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingWall.csC + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#csStrProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingWall.csS + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#wdFormProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingWall.WDwF.toFixed(2) + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#wdReinProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingWall.WDwR.toFixed(2) + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#wdConcProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingWall.WDwC.toFixed(2) + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#wdCurProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingWall.WDwCR.toFixed(2) + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#wdStrProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingWall.WDwS.toFixed(2) + '</div>';
+      }
+    } else if (this.isColumn(dbIdArray[0])) {
+      var correspondingColumn = this.columns.find(
+        (obj) => obj.viewerdbId === dbIdArray[0]
+      );
+      if (this.panel) {
+        // @ts-ignore
+        $(this.panel.container).find('#idProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingColumn.id + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#dbIdProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingColumn.dbId + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#volumeProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' +
+          correspondingColumn.volume.toFixed(2) +
+          '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#perimProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' +
+          correspondingColumn.perimeter.toFixed(2) +
+          '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#lengthProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' +
+          correspondingColumn.length.toFixed(2) +
+          '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#prFormProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingColumn.prF + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#prReinProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingColumn.prR + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#prConcProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingColumn.prC + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#prStrProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingColumn.prS + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#csFormProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingColumn.csF + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#csReinProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingColumn.csR + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#csConcProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingColumn.csC + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#csStrProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingColumn.csS + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#wdFormProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingColumn.WDcF.toFixed(2) + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#wdReinProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingColumn.WDcR.toFixed(2) + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#wdConcProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingColumn.WDcC.toFixed(2) + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#wdCurProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingColumn.WDcCR.toFixed(2) + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#wdStrProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingColumn.WDcS.toFixed(2) + '</div>';
+      }
+    } else if (this.isSlab(dbIdArray[0])) {
+      var correspondingSlab = this.slabs.find(
+        (obj) => obj.viewerdbId === dbIdArray[0]
+      );
+      if (this.panel) {
+        // @ts-ignore
+        $(this.panel.container).find('#idProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingSlab.id + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#dbIdProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingSlab.dbId + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#volumeProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingSlab.volume.toFixed(2) + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#perimProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' +
+          correspondingSlab.perimeter.toFixed(2) +
+          '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#areaProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingSlab.area.toFixed(2) + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#widthProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' +
+          correspondingSlab.thickness.toFixed(2) + // slabs have thickness instead of width
+          '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#prFormProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingSlab.prF + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#prReinProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingSlab.prR + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#prConcProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingSlab.prC + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#prStrProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingSlab.prS + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#csFormProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingSlab.csF + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#csReinProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingSlab.csR + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#csConcProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingSlab.csC + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#csStrProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingSlab.csS + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#wdFormProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingSlab.WDsF.toFixed(2) + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#wdReinProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingSlab.WDsR.toFixed(2) + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#wdConcProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingSlab.WDsC.toFixed(2) + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#wdCurProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingSlab.WDsCR.toFixed(2) + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#wdStrProp')[0].childNodes[1].innerHTML =
+          '<div class=\'box\'>' + correspondingSlab.WDsS.toFixed(2) + '</div>';
+      }
+    }
+  }
+
   public async selectionChanged(event: SelectionChangedEventArgs) {
     console.log('selectionChanged');
     const dbIdArray = (event as any).dbIdArray;
+    this.changePanelValue(dbIdArray);
     // this.storeConcrCategObjects();
     ///////////////////////////// TESTING THREEJS/////////////////////////////////////////
     this.handleMouseMove(event);
     ///////////////////////////// TESTING /////////////////////////////////////////
 
     var meshInfo = this.getComponentGeometry(dbIdArray[0]);
-    // console.log(meshInfo);
 
+    console.log(meshInfo);
+
+    // console.log(meshInfo);
     ///////////////////////////// TESTING ///////////////////////////////////////
     // this.viewerComponent.viewer.model.getProperties(dbIdArray[0], (data) =>
     // console.log(data)
@@ -1871,207 +2102,6 @@ export class MainComponent implements OnInit {
     // console.log(this.isWall(dbIdArray[0]));
     // console.log(this.isColumn(dbIdArray[0]));
     // console.log(this.isSlab(dbIdArray[0]));
-
-    if (this.isWall(dbIdArray[0])) {
-      var correspondingWall = this.walls.find(
-        (obj) => obj.viewerdbId === dbIdArray[0]
-      );
-      // console.log(correspondingWall);
-      if (this.panel) {
-        // @ts-ignore
-        $(this.panel.container).find('#idProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingWall.id + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#dbIdProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingWall.dbId + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#volumeProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingWall.volume.toFixed(2) + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#areaProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" +
-          correspondingWall.sideArea.toFixed(2) +
-          '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#heightProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingWall.height.toFixed(2) + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#widthProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingWall.width.toFixed(2) + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#prFormProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingWall.prF + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#prReinProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingWall.prR + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#prConcProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingWall.prC + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#prStrProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingWall.prS + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#csFormProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingWall.csF + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#csReinProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingWall.csR + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#csConcProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingWall.csC + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#csStrProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingWall.csS + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#wdFormProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingWall.WDwF.toFixed(2) + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#wdReinProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingWall.WDwR.toFixed(2) + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#wdConcProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingWall.WDwC.toFixed(2) + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#wdCurProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingWall.WDwCR.toFixed(2) + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#wdStrProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingWall.WDwS.toFixed(2) + '</div>';
-      }
-    } else if (this.isColumn(dbIdArray[0])) {
-      var correspondingColumn = this.columns.find(
-        (obj) => obj.viewerdbId === dbIdArray[0]
-      );
-      if (this.panel) {
-        // @ts-ignore
-        $(this.panel.container).find('#idProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingColumn.id + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#dbIdProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingColumn.dbId + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#volumeProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" +
-          correspondingColumn.volume.toFixed(2) +
-          '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#perimProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" +
-          correspondingColumn.perimeter.toFixed(2) +
-          '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#lengthProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" +
-          correspondingColumn.length.toFixed(2) +
-          '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#prFormProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingColumn.prF + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#prReinProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingColumn.prR + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#prConcProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingColumn.prC + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#prStrProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingColumn.prS + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#csFormProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingColumn.csF + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#csReinProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingColumn.csR + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#csConcProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingColumn.csC + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#csStrProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingColumn.csS + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#wdFormProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingColumn.WDcF.toFixed(2) + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#wdReinProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingColumn.WDcR.toFixed(2) + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#wdConcProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingColumn.WDcC.toFixed(2) + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#wdCurProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingColumn.WDcCR.toFixed(2) + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#wdStrProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingColumn.WDcS.toFixed(2) + '</div>';
-      }
-    } else if (this.isSlab(dbIdArray[0])) {
-      var correspondingSlab = this.slabs.find(
-        (obj) => obj.viewerdbId === dbIdArray[0]
-      );
-      if (this.panel) {
-        // @ts-ignore
-        $(this.panel.container).find('#idProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingSlab.id + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#dbIdProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingSlab.dbId + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#volumeProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingSlab.volume.toFixed(2) + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#perimProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" +
-          correspondingSlab.perimeter.toFixed(2) +
-          '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#areaProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingSlab.area.toFixed(2) + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#widthProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" +
-          correspondingSlab.thickness.toFixed(2) + // slabs have thickness instead of width
-          '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#prFormProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingSlab.prF + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#prReinProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingSlab.prR + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#prConcProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingSlab.prC + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#prStrProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingSlab.prS + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#csFormProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingSlab.csF + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#csReinProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingSlab.csR + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#csConcProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingSlab.csC + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#csStrProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingSlab.csS + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#wdFormProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingSlab.WDsF.toFixed(2) + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#wdReinProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingSlab.WDsR.toFixed(2) + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#wdConcProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingSlab.WDsC.toFixed(2) + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#wdCurProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingSlab.WDsCR.toFixed(2) + '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#wdStrProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingSlab.WDsS.toFixed(2) + '</div>';
-      }
-    }
   }
 
   public getLeafFragIds(model, leafId) {
