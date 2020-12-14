@@ -30,8 +30,11 @@ import { Dashboard } from '../dashboard/Dashboard';
 import * as $ from 'jquery';
 declare var THREE: any;
 
+import { Utils } from '../../utils';
+
 import html from './legendTemplate.html';
 import { BarChart } from '../dashboard/PanelBarChart';
+import { LeanBoxesExtension } from '../extensions/leanBoxes';
 
 // Function for async forEach
 const asyncForEach = async (array, callback) => {
@@ -95,6 +98,7 @@ export class MainComponent implements OnInit {
         extensions: [
           'Autodesk.Snapping',
           'Autodesk.ModelStructure',
+          LeanBoxesExtension.extensionName,
 
           // CoordinatesAxesExtension.extensionName,
         ],
@@ -139,6 +143,7 @@ export class MainComponent implements OnInit {
   ngOnInit(): void {}
 
   public async scriptsLoaded() {
+    Extension.registerExtension('LeanBoxesExtension', LeanBoxesExtension);
     // Extension.registerExtension(
     //   'CoordinatesAxesExtension',
     //   CoordinatesAxesExtension
@@ -783,8 +788,22 @@ export class MainComponent implements OnInit {
         await this.storeConcreteElements().then(async () => {
           // $('canvas').show();
           // $('.lds-roller').hide();
+          if (
+            Utils.getColumns() &&
+            Utils.getFoundations() &&
+            Utils.getSlabs() &&
+            Utils.getWalls()
+          ) {
+            this.columns = Utils.getColumns();
+            this.foundations = Utils.getFoundations();
+            this.slabs = Utils.getSlabs();
+            this.walls = Utils.getWalls();
+            $('canvas').show();
+            $('.lds-roller').hide();
+            return null;
+          }
           await this.storeCategoryObjects().then(async () => {
-            // console.log(this.walls);
+            console.log('storeCategoryObjects');
             // console.log(this.columns);
             // console.log(this.slabs);
             // Integrate here the database connection
@@ -797,6 +816,11 @@ export class MainComponent implements OnInit {
                   this.calcWD(this.slabs);
                   this.calcWD(this.walls);
                   this.calcWD(this.columns);
+                  // Store Objects to localstorage
+                  Utils.setColumns(this.columns);
+                  Utils.setFoundations(this.foundations);
+                  Utils.setSlabs(this.slabs);
+                  Utils.setWalls(this.walls);
                   console.log('finished');
                   $('canvas').show();
                   $('.lds-roller').hide();
@@ -1313,6 +1337,7 @@ export class MainComponent implements OnInit {
       }
     });
   }
+
   public async workDensityColorMap() {
     // console.log('walls');
     this.colorWdObjects(this.walls, 'WDwCR');
@@ -1339,7 +1364,7 @@ export class MainComponent implements OnInit {
     // html imported from ./legendTemplate.html
     $(this.panel.content).append(html);
     contentDiv.style.marginLeft = '10px';
-    contentDiv.style.overflowY = 'hidden';
+    contentDiv.style.overflowY = 'scroll';
     contentDiv.style.overflowX = 'hidden';
     contentDiv.style.height = 'calc(100% - 90px)';
     contentDiv.style.color = 'black';
@@ -1744,7 +1769,6 @@ export class MainComponent implements OnInit {
       .find('#wdStrProp')[0]
       .appendChild(textDivS2 as HTMLElement);
   }
-
   //try to find all last children dbids
   public getAllLeafComponents(viewer, callback) {
     var cbCount = 0; // count pending callbacks
@@ -1832,6 +1856,7 @@ export class MainComponent implements OnInit {
       return false;
     }
   }
+
   public isColumn(id) {
     if (this.columns.find((el) => el.viewerdbId === id)) {
       return true;
@@ -1839,6 +1864,7 @@ export class MainComponent implements OnInit {
       return false;
     }
   }
+
   public isSlab(id) {
     if (this.slabs.find((el) => el.viewerdbId === id)) {
       return true;
@@ -1846,6 +1872,7 @@ export class MainComponent implements OnInit {
       return false;
     }
   }
+
   public handleMouseMove(event) {
     const screenPoint = {
       x: event.clientX,
@@ -1863,48 +1890,7 @@ export class MainComponent implements OnInit {
     return false;
   }
 
-  public async selectionChanged(event: SelectionChangedEventArgs) {
-    console.log('selectionChanged');
-    const dbIdArray = (event as any).dbIdArray;
-    // this.storeConcrCategObjects();
-    ///////////////////////////// TESTING THREEJS/////////////////////////////////////////
-    this.handleMouseMove(event);
-    ///////////////////////////// TESTING /////////////////////////////////////////
-
-    var meshInfo = this.getComponentGeometry(dbIdArray[0]);
-    // console.log(meshInfo);
-
-    ///////////////////////////// TESTING ///////////////////////////////////////
-    // this.viewerComponent.viewer.model.getProperties(dbIdArray[0], (data) =>
-    // console.log(data)
-    // );
-    // var root = this.viewerComponent.viewer.model.getInstanceTree().getRootId();
-    // // console.log(root);
-    // var parent = this.viewerComponent.viewer.model
-    //   .getInstanceTree()
-    //   .getNodeParentId(dbIdArray[0]);
-    // // console.log(parent);
-    // var parentOfParent = this.viewerComponent.viewer.model
-    //   .getInstanceTree()
-    //   .getNodeParentId(parent);
-    // // console.log(parentOfParent);
-    // var parentOfParentOfParent = this.viewerComponent.viewer.model
-    //   .getInstanceTree()
-    //   .getNodeParentId(parentOfParent);
-    // // console.log(parentOfParentOfParent);
-    // this.viewerComponent.viewer.model.getProperties(parent, (data) =>
-    //   console.log(data)
-    // );
-
-    // this.workDensityColorMap();
-    // this.colorWdObjects(this.walls, 'WDwCR');
-    // this.colorWdObjects(this.columns, 'WDcCR');
-    // this.colorWdObjects(this.slabs, 'WDsCR');
-    // console.log(dbIdArray[0]);
-    // console.log(this.isWall(dbIdArray[0]));
-    // console.log(this.isColumn(dbIdArray[0]));
-    // console.log(this.isSlab(dbIdArray[0]));
-
+  public changePanelValue(dbIdArray) {
     if (this.isWall(dbIdArray[0])) {
       var correspondingWall = this.walls.find(
         (obj) => obj.viewerdbId === dbIdArray[0]
@@ -2105,6 +2091,52 @@ export class MainComponent implements OnInit {
           "<div class='box'>" + correspondingSlab.WDsS.toFixed(2) + '</div>';
       }
     }
+  }
+
+  public async selectionChanged(event: SelectionChangedEventArgs) {
+    console.log('selectionChanged');
+    const dbIdArray = (event as any).dbIdArray;
+    this.changePanelValue(dbIdArray);
+    // this.storeConcrCategObjects();
+    ///////////////////////////// TESTING THREEJS/////////////////////////////////////////
+    this.handleMouseMove(event);
+    ///////////////////////////// TESTING /////////////////////////////////////////
+
+    var meshInfo = this.getComponentGeometry(dbIdArray[0]);
+
+    console.log(meshInfo);
+
+    // console.log(meshInfo);
+    ///////////////////////////// TESTING ///////////////////////////////////////
+    // this.viewerComponent.viewer.model.getProperties(dbIdArray[0], (data) =>
+    // console.log(data)
+    // );
+    // var root = this.viewerComponent.viewer.model.getInstanceTree().getRootId();
+    // // console.log(root);
+    // var parent = this.viewerComponent.viewer.model
+    //   .getInstanceTree()
+    //   .getNodeParentId(dbIdArray[0]);
+    // // console.log(parent);
+    // var parentOfParent = this.viewerComponent.viewer.model
+    //   .getInstanceTree()
+    //   .getNodeParentId(parent);
+    // // console.log(parentOfParent);
+    // var parentOfParentOfParent = this.viewerComponent.viewer.model
+    //   .getInstanceTree()
+    //   .getNodeParentId(parentOfParent);
+    // // console.log(parentOfParentOfParent);
+    // this.viewerComponent.viewer.model.getProperties(parent, (data) =>
+    //   console.log(data)
+    // );
+
+    // this.workDensityColorMap();
+    // this.colorWdObjects(this.walls, 'WDwCR');
+    // this.colorWdObjects(this.columns, 'WDcCR');
+    // this.colorWdObjects(this.slabs, 'WDsCR');
+    // console.log(dbIdArray[0]);
+    // console.log(this.isWall(dbIdArray[0]));
+    // console.log(this.isColumn(dbIdArray[0]));
+    // console.log(this.isSlab(dbIdArray[0]));
   }
 
   public getLeafFragIds(model, leafId) {
