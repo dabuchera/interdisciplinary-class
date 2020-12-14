@@ -25,11 +25,13 @@ import { Foundation } from '../models/foundation';
 
 import { AuthToken } from 'forge-apis';
 import { ApiService } from 'src/app/_services/api.service';
+import { Dashboard } from '../dashboard/Dashboard';
 
 import * as $ from 'jquery';
 declare var THREE: any;
 
 import html from './legendTemplate.html';
+import { BarChart } from '../dashboard/PanelBarChart';
 
 // Function for async forEach
 const asyncForEach = async (array, callback) => {
@@ -116,6 +118,13 @@ export class MainComponent implements OnInit {
         this.loadTestToolbar();
         this.loadWDToolbar();
         this.viewerComponent.viewer.setGhosting(false);
+
+        // new Dashboard(this.viewerComponent.viewer, [
+        // new BarChart('Material'),
+        // new PieChart('Material')
+        setTimeout(() => {
+          new Dashboard(this.viewerComponent.viewer, new BarChart('Volume'));
+        }, 5000);
 
         // Graphische Anpassung
         // $('#forge-viewer').hide();
@@ -486,9 +495,32 @@ export class MainComponent implements OnInit {
         if (selection.length > 0) {
           let zones = [];
           // console.log(selection);
+          let wdZone = 0;
           selection.forEach((dbId) => {
-            // console.log(props);
+            // console.log(props)
             zones.push(dbId);
+            if (this.isWall(dbId)) {
+              var correspondingWall = this.walls.find(
+                (obj) => obj.viewerdbId === dbId
+              );
+
+              wdZone += correspondingWall.WDwF;
+            }
+            if (this.isColumn(dbId)) {
+              var correspondingColumn = this.columns.find(
+                (obj) => obj.viewerdbId === dbId
+              );
+
+              wdZone += correspondingColumn.WDcF;
+            }
+            if (this.isSlab(dbId)) {
+              var correspondingSlab = this.slabs.find(
+                (obj) => obj.viewerdbId === dbId
+              );
+
+              wdZone += correspondingSlab.WDsF;
+            }
+
             const color = new THREE.Vector4(0 / 256, 128 / 256, 0 / 256, 1);
             this.viewerComponent.viewer.setThemingColor(
               dbId,
@@ -498,6 +530,7 @@ export class MainComponent implements OnInit {
             );
           });
           console.log(zones);
+          console.log(wdZone);
         }
 
         // this.defineAllProp(this.slabs);
