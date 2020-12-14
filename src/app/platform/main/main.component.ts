@@ -107,14 +107,14 @@ export class MainComponent implements OnInit {
         }
         // Hide container where model is in
         // Will be shown after runDifferentFunc()
-        // $('canvas').hide();
-        // this.replaceSpinner();
-        // $('.lds-roller').show();
+        $('canvas').hide();
+        this.replaceSpinner();
+        $('.lds-roller').show();
         // this.app.openSpinner();
-        // this.loadLevelToolbar();
-        // this.loadConcreteToolbar();
-        // this.loadTestToolbar();
-        // this.loadWDToolbar();
+        this.loadLevelToolbar();
+        this.loadConcreteToolbar();
+        this.loadTestToolbar();
+        this.loadWDToolbar();
         this.viewerComponent.viewer.setGhosting(false);
 
         // Graphische Anpassung
@@ -478,6 +478,28 @@ export class MainComponent implements OnInit {
         console.log('Test started');
 
         this.showPropLegend();
+
+        //////////TESTING ZONES ///////////////////////
+        //get current selection
+        const selection = this.viewerComponent.viewer.getSelection();
+        this.viewerComponent.viewer.clearSelection();
+        if (selection.length > 0) {
+          let zones = [];
+          // console.log(selection);
+          selection.forEach((dbId) => {
+            // console.log(props);
+            zones.push(dbId);
+            const color = new THREE.Vector4(0 / 256, 128 / 256, 0 / 256, 1);
+            this.viewerComponent.viewer.setThemingColor(
+              dbId,
+              color,
+              this.viewerComponent.viewer.model,
+              true
+            );
+          });
+          console.log(zones);
+        }
+
         // this.defineAllProp(this.slabs);
         // this.defineAllProp(this.walls);
         // this.defineAllProp(this.columns);
@@ -494,9 +516,7 @@ export class MainComponent implements OnInit {
         // this.setupUI();
       } else {
         button1.setState(1);
-        this.viewerComponent.viewer.clearThemingColors(
-          this.viewerComponent.viewer.model
-        );
+
         while (controlGroup.getNumberOfControls() > 1) {
           var tempID = controlGroup.getControlId(1);
           controlGroup.removeControl(tempID);
@@ -509,6 +529,10 @@ export class MainComponent implements OnInit {
     }, 5000);
     $('#guiviewer3d-toolbar').append(controlGroup.container);
   }
+  //////TESTING THREEJS////////////
+
+  ///////////////////////////////////////////////////////////
+
   public loadWDToolbar() {
     //button test
     const button1 = new Autodesk.Viewing.UI.Button('showing-WDformwork');
@@ -743,9 +767,9 @@ export class MainComponent implements OnInit {
                   console.log('finished');
                   $('canvas').show();
                   $('.lds-roller').hide();
-                  console.log(this.walls);
-                  console.log(this.slabs);
-                  console.log(this.columns);
+                  // console.log(this.walls);
+                  // console.log(this.slabs);
+                  // console.log(this.columns);
                   // this.workDensityColorMap();
                   // this.storeCategoryObjects();
                 });
@@ -841,13 +865,13 @@ export class MainComponent implements OnInit {
           (item, i, ar) => ar.indexOf(item) === i
         );
         const concrValues = uniqMat.filter((item) => item.includes('Beton'));
-        console.log(concrValues);
+        // console.log(concrValues);
         return asyncForEach(concrValues, async (value) => {
-          console.log(value);
+          // console.log(value);
           // search is not case sensitive IMP_BETON includes all objects from IMP_BETON_Fertigteil
           await this.search(value, 'LcOaNode:LcOaNodeMaterial').then(
             (idArray) => {
-              console.log(idArray);
+              // console.log(idArray);
               this.concrObj.push({
                 materialName: value,
                 dbIds: idArray,
@@ -1118,6 +1142,7 @@ export class MainComponent implements OnInit {
       case this.foundations:
         this.foundations.forEach((element) => {
           if (!element.thickness) {
+            //roofs are slabs but they have the width property instead of thickness
             element.thickness = element.width;
           }
           element.WDfF =
@@ -1788,47 +1813,64 @@ export class MainComponent implements OnInit {
       return false;
     }
   }
+  public handleMouseMove(event) {
+    const screenPoint = {
+      x: event.clientX,
+      y: event.clientY,
+    };
+    const hitTest = this.viewerComponent.viewer.impl.hitTest(
+      screenPoint.x,
+      screenPoint.y
+    );
+    // console.log(hitTest);
+
+    if (hitTest !== null) {
+      let hitPoint = hitTest.point;
+    }
+    return false;
+  }
 
   public async selectionChanged(event: SelectionChangedEventArgs) {
     console.log('selectionChanged');
     const dbIdArray = (event as any).dbIdArray;
     // this.storeConcrCategObjects();
+    ///////////////////////////// TESTING THREEJS/////////////////////////////////////////
+    this.handleMouseMove(event);
     ///////////////////////////// TESTING /////////////////////////////////////////
 
     var meshInfo = this.getComponentGeometry(dbIdArray[0]);
-    console.log(meshInfo);
+    // console.log(meshInfo);
 
-    ///////////////////////////// TESTING /////////////////////////////////////////
-
-    this.viewerComponent.viewer.model.getProperties(dbIdArray[0], (data) =>
-      console.log(data)
-    );
-    var root = this.viewerComponent.viewer.model.getInstanceTree().getRootId();
-    // console.log(root);
-    var parent = this.viewerComponent.viewer.model
-      .getInstanceTree()
-      .getNodeParentId(dbIdArray[0]);
-    // console.log(parent);
-    var parentOfParent = this.viewerComponent.viewer.model
-      .getInstanceTree()
-      .getNodeParentId(parent);
-    // console.log(parentOfParent);
-    var parentOfParentOfParent = this.viewerComponent.viewer.model
-      .getInstanceTree()
-      .getNodeParentId(parentOfParent);
-    // console.log(parentOfParentOfParent);
-    this.viewerComponent.viewer.model.getProperties(parent, (data) =>
-      console.log(data)
-    );
+    ///////////////////////////// TESTING ///////////////////////////////////////
+    // this.viewerComponent.viewer.model.getProperties(dbIdArray[0], (data) =>
+    // console.log(data)
+    // );
+    // var root = this.viewerComponent.viewer.model.getInstanceTree().getRootId();
+    // // console.log(root);
+    // var parent = this.viewerComponent.viewer.model
+    //   .getInstanceTree()
+    //   .getNodeParentId(dbIdArray[0]);
+    // // console.log(parent);
+    // var parentOfParent = this.viewerComponent.viewer.model
+    //   .getInstanceTree()
+    //   .getNodeParentId(parent);
+    // // console.log(parentOfParent);
+    // var parentOfParentOfParent = this.viewerComponent.viewer.model
+    //   .getInstanceTree()
+    //   .getNodeParentId(parentOfParent);
+    // // console.log(parentOfParentOfParent);
+    // this.viewerComponent.viewer.model.getProperties(parent, (data) =>
+    //   console.log(data)
+    // );
 
     // this.workDensityColorMap();
     // this.colorWdObjects(this.walls, 'WDwCR');
     // this.colorWdObjects(this.columns, 'WDcCR');
     // this.colorWdObjects(this.slabs, 'WDsCR');
-    console.log(dbIdArray[0]);
-    console.log(this.isWall(dbIdArray[0]));
-    console.log(this.isColumn(dbIdArray[0]));
-    console.log(this.isSlab(dbIdArray[0]));
+    // console.log(dbIdArray[0]);
+    // console.log(this.isWall(dbIdArray[0]));
+    // console.log(this.isColumn(dbIdArray[0]));
+    // console.log(this.isSlab(dbIdArray[0]));
 
     if (this.isWall(dbIdArray[0])) {
       var correspondingWall = this.walls.find(
@@ -1986,7 +2028,9 @@ export class MainComponent implements OnInit {
           "<div class='box'>" + correspondingSlab.area.toFixed(2) + '</div>';
         // @ts-ignore
         $(this.panel.container).find('#widthProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingSlab.width.toFixed(2) + '</div>';
+          "<div class='box'>" +
+          correspondingSlab.thickness.toFixed(2) + // slabs have thickness instead of width
+          '</div>';
         // @ts-ignore
         $(this.panel.container).find('#prFormProp')[0].childNodes[1].innerHTML =
           "<div class='box'>" + correspondingSlab.prF + '</div>';

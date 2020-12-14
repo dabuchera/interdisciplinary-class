@@ -176,15 +176,19 @@ export abstract class Extension {
   protected eventArgsTypeMap: { [key: string]: Function } = {};
 
   public static registerExtension(extensionName: string, extension: Object) {
-    Autodesk.Viewing.theExtensionManager.registerExtension(extensionName, extension);
+    Autodesk.Viewing.theExtensionManager.registerExtension(
+      extensionName,
+      extension
+    );
   }
 
   public static unregisterExtension(extensionName: string) {
     Autodesk.Viewing.theExtensionManager.unregisterExtension(extensionName);
   }
 
-  constructor(viewer: Autodesk.Viewing.Viewer3D,
-    options?: Autodesk.Viewing.ExtensionOptions,
+  constructor(
+    viewer: Autodesk.Viewing.Viewer3D,
+    options?: Autodesk.Viewing.ExtensionOptions
   ) {
     this.viewer = viewer;
     this.extOptions = options;
@@ -199,45 +203,113 @@ export abstract class Extension {
   /** Register event args types that we will cast to 'proper' objects */
   protected registerEventTypes() {
     // tslint:disable:max-line-length
-    this.eventArgsTypeMap[Autodesk.Viewing.AGGREGATE_SELECTION_CHANGED_EVENT] = AggregationSelectionChangedEventArgs;
-    this.eventArgsTypeMap[Autodesk.Viewing.ANIMATION_READY_EVENT] = AnimationReadyEventArgs;
-    this.eventArgsTypeMap[Autodesk.Viewing.CAMERA_CHANGE_EVENT] = CameraChangedEventArgs;
-    this.eventArgsTypeMap[Autodesk.Viewing.CUTPLANES_CHANGE_EVENT] = CutplanesChangedEventArgs;
+    this.eventArgsTypeMap[
+      Autodesk.Viewing.AGGREGATE_SELECTION_CHANGED_EVENT
+    ] = AggregationSelectionChangedEventArgs;
+    this.eventArgsTypeMap[
+      Autodesk.Viewing.ANIMATION_READY_EVENT
+    ] = AnimationReadyEventArgs;
+    this.eventArgsTypeMap[
+      Autodesk.Viewing.CAMERA_CHANGE_EVENT
+    ] = CameraChangedEventArgs;
+    this.eventArgsTypeMap[
+      Autodesk.Viewing.CUTPLANES_CHANGE_EVENT
+    ] = CutplanesChangedEventArgs;
     this.eventArgsTypeMap[Autodesk.Viewing.ESCAPE_EVENT] = EscapeEventArgs;
-    this.eventArgsTypeMap[Autodesk.Viewing.EXPLODE_CHANGE_EVENT] = ExplodeChangedEventArgs;
-    this.eventArgsTypeMap[Autodesk.Viewing.EXTENSION_LOADED_EVENT] = ExtensionLoadedEventArgs;
-    this.eventArgsTypeMap[Autodesk.Viewing.EXTENSION_UNLOADED_EVENT] = ExtensionUnloadedEventArgs;
-    this.eventArgsTypeMap[Autodesk.Viewing.FINAL_FRAME_RENDERED_CHANGED_EVENT] = FinalFrameRenderedChangedEventArgs;
-    this.eventArgsTypeMap[Autodesk.Viewing.FIT_TO_VIEW_EVENT] = FitToViewEventArgs;
-    this.eventArgsTypeMap[Autodesk.Viewing.FRAGMENTS_LOADED_EVENT] = FragmentsLoadedEventArgs;
-    this.eventArgsTypeMap[Autodesk.Viewing.FULLSCREEN_MODE_EVENT] = FullscreenEventArgs;
-    this.eventArgsTypeMap[Autodesk.Viewing.GEOMETRY_LOADED_EVENT] = GeometryLoadedEventArgs;
+    this.eventArgsTypeMap[
+      Autodesk.Viewing.EXPLODE_CHANGE_EVENT
+    ] = ExplodeChangedEventArgs;
+    this.eventArgsTypeMap[
+      Autodesk.Viewing.EXTENSION_LOADED_EVENT
+    ] = ExtensionLoadedEventArgs;
+    this.eventArgsTypeMap[
+      Autodesk.Viewing.EXTENSION_UNLOADED_EVENT
+    ] = ExtensionUnloadedEventArgs;
+    this.eventArgsTypeMap[
+      Autodesk.Viewing.FINAL_FRAME_RENDERED_CHANGED_EVENT
+    ] = FinalFrameRenderedChangedEventArgs;
+    this.eventArgsTypeMap[
+      Autodesk.Viewing.FIT_TO_VIEW_EVENT
+    ] = FitToViewEventArgs;
+    this.eventArgsTypeMap[
+      Autodesk.Viewing.FRAGMENTS_LOADED_EVENT
+    ] = FragmentsLoadedEventArgs;
+    this.eventArgsTypeMap[
+      Autodesk.Viewing.FULLSCREEN_MODE_EVENT
+    ] = FullscreenEventArgs;
+    this.eventArgsTypeMap[
+      Autodesk.Viewing.GEOMETRY_LOADED_EVENT
+    ] = GeometryLoadedEventArgs;
     this.eventArgsTypeMap[Autodesk.Viewing.HIDE_EVENT] = HideEventArgs;
-    this.eventArgsTypeMap[Autodesk.Viewing.HYPERLINK_EVENT] = HyperlinkEventArgs;
+    this.eventArgsTypeMap[
+      Autodesk.Viewing.HYPERLINK_EVENT
+    ] = HyperlinkEventArgs;
     this.eventArgsTypeMap[Autodesk.Viewing.ISOLATE_EVENT] = IsolateEventArgs;
-    this.eventArgsTypeMap[Autodesk.Viewing.LAYER_VISIBILITY_CHANGED_EVENT] = LayerVisibilityEventArgs;
-    this.eventArgsTypeMap[Autodesk.Viewing.LOAD_MISSING_GEOMETRY] = LoadMissingGeometryEventArgs;
-    this.eventArgsTypeMap[Autodesk.Viewing.MODEL_ROOT_LOADED_EVENT] = ModelRootLoadedEventArgs;
-    this.eventArgsTypeMap[Autodesk.Viewing.MODEL_UNLOADED_EVENT] = ModelUnloadedEventArgs;
-    this.eventArgsTypeMap[Autodesk.Viewing.NAVIGATION_MODE_CHANGED_EVENT] = NavigationModeChangedEventArgs;
-    this.eventArgsTypeMap[Autodesk.Viewing.OBJECT_TREE_CREATED_EVENT] = ObjectTreeCreatedEventArgs;
-    this.eventArgsTypeMap[Autodesk.Viewing.OBJECT_TREE_UNAVAILABLE_EVENT] = ObjectTreeUnavailableEventArgs;
-    this.eventArgsTypeMap[Autodesk.Viewing.PREF_CHANGED_EVENT] = PrefChangedEventArgs;
-    this.eventArgsTypeMap[Autodesk.Viewing.PREF_RESET_EVENT] = PrefResetEventArgs;
-    this.eventArgsTypeMap[Autodesk.Viewing.PROGRESS_UPDATE_EVENT] = ProgressUpdateEventArgs;
-    this.eventArgsTypeMap[Autodesk.Viewing.RENDER_OPTION_CHANGED_EVENT] = RenderOptionChangedEventArgs;
-    this.eventArgsTypeMap[Autodesk.Viewing.RENDER_PRESENTED_EVENT] = RenderPresentedEventArgs;
+    this.eventArgsTypeMap[
+      Autodesk.Viewing.LAYER_VISIBILITY_CHANGED_EVENT
+    ] = LayerVisibilityEventArgs;
+    this.eventArgsTypeMap[
+      Autodesk.Viewing.LOAD_MISSING_GEOMETRY
+    ] = LoadMissingGeometryEventArgs;
+    this.eventArgsTypeMap[
+      Autodesk.Viewing.MODEL_ROOT_LOADED_EVENT
+    ] = ModelRootLoadedEventArgs;
+    this.eventArgsTypeMap[
+      Autodesk.Viewing.MODEL_UNLOADED_EVENT
+    ] = ModelUnloadedEventArgs;
+    this.eventArgsTypeMap[
+      Autodesk.Viewing.NAVIGATION_MODE_CHANGED_EVENT
+    ] = NavigationModeChangedEventArgs;
+    this.eventArgsTypeMap[
+      Autodesk.Viewing.OBJECT_TREE_CREATED_EVENT
+    ] = ObjectTreeCreatedEventArgs;
+    this.eventArgsTypeMap[
+      Autodesk.Viewing.OBJECT_TREE_UNAVAILABLE_EVENT
+    ] = ObjectTreeUnavailableEventArgs;
+    this.eventArgsTypeMap[
+      Autodesk.Viewing.PREF_CHANGED_EVENT
+    ] = PrefChangedEventArgs;
+    this.eventArgsTypeMap[
+      Autodesk.Viewing.PREF_RESET_EVENT
+    ] = PrefResetEventArgs;
+    this.eventArgsTypeMap[
+      Autodesk.Viewing.PROGRESS_UPDATE_EVENT
+    ] = ProgressUpdateEventArgs;
+    this.eventArgsTypeMap[
+      Autodesk.Viewing.RENDER_OPTION_CHANGED_EVENT
+    ] = RenderOptionChangedEventArgs;
+    this.eventArgsTypeMap[
+      Autodesk.Viewing.RENDER_PRESENTED_EVENT
+    ] = RenderPresentedEventArgs;
     this.eventArgsTypeMap[Autodesk.Viewing.RESET_EVENT] = ResetEventArgs;
-    this.eventArgsTypeMap[Autodesk.Viewing.RESTORE_DEFAULT_SETTINGS_EVENT] = RestoreDefaultSettingsEventArgs;
-    this.eventArgsTypeMap[Autodesk.Viewing.SELECTION_CHANGED_EVENT] = SelectionChangedEventArgs;
+    this.eventArgsTypeMap[
+      Autodesk.Viewing.RESTORE_DEFAULT_SETTINGS_EVENT
+    ] = RestoreDefaultSettingsEventArgs;
+    this.eventArgsTypeMap[
+      Autodesk.Viewing.SELECTION_CHANGED_EVENT
+    ] = SelectionChangedEventArgs;
     this.eventArgsTypeMap[Autodesk.Viewing.SHOW_EVENT] = ShowEventArgs;
-    this.eventArgsTypeMap[Autodesk.Viewing.TEXTURES_LOADED_EVENT] = TexturesLoadedEventArgs;
-    this.eventArgsTypeMap[Autodesk.Viewing.TOOL_CHANGE_EVENT] = ToolChangedEventArgs;
-    this.eventArgsTypeMap[Autodesk.Viewing.VIEWER_INITIALIZED] = ViewerInitializedEventArgs;
-    this.eventArgsTypeMap[Autodesk.Viewing.VIEWER_RESIZE_EVENT] = ViewerResizeEventArgs;
-    this.eventArgsTypeMap[Autodesk.Viewing.VIEWER_STATE_RESTORED_EVENT] = ViewerStateRestoredEventArgs;
-    this.eventArgsTypeMap[Autodesk.Viewing.VIEWER_UNINITIALIZED] = ViewerUnInitializedEventArgs;
-    this.eventArgsTypeMap[Autodesk.Viewing.TOOLBAR_CREATED_EVENT] = ViewerToolbarCreatedEventArgs;
+    this.eventArgsTypeMap[
+      Autodesk.Viewing.TEXTURES_LOADED_EVENT
+    ] = TexturesLoadedEventArgs;
+    this.eventArgsTypeMap[
+      Autodesk.Viewing.TOOL_CHANGE_EVENT
+    ] = ToolChangedEventArgs;
+    this.eventArgsTypeMap[
+      Autodesk.Viewing.VIEWER_INITIALIZED
+    ] = ViewerInitializedEventArgs;
+    this.eventArgsTypeMap[
+      Autodesk.Viewing.VIEWER_RESIZE_EVENT
+    ] = ViewerResizeEventArgs;
+    this.eventArgsTypeMap[
+      Autodesk.Viewing.VIEWER_STATE_RESTORED_EVENT
+    ] = ViewerStateRestoredEventArgs;
+    this.eventArgsTypeMap[
+      Autodesk.Viewing.VIEWER_UNINITIALIZED
+    ] = ViewerUnInitializedEventArgs;
+    this.eventArgsTypeMap[
+      Autodesk.Viewing.TOOLBAR_CREATED_EVENT
+    ] = ViewerToolbarCreatedEventArgs;
     // tslint:enable:max-line-length
   }
 
