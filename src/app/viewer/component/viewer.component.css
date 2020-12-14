@@ -9,6 +9,46 @@
     overflow: hidden;
 } */
 
+.row {
+  height: 100%;
+  width: 100%;
+}
+
+.col-sm-0 {
+  height: 100%;
+  width: 0%;
+}
+
+.col-sm-12 {
+  height: 100%;
+  width: 100%;
+}
+
+.col-sm-8 {
+  height: 100%;
+  width: 60%;
+}
+
+.col-sm-2 {
+  height: 100%;
+  width: 20%;
+}
+
+#dashboard {
+  overflow: auto;
+  height: calc(100vh - 100px);
+}
+
+.transition-width {
+  transition: width 1s ease-in-out;
+}
+
+.dashboardPanel {
+  width: 100%;
+  padding: 3%;
+  display: block;
+}
+
 .viewer {
   background-color: #ecb216;
   /* Gleiche Höhe wie PDF Viewer */
@@ -25,28 +65,30 @@
 } */
 
 /* General Things */
+
 /* Tooltip Farbe geändert */
+
 :host ::ng-deep .adsk-control-tooltip {
   background-color: #ecb216 !important;
   border: 1px solid #ecb216;
 }
 
 /* Tooltip auf der rechten Seite */
-:host
-  ::ng-deep
-  .adsk-viewing-viewer
-  .adsk-toolbar-vertical
-  .adsk-control-tooltip {
+
+:host ::ng-deep .adsk-viewing-viewer .adsk-toolbar-vertical .adsk-control-tooltip {
   right: unset;
   left: 120%;
 }
+
 /* Hoover des Buttons geändert */
+
 :host ::ng-deep .adsk-viewing-viewer.dark-theme .adsk-button:hover {
   color: white;
   border: 1px solid white;
 }
 
 /* Background der Buttons geändert */
+
 :host ::ng-deep .adsk-viewing-viewer.dark-theme .adsk-control-group {
   background-color: #ecb216;
   content: "2";
@@ -54,12 +96,15 @@
 }
 
 /* Wenn aktiv dann nicht blau eingefärbt */
+
 :host ::ng-deep .adsk-button.active {
   color: white !important;
 }
+
 /* End of General Things */
 
 /* Levels Toolbar -> Control Group -> Buttons */
+
 :host ::ng-deep #my-custom-view-toolbar-levels {
   right: 15px;
   left: unset;
@@ -79,6 +124,7 @@
 }
 
 /*Level Toolbar -> Control Group -> Buttons */
+
 :host ::ng-deep #my-custom-view-toolbar-test {
   right: unset;
   left: 300px;
@@ -98,6 +144,7 @@
 }
 
 /* Levels Toolbar -> Control Group -> Buttons */
+
 :host ::ng-deep #my-custom-view-toolbar-concrete {
   right: unset;
   left: 15px;
@@ -117,6 +164,7 @@
 }
 
 /* Alle Buttons werden im GuiViewer3D ausgeblendet => Reihenfolge korrekt */
+
 /* :host ::ng-deep .adsk-viewing-viewer #toolbar-orbitTools {
   display: none !important;
 }
@@ -156,6 +204,7 @@
 /* :host ::ng-deep .adsk-viewing-viewer #toolbar-propertiesTool {
     display: none!important
 } */
+
 /* 
 :host ::ng-deep .adsk-viewing-viewer #toolbar-settingsTool {
   display: none !important;

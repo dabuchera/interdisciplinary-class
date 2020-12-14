@@ -21,9 +21,9 @@ export class DashboardPanelChart extends DashboardPanel {
     if (!modelData.hasProperty(this.propertyToUse)) {
       alert(
         'This model does not contain a ' +
-          this.propertyToUse +
-          ' property for the ' +
-          this.constructor.name
+        this.propertyToUse +
+        ' property for the ' +
+        this.constructor.name
       );
       console.log('These are the properties available on this model: ');
       console.log(Object.keys(modelData._modelData));
@@ -33,7 +33,7 @@ export class DashboardPanelChart extends DashboardPanel {
     super.load(parentDivId, divId, viewer);
     this.canvasId = divId + 'Canvas';
     $('#' + divId).append(
-      '<canvas id="' + this.canvasId + '" width="400" height="400"></canvas>'
+      '<canvas id="' + this.canvasId + '" width="400px" height="400px"></canvas>'
     );
     this.modelData = modelData;
     return true;
@@ -66,25 +66,31 @@ export class ModelData {
   init(callback) {
     var _this = this;
 
-    _this.getAllLeafComponents(function (dbIds) {
-      var count = dbIds.length;
-      dbIds.forEach(function (dbId) {
-        this._viewer.getProperties(dbId, function (props) {
-          props.properties.forEach(function (prop) {
-            if (!isNaN(prop.displayValue)) return; // let's not categorize properties that store numbers
+    _this.getAllLeafComponents((dbIds) => {
+      let count = dbIds.length;
+      dbIds.forEach((dbId) => {
+        this._viewer.getProperties(dbId, (props) => {
+          props.properties.forEach((prop) => {
+            if (!isNaN(Number(prop.displayValue))) {
+              return; // let's not categorize properties that store numbers
+            }
 
             // some adjustments for revit:
             prop.displayValue = prop.displayValue.replace('Revit ', ''); // remove this Revit prefix
-            if (prop.displayValue.indexOf('<') == 0) return; // skip categories that start with <
+            if (prop.displayValue.indexOf('<') === 0) {
+              return;
+            } // skip categories that start with <
 
             // ok, now let's organize the data into this hash table
-            if (_this._modelData[prop.displayName] == null)
+            if (_this._modelData[prop.displayName] == null) {
               _this._modelData[prop.displayName] = {};
-            if (_this._modelData[prop.displayName][prop.displayValue] == null)
+            }
+            if (_this._modelData[prop.displayName][prop.displayValue] == null) {
               _this._modelData[prop.displayName][prop.displayValue] = [];
+            }
             _this._modelData[prop.displayName][prop.displayValue].push(dbId);
           });
-          if (--count == 0) callback();
+          if (--count == 0) { callback(); }
         });
       });
     });

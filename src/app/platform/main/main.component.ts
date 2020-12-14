@@ -126,9 +126,8 @@ export class MainComponent implements OnInit {
         // new Dashboard(this.viewerComponent.viewer, [
         // new BarChart('Material'),
         // new PieChart('Material')
-        setTimeout(() => {
-          new Dashboard(this.viewerComponent.viewer, new BarChart('Volume'));
-        }, 5000);
+        new Dashboard(this.viewerComponent.viewer, [new BarChart('NAME')]);
+
 
         // Graphische Anpassung
         // $('#forge-viewer').hide();
@@ -140,7 +139,7 @@ export class MainComponent implements OnInit {
     };
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   public async scriptsLoaded() {
     Extension.registerExtension('LeanBoxesExtension', LeanBoxesExtension);
@@ -280,21 +279,21 @@ export class MainComponent implements OnInit {
           // tslint:disable-next-line: max-line-length
           $('#' + annexClass + object.id).append(
             '<style>.' +
-              annexClass +
-              object.id +
-              ':before{content: attr(data-before); font-size: 20px; color: white;}</style>'
+            annexClass +
+            object.id +
+            ':before{content: attr(data-before); font-size: 20px; color: white;}</style>'
           );
           $('#' + annexClass + object.id).append(
             '<style>.' +
-              annexClass +
-              object.id +
-              '{width: 178px !important}</style>'
+            annexClass +
+            object.id +
+            '{width: 178px !important}</style>'
           );
           $('#' + annexClass + object.id).append(
             '<style>.' +
-              annexClass +
-              object.id +
-              '{animation: slideMe .7s ease-in;}</style>'
+            annexClass +
+            object.id +
+            '{animation: slideMe .7s ease-in;}</style>'
           );
           $('#' + annexClass + object.id.toString()).attr(
             'data-before',
@@ -427,21 +426,21 @@ export class MainComponent implements OnInit {
           // tslint:disable-next-line: max-line-length
           $('#' + annexClass + object.id).append(
             '<style>.' +
-              annexClass +
-              object.id +
-              ':before{content: attr(data-before); font-size: 20px; color: white;}</style>'
+            annexClass +
+            object.id +
+            ':before{content: attr(data-before); font-size: 20px; color: white;}</style>'
           );
           $('#' + annexClass + object.id).append(
             '<style>.' +
-              annexClass +
-              object.id +
-              '{width: 178px !important}</style>'
+            annexClass +
+            object.id +
+            '{width: 178px !important}</style>'
           );
           $('#' + annexClass + object.id).append(
             '<style>.' +
-              annexClass +
-              object.id +
-              '{animation: slideMe .7s ease-in;}</style>'
+            annexClass +
+            object.id +
+            '{animation: slideMe .7s ease-in;}</style>'
           );
           $('#' + annexClass + object.id.toString()).attr(
             'data-before',
