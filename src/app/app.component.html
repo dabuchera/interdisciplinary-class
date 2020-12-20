@@ -1,15 +1,17 @@
 <!-- The overlay -->
 <div id="overlay" class="overlay">
   <!-- Overlay content -->
-  <div class="overlay-content">
-  </div>
+  <div class="overlay-content"></div>
 </div>
 
 <div id="spinner" class="spinner">
   <div class="spinner-content">
-      <p-progressSpinner [style]="{width: '500px', height: '500px'}" strokeWidth="2" mode="indeterminate"></p-progressSpinner>
+    <p-progressSpinner
+      [style]="{ width: '500px', height: '500px' }"
+      strokeWidth="2"
+      mode="indeterminate"
+    ></p-progressSpinner>
   </div>
 </div>
-
 <app-alert></app-alert>
 <app-main [app]="this"></app-main>

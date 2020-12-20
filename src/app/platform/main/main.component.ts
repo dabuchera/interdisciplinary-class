@@ -22,6 +22,7 @@ import { Slab } from '../models/slab';
 import { Wall } from '../models/wall';
 import { Column } from '../models/column';
 import { Foundation } from '../models/foundation';
+import { Zone } from '../zones/zone';
 
 import { AuthToken } from 'forge-apis';
 import { ApiService } from 'src/app/_services/api.service';
@@ -70,8 +71,9 @@ export class MainComponent implements OnInit {
   public columns: Column[] = new Array();
   public foundations: Foundation[] = new Array();
   leafcomponents = [];
-
+  public zones: Zone[] = new Array();
   public panel: Autodesk.Viewing.UI.DockingPanel;
+  public tradeBarchart: BarChart;
 
   @ViewChild(ViewerComponent, { static: false })
   viewerComponent: ViewerComponent;
@@ -98,7 +100,7 @@ export class MainComponent implements OnInit {
         extensions: [
           'Autodesk.Snapping',
           'Autodesk.ModelStructure',
-          LeanBoxesExtension.extensionName,
+          // LeanBoxesExtension.extensionName,
 
           // CoordinatesAxesExtension.extensionName,
         ],
@@ -121,14 +123,13 @@ export class MainComponent implements OnInit {
         this.loadConcreteToolbar();
         this.loadTestToolbar();
         this.loadWDToolbar();
+        // this.loadZoneToolbar();
         this.viewerComponent.viewer.setGhosting(false);
-
-        // new Dashboard(this.viewerComponent.viewer, [
-        // new BarChart('Material'),
+        this.tradeBarchart = new BarChart('Geschoss', this.zones);
+        new Dashboard(this.viewerComponent.viewer, [this.tradeBarchart]);
         // new PieChart('Material')
-        new Dashboard(this.viewerComponent.viewer, [new BarChart('NAME')]);
 
-
+        // new BarChart();
         // Graphische Anpassung
         // $('#forge-viewer').hide();
       },
@@ -139,10 +140,10 @@ export class MainComponent implements OnInit {
     };
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {}
 
   public async scriptsLoaded() {
-    Extension.registerExtension('LeanBoxesExtension', LeanBoxesExtension);
+    // Extension.registerExtension('LeanBoxesExtension', LeanBoxesExtension);
     // Extension.registerExtension(
     //   'CoordinatesAxesExtension',
     //   CoordinatesAxesExtension
@@ -279,21 +280,21 @@ export class MainComponent implements OnInit {
           // tslint:disable-next-line: max-line-length
           $('#' + annexClass + object.id).append(
             '<style>.' +
-            annexClass +
-            object.id +
-            ':before{content: attr(data-before); font-size: 20px; color: white;}</style>'
+              annexClass +
+              object.id +
+              ':before{content: attr(data-before); font-size: 20px; color: white;}</style>'
           );
           $('#' + annexClass + object.id).append(
             '<style>.' +
-            annexClass +
-            object.id +
-            '{width: 178px !important}</style>'
+              annexClass +
+              object.id +
+              '{width: 178px !important}</style>'
           );
           $('#' + annexClass + object.id).append(
             '<style>.' +
-            annexClass +
-            object.id +
-            '{animation: slideMe .7s ease-in;}</style>'
+              annexClass +
+              object.id +
+              '{animation: slideMe .7s ease-in;}</style>'
           );
           $('#' + annexClass + object.id.toString()).attr(
             'data-before',
@@ -426,21 +427,21 @@ export class MainComponent implements OnInit {
           // tslint:disable-next-line: max-line-length
           $('#' + annexClass + object.id).append(
             '<style>.' +
-            annexClass +
-            object.id +
-            ':before{content: attr(data-before); font-size: 20px; color: white;}</style>'
+              annexClass +
+              object.id +
+              ':before{content: attr(data-before); font-size: 20px; color: white;}</style>'
           );
           $('#' + annexClass + object.id).append(
             '<style>.' +
-            annexClass +
-            object.id +
-            '{width: 178px !important}</style>'
+              annexClass +
+              object.id +
+              '{width: 178px !important}</style>'
           );
           $('#' + annexClass + object.id).append(
             '<style>.' +
-            annexClass +
-            object.id +
-            '{animation: slideMe .7s ease-in;}</style>'
+              annexClass +
+              object.id +
+              '{animation: slideMe .7s ease-in;}</style>'
           );
           $('#' + annexClass + object.id.toString()).attr(
             'data-before',
@@ -473,11 +474,16 @@ export class MainComponent implements OnInit {
     //@ts-ignore
     button1.container.children[0].classList.add('far', 'fa-question-circle');
     // button1.setIcon('far fa-question-circle');
+    const button2 = new Autodesk.Viewing.UI.Button('showing-zoning');
+    button2.addClass('showing-zoning');
+    //@ts-ignore
+    button2.container.children[0].classList.add('fas', 'fa-puzzle-piece');
     // SubToolbar
     const controlGroup = new Autodesk.Viewing.UI.ControlGroup(
       'my-custom-toolbar-test-controlgroup'
     );
     controlGroup.addControl(button1);
+    controlGroup.addControl(button2);
     // Toolbar
     // this.toolbarTest = new Autodesk.Viewing.UI.ToolBar(
     //   'my-custom-view-toolbar-test',
@@ -489,40 +495,49 @@ export class MainComponent implements OnInit {
         button1.setState(0);
         //Test functions
         console.log('Test started');
-
         this.showPropLegend();
-
-        //////////TESTING ZONES ///////////////////////
         //get current selection
         const selection = this.viewerComponent.viewer.getSelection();
+        console.log(selection);
         this.viewerComponent.viewer.clearSelection();
         if (selection.length > 0) {
-          let zones = [];
+          var zone = new Zone(this.makeid(5));
           // console.log(selection);
-          let wdZone = 0;
+          zone.wd = 0;
           selection.forEach((dbId) => {
             // console.log(props)
-            zones.push(dbId);
+            zone.dbIds.push(dbId);
+            //assign levelName to class Zone temporary solution
+            // because its doing it for every dbId, maybe if Zone[level]
+            //was an array we could throw an error if !allEntries were the same
+            // since all objects of a zone should be at the same level
+
+            var correspondingLevel = this.objectsPerLevel.find((obj) =>
+              obj.dbIds.includes(dbId)
+            );
+            // console.log(correspondingLevel);
+            zone.level = correspondingLevel.levelName;
+
             if (this.isWall(dbId)) {
               var correspondingWall = this.walls.find(
                 (obj) => obj.viewerdbId === dbId
               );
 
-              wdZone += correspondingWall.WDwF;
+              zone.wd += correspondingWall.WDwF;
             }
             if (this.isColumn(dbId)) {
               var correspondingColumn = this.columns.find(
                 (obj) => obj.viewerdbId === dbId
               );
 
-              wdZone += correspondingColumn.WDcF;
+              zone.wd += correspondingColumn.WDcF;
             }
             if (this.isSlab(dbId)) {
               var correspondingSlab = this.slabs.find(
                 (obj) => obj.viewerdbId === dbId
               );
 
-              wdZone += correspondingSlab.WDsF;
+              zone.wd += correspondingSlab.WDsF;
             }
 
             const color = new THREE.Vector4(0 / 256, 128 / 256, 0 / 256, 1);
@@ -533,29 +548,115 @@ export class MainComponent implements OnInit {
               true
             );
           });
-          console.log(zones);
-          console.log(wdZone);
+          this.zones.push(zone);
+          console.log(this.zones);
+          // var data = this.zones.map((e) => e.wd);
+          this.tradeBarchart.chart.data.datasets[1].data = [];
+          this.tradeBarchart.chart.data.labels = [];
+          // this.tradeBarchart.chart.data.datasets[1].label =
+          //   'Work Desnity of Installing Formwork per Zone';
+          this.zones.forEach((z) => {
+            this.tradeBarchart.chart.data.datasets[1].data.push(z.wd);
+            // this.tradeBarchart.chart.data.labels.push(z.id);
+          });
+          this.tradeBarchart.chart.update();
+
+          // this.tradeBarchart.chart.options.onClick((e) => { // it's not onClick actually
+          //   this.viewerComponent.viewer.isolate(zone.dbIds);
+          // });
+          // console.log(this.tradeBarchart.chart.options.onClick());
         }
-
-        // this.defineAllProp(this.slabs);
-        // this.defineAllProp(this.walls);
-        // this.defineAllProp(this.columns);
-        // this.defineAllProp(this.foundations);
-
-        // this.workDensityColorMap();
-        // console.log(this.walls);
-        // this.defineAllProp(this.walls);
-        // test coloring for slabs based on  WD formwork
-        // this.colorWdObjects(this.walls, 'WDwF');
-        // this.colorWdObjects(this.columns, 'WDcF');
-        // this.colorWdObjects(this.slabs, 'WDsF');
-        // this.colorWdObjects(this.foundations, 'WDfF');
-        // this.setupUI();
       } else {
         button1.setState(1);
 
-        while (controlGroup.getNumberOfControls() > 1) {
-          var tempID = controlGroup.getControlId(1);
+        while (controlGroup.getNumberOfControls() > 2) {
+          var tempID = controlGroup.getControlId(2);
+          controlGroup.removeControl(tempID);
+        }
+      }
+    };
+    button2.onClick = (event) => {
+      if (button2.getState() === 1) {
+        button2.setState(0);
+        //Test functions
+        console.log('Zone Test started');
+        //////////TESTING ZONES ///////////////////////
+        //get current selection
+        const selection = this.viewerComponent.viewer.getSelection();
+        console.log(selection);
+        this.viewerComponent.viewer.clearSelection();
+        if (selection.length > 0) {
+          var zone = new Zone(this.makeid(5));
+          // console.log(selection);
+          zone.wd = 0;
+          selection.forEach((dbId) => {
+            // console.log(props)
+            zone.dbIds.push(dbId);
+            //assign levelName to class Zone temporary solution
+            // because its doing it for every dbId, maybe if Zone[level]
+            //was an array we could throw an error if !allEntries were the same
+            // since all objects of a zone should be at the same level
+
+            var correspondingLevel = this.objectsPerLevel.find((obj) =>
+              obj.dbIds.includes(dbId)
+            );
+            // console.log(correspondingLevel);
+            zone.level = correspondingLevel.levelName;
+
+            if (this.isWall(dbId)) {
+              var correspondingWall = this.walls.find(
+                (obj) => obj.viewerdbId === dbId
+              );
+
+              zone.wd += correspondingWall.WDwF;
+            }
+            if (this.isColumn(dbId)) {
+              var correspondingColumn = this.columns.find(
+                (obj) => obj.viewerdbId === dbId
+              );
+
+              zone.wd += correspondingColumn.WDcF;
+            }
+            if (this.isSlab(dbId)) {
+              var correspondingSlab = this.slabs.find(
+                (obj) => obj.viewerdbId === dbId
+              );
+
+              zone.wd += correspondingSlab.WDsF;
+            }
+
+            const color = new THREE.Vector4(0 / 256, 128 / 256, 0 / 256, 1);
+            this.viewerComponent.viewer.setThemingColor(
+              dbId,
+              color,
+              this.viewerComponent.viewer.model,
+              true
+            );
+          });
+          this.zones.push(zone);
+          console.log(this.zones);
+          // var data = this.zones.map((e) => e.wd);
+          this.tradeBarchart.chart.data.datasets[0].data = [];
+          this.tradeBarchart.chart.data.labels = [];
+          this.tradeBarchart.chart.data.datasets[0].label =
+            'Work Desnity of Installing Formwork per Zone';
+          this.zones.forEach((z) => {
+            this.tradeBarchart.chart.data.datasets[0].data.push(z.wd);
+            this.tradeBarchart.chart.data.labels.push(z.id);
+          });
+          this.tradeBarchart.chart.update();
+
+          // this.tradeBarchart.chart.options.onClick((e) => { // it's not onClick actually
+          //   this.viewerComponent.viewer.isolate(zone.dbIds);
+          // });
+          // console.log(this.tradeBarchart.chart.options.onClick());
+        }
+        button2.setState(1);
+      } else {
+        // button2.setState(1);
+
+        while (controlGroup.getNumberOfControls() > 2) {
+          var tempID = controlGroup.getControlId(2);
           controlGroup.removeControl(tempID);
         }
       }
@@ -746,6 +847,9 @@ export class MainComponent implements OnInit {
         button3.setState(1);
         button4.setState(1);
         button1.setState(1);
+        /////test////////
+        // new Dashboard(this.viewerComponent.viewer, [new BarChart()]);
+        /////////////
         var list = document.getElementById('tempPanel');
         // console.log(list);
         if (list) {
@@ -1025,6 +1129,15 @@ export class MainComponent implements OnInit {
   }
 
   public makeid(length) {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    const charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+  }
+  public makeZoneid(length) {
     let result = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
     const charactersLength = characters.length;

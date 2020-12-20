@@ -1,13 +1,13 @@
 @import url("https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/style.min.css");
-/* #forge-viewer {
-    position: absolute; */
+#forge-viewer {
+  position: absolute;
 
-/* Hier noch ändern wenn Buttons weg */
+  /* Hier noch ändern wenn Buttons weg */
 
-/* width: 70%;
-    height: 90%;
-    overflow: hidden;
-} */
+  width: 60%;
+  height: 90%;
+  overflow: hidden;
+}
 
 .row {
   height: 100%;
@@ -28,6 +28,10 @@
   height: 100%;
   width: 60%;
 }
+.col-sm-4 {
+  height: 100%;
+  width: 40%;
+}
 
 .col-sm-2 {
   height: 100%;
@@ -35,6 +39,8 @@
 }
 
 #dashboard {
+  position: absolute;
+  right: 30px;
   overflow: auto;
   height: calc(100vh - 100px);
 }
@@ -44,7 +50,7 @@
 }
 
 .dashboardPanel {
-  width: 100%;
+  width: auto;
   padding: 3%;
   display: block;
 }
@@ -75,7 +81,11 @@
 
 /* Tooltip auf der rechten Seite */
 
-:host ::ng-deep .adsk-viewing-viewer .adsk-toolbar-vertical .adsk-control-tooltip {
+:host
+  ::ng-deep
+  .adsk-viewing-viewer
+  .adsk-toolbar-vertical
+  .adsk-control-tooltip {
   right: unset;
   left: 120%;
 }
