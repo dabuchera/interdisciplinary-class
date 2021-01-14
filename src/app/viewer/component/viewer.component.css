@@ -1,12 +1,6 @@
 @import url("https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/style.min.css");
 #forge-viewer {
-<<<<<<< HEAD
-  position: absolute;
-  /* relative without dimensions sticks to the box 
-  absolute with dimensions you set the position of the viewer*/
-=======
   position: relative;
->>>>>>> fc2d04bd32f982530cbf35f0c641c46262a77be8
   /* Hier noch ändern wenn Buttons weg */
   width: 100%;
   height: 100%;
@@ -18,9 +12,9 @@
   width: 100%;
 }
 
-.test{
+.test {
   height: 100% !important;
-  width: 100% !important;;
+  width: 100% !important;
 }
 
 #dashboard {
