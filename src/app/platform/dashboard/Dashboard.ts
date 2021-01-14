@@ -26,18 +26,15 @@ export class Dashboard {
     // this function may vary for layout to layout...
     // for learn forge tutorials, let's get the ROW and adjust the size of the
     // columns so it can fit the new dashboard column, also we added a smooth transition css class for a better user experience
-    const row = $('.row').children();
-    $(row[0]).removeClass('col-sm-12').addClass('col-sm-8 transition-width');
-    // console.log(row[0]);
-    // $(row[1]).removeClass('col-sm-12').addClass('col-sm-4 transition-width');
-    $(row[1])
-      .removeClass('col-sm-12')
-      .addClass('col-sm-4 transition-width')
-      .after('<div class="col-sm-4 transition-width" id="dashboard"></div>');
-    // $(row[1])
-    //   .removeClass('col-sm-0')
-    //   .addClass('col-sm-2 transition-width')
-    //   .after('<div class="col-sm-2 transition-width" id="dashboard"></div>');
+
+    /////////////////////////// Commented that out ///////////////////////
+
+    // // // // // const row = $('.row').children();
+    // // // // // $(row[0]).removeClass('col-sm-12').addClass('col-sm-8 transition-width');
+    // // // // // $(row[1])
+    // // // // //   .removeClass('col-sm-12')
+    // // // // //   .addClass('col-sm-4 transition-width')
+    // // // // //   .after('<div class="col-sm-4 transition-width" id="dashboard"></div>');
   }
   // loadPanels() {
   // const data = new ModelData(this._viewer);
