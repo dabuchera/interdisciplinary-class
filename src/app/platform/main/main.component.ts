@@ -551,12 +551,12 @@ export class MainComponent implements OnInit {
           this.zones.push(zone);
           console.log(this.zones);
           // var data = this.zones.map((e) => e.wd);
-          this.tradeBarchart.chart.data.datasets[1].data = [];
+          this.tradeBarchart.chart.data.datasets[0].data = [];
           this.tradeBarchart.chart.data.labels = [];
           // this.tradeBarchart.chart.data.datasets[1].label =
           //   'Work Desnity of Installing Formwork per Zone';
           this.zones.forEach((z) => {
-            this.tradeBarchart.chart.data.datasets[1].data.push(z.wd);
+            this.tradeBarchart.chart.data.datasets[0].data.push(z.wd);
             // this.tradeBarchart.chart.data.labels.push(z.id);
           });
           this.tradeBarchart.chart.update();

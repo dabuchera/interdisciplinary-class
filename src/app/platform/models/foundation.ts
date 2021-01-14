@@ -25,7 +25,7 @@ export class Foundation extends Element {
   constructor(
     id: string,
     dbId: number,
-    viewerdbId?: number,
+    viewerdbId: number,
     volume?: number,
     category?: string,
     area?: number,

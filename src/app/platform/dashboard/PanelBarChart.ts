@@ -92,7 +92,7 @@ export class BarChart extends DashboardPanelChart {
     var colors = this.generateColors(
       this.modelData.getLabels(this.propertyToUse).length
     );
-    console.log(this.modelData.getCountInstances(this.propertyToUse));
+    // console.log(this.modelData.getCountInstances(this.propertyToUse));
 
     // _this.modelData.getIds(_this.propertyToUse, ctx[0]._model.label);
 
@@ -111,15 +111,15 @@ export class BarChart extends DashboardPanelChart {
             borderColor: colors.borders,
             borderWidth: 1,
           },
-          {
-            label: 'Reinforcement',
-            // data: this.modelData.getCountInstances(this.propertyToUse),
-            data: [],
+          // {
+          //   label: 'Reinforcement',
+          //   // data: this.modelData.getCountInstances(this.propertyToUse),
+          //   data: [],
 
-            backgroundColor: colors.background,
-            borderColor: colors.borders,
-            borderWidth: 1,
-          },
+          //   backgroundColor: colors.background,
+          //   borderColor: colors.borders,
+          //   borderWidth: 1,
+          // },
         ],
       },
       options: {
