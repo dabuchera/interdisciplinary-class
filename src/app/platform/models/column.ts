@@ -3,6 +3,8 @@ import { Element } from './element';
 export class Column extends Element {
   perimeter: number;
   length: number;
+  Breite: number;
+  Tiefe: number;
   WDcF: number;
   WDcR: number;
   WDcC: number;
@@ -27,6 +29,8 @@ export class Column extends Element {
     category?: string,
     perimeter?: number,
     length?: number,
+    Breite?: number,
+    Tiefe?: number,
     WDcF?: number,
     WDcR?: number,
     WDcC?: number,
@@ -48,6 +52,8 @@ export class Column extends Element {
     this.category = category;
     this.perimeter = perimeter;
     this.length = length;
+    this.Breite = Breite;
+    this.Tiefe = Tiefe;
     // First set with fixed values for PR & CS
     this.csF = csF;
     this.prF = prF;

@@ -36,6 +36,7 @@ import { Utils } from '../../utils';
 import html from './legendTemplate.html';
 import { BarChart } from '../dashboard/PanelBarChart';
 import { LeanBoxesExtension } from '../extensions/leanBoxes';
+import { unescapeIdentifier } from '@angular/compiler';
 
 // Function for async forEach
 const asyncForEach = async (array, callback) => {
@@ -79,9 +80,11 @@ export class MainComponent implements OnInit {
   viewerComponent: ViewerComponent;
 
   constructor(private api: ApiService) {
-    this.api.getspecificProject('5faa62b2079c07001454c421').then((res) => {
-      this.encodedmodelurn = res.encodedmodelurn;
-    });
+    // this.api.getspecificProject('5faa62b2079c07001454c421').then((res) => {
+    //   this.encodedmodelurn = res.encodedmodelurn;
+    // });
+    this.encodedmodelurn =
+      'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6bW9kZWwyMDIxLTAxLTE1LTEzLTA1LTI4LWQ0MWQ4Y2Q5OGYwMGIyMDRlOTgwMDk5OGVjZjg0MjdlL2hidF8yMTAxMDVfMTQyOC1TQlowMF9BcmNoaXRla3R1ci5pZmM=';
     this.viewerOptions3d = {
       initializerOptions: {
         env: 'AutodeskProduction',
@@ -503,7 +506,11 @@ export class MainComponent implements OnInit {
         if (selection.length > 0) {
           var zone = new Zone(this.makeid(5));
           // console.log(selection);
-          zone.wd = 0;
+          zone.wdF = 0;
+          zone.wdR = 0;
+          zone.wdC = 0;
+          zone.wdCR = 0;
+          zone.wdS = 0;
           selection.forEach((dbId) => {
             // console.log(props)
             zone.dbIds.push(dbId);
@@ -517,29 +524,116 @@ export class MainComponent implements OnInit {
             );
             // console.log(correspondingLevel);
             zone.level = correspondingLevel.levelName;
-
+            //FORMWORK
             if (this.isWall(dbId)) {
               var correspondingWall = this.walls.find(
                 (obj) => obj.viewerdbId === dbId
               );
 
-              zone.wd += correspondingWall.WDwF;
+              zone.wdF += correspondingWall.WDwF;
             }
             if (this.isColumn(dbId)) {
               var correspondingColumn = this.columns.find(
                 (obj) => obj.viewerdbId === dbId
               );
 
-              zone.wd += correspondingColumn.WDcF;
+              zone.wdF += correspondingColumn.WDcF;
             }
             if (this.isSlab(dbId)) {
               var correspondingSlab = this.slabs.find(
                 (obj) => obj.viewerdbId === dbId
               );
 
-              zone.wd += correspondingSlab.WDsF;
+              zone.wdF += correspondingSlab.WDsF;
             }
+            //REINFORCEMENT
+            if (this.isWall(dbId)) {
+              var correspondingWall = this.walls.find(
+                (obj) => obj.viewerdbId === dbId
+              );
 
+              zone.wdR += correspondingWall.WDwR;
+            }
+            if (this.isColumn(dbId)) {
+              var correspondingColumn = this.columns.find(
+                (obj) => obj.viewerdbId === dbId
+              );
+
+              zone.wdR += correspondingColumn.WDcR;
+            }
+            if (this.isSlab(dbId)) {
+              var correspondingSlab = this.slabs.find(
+                (obj) => obj.viewerdbId === dbId
+              );
+
+              zone.wdR += correspondingSlab.WDsR;
+            }
+            //CONCRETE
+            if (this.isWall(dbId)) {
+              var correspondingWall = this.walls.find(
+                (obj) => obj.viewerdbId === dbId
+              );
+
+              zone.wdC += correspondingWall.WDwC;
+            }
+            if (this.isColumn(dbId)) {
+              var correspondingColumn = this.columns.find(
+                (obj) => obj.viewerdbId === dbId
+              );
+
+              zone.wdC += correspondingColumn.WDcC;
+            }
+            if (this.isSlab(dbId)) {
+              var correspondingSlab = this.slabs.find(
+                (obj) => obj.viewerdbId === dbId
+              );
+
+              zone.wdC += correspondingSlab.WDsC;
+            }
+            //CURING
+            if (this.isWall(dbId)) {
+              var correspondingWall = this.walls.find(
+                (obj) => obj.viewerdbId === dbId
+              );
+
+              zone.wdCR = correspondingWall.WDwCR;
+            }
+            if (this.isColumn(dbId)) {
+              var correspondingColumn = this.columns.find(
+                (obj) => obj.viewerdbId === dbId
+              );
+
+              zone.wdCR = correspondingColumn.WDcCR;
+            }
+            if (this.isSlab(dbId)) {
+              var correspondingSlab = this.slabs.find(
+                (obj) => obj.viewerdbId === dbId
+              );
+
+              zone.wdCR = correspondingSlab.WDsCR;
+            }
+            //STRIP
+            if (this.isWall(dbId)) {
+              var correspondingWall = this.walls.find(
+                (obj) => obj.viewerdbId === dbId
+              );
+
+              zone.wdS += correspondingWall.WDwS;
+            }
+            if (this.isColumn(dbId)) {
+              var correspondingColumn = this.columns.find(
+                (obj) => obj.viewerdbId === dbId
+              );
+
+              zone.wdS += correspondingColumn.WDcS;
+            }
+            if (this.isSlab(dbId)) {
+              var correspondingSlab = this.slabs.find(
+                (obj) => obj.viewerdbId === dbId
+              );
+
+              zone.wdS += correspondingSlab.WDsS;
+            }
             const color = new THREE.Vector4(0 / 256, 128 / 256, 0 / 256, 1);
             this.viewerComponent.viewer.setThemingColor(
               dbId,
@@ -551,12 +645,30 @@ export class MainComponent implements OnInit {
           this.zones.push(zone);
           console.log(this.zones);
           // var data = this.zones.map((e) => e.wd);
+          // this.tradeBarchart.chart.data.datasets[0].data = [];
+          // this.tradeBarchart.chart.data.labels = [];
           this.tradeBarchart.chart.data.datasets[0].data = [];
           this.tradeBarchart.chart.data.labels = [];
-          // this.tradeBarchart.chart.data.datasets[1].label =
-          //   'Work Desnity of Installing Formwork per Zone';
+          this.tradeBarchart.chart.data.datasets[1].data = [];
+          // this.tradeBarchart.chart.data.labels = [];
+          this.tradeBarchart.chart.data.datasets[2].data = [];
+          // this.tradeBarchart.chart.data.labels = [];
+          this.tradeBarchart.chart.data.datasets[3].data = [];
+          // this.tradeBarchart.chart.data.labels = [];
+          this.tradeBarchart.chart.data.datasets[4].data = [];
+          // this.tradeBarchart.chart.data.labels = [];
+
           this.zones.forEach((z) => {
-            this.tradeBarchart.chart.data.datasets[0].data.push(z.wd);
+            // this.tradeBarchart.chart.data.datasets[0].data.push(z.wd);
+            this.tradeBarchart.chart.data.datasets[0].data.push(z.wdF);
+            this.tradeBarchart.chart.data.labels.push(z.id);
+            this.tradeBarchart.chart.data.datasets[1].data.push(z.wdR);
+            // this.tradeBarchart.chart.data.labels.push(z.id);
+            this.tradeBarchart.chart.data.datasets[2].data.push(z.wdC);
+            // this.tradeBarchart.chart.data.labels.push(z.id);
+            this.tradeBarchart.chart.data.datasets[3].data.push(z.wdCR);
+            // this.tradeBarchart.chart.data.labels.push(z.id);
+            this.tradeBarchart.chart.data.datasets[4].data.push(z.wdS);
             // this.tradeBarchart.chart.data.labels.push(z.id);
           });
           this.tradeBarchart.chart.update();
@@ -566,6 +678,7 @@ export class MainComponent implements OnInit {
           // });
           // console.log(this.tradeBarchart.chart.options.onClick());
         }
+        // button1.setState(1);
       } else {
         button1.setState(1);
 
@@ -591,6 +704,22 @@ export class MainComponent implements OnInit {
           zone.wd = 0;
           selection.forEach((dbId) => {
             // console.log(props)
+            // Store the
+            this.columns.find((column) => {
+              if (column.viewerdbId === dbId) {
+                zone.objects.push(column);
+              }
+            });
+            this.walls.find((wall) => {
+              if (wall.viewerdbId === dbId) {
+                zone.objects.push(wall);
+              }
+            });
+            this.slabs.find((slab) => {
+              if (slab.viewerdbId === dbId) {
+                zone.objects.push(slab);
+              }
+            });
             zone.dbIds.push(dbId);
             //assign levelName to class Zone temporary solution
             // because its doing it for every dbId, maybe if Zone[level]
@@ -638,8 +767,8 @@ export class MainComponent implements OnInit {
           // var data = this.zones.map((e) => e.wd);
           this.tradeBarchart.chart.data.datasets[0].data = [];
           this.tradeBarchart.chart.data.labels = [];
-          this.tradeBarchart.chart.data.datasets[0].label =
-            'Work Desnity of Installing Formwork per Zone';
+          // this.tradeBarchart.chart.data.datasets[0].label =
+          //   'Work Desnity of Installing Formwork per Zone';
           this.zones.forEach((z) => {
             this.tradeBarchart.chart.data.datasets[0].data.push(z.wd);
             this.tradeBarchart.chart.data.labels.push(z.id);
@@ -891,20 +1020,20 @@ export class MainComponent implements OnInit {
         await this.storeConcreteElements().then(async () => {
           // $('canvas').show();
           // $('.lds-roller').hide();
-          if (
-            Utils.getColumns() &&
-            Utils.getFoundations() &&
-            Utils.getSlabs() &&
-            Utils.getWalls()
-          ) {
-            this.columns = Utils.getColumns();
-            this.foundations = Utils.getFoundations();
-            this.slabs = Utils.getSlabs();
-            this.walls = Utils.getWalls();
-            $('canvas').show();
-            $('.lds-roller').hide();
-            return null;
-          }
+          // if (
+          //   Utils.getColumns() &&
+          //   Utils.getFoundations() &&
+          //   Utils.getSlabs() &&
+          //   Utils.getWalls()
+          // ) {
+          //   this.columns = Utils.getColumns();
+          //   this.foundations = Utils.getFoundations();
+          //   this.slabs = Utils.getSlabs();
+          //   this.walls = Utils.getWalls();
+          //   $('canvas').show();
+          //   $('.lds-roller').hide();
+          //   return null;
+          // }
           await this.storeCategoryObjects().then(async () => {
             console.log('storeCategoryObjects');
             // console.log(this.columns);
@@ -920,10 +1049,10 @@ export class MainComponent implements OnInit {
                   this.calcWD(this.walls);
                   this.calcWD(this.columns);
                   // Store Objects to localstorage
-                  Utils.setColumns(this.columns);
-                  Utils.setFoundations(this.foundations);
-                  Utils.setSlabs(this.slabs);
-                  Utils.setWalls(this.walls);
+                  // Utils.setColumns(this.columns);
+                  // Utils.setFoundations(this.foundations);
+                  // Utils.setSlabs(this.slabs);
+                  // Utils.setWalls(this.walls);
                   console.log('finished');
                   $('canvas').show();
                   $('.lds-roller').hide();
@@ -1049,16 +1178,18 @@ export class MainComponent implements OnInit {
   public async storeCategoryObjects() {
     const allDbIds = this.getAllDbIds();
     return await this.getBulkProperties(allDbIds, [
-      'Category',
+      'Kategorie',
       'Material',
     ]).then((res) => {
-      // console.log(res);
+      console.log(allDbIds);
       if (Array.isArray(res)) {
         let resNew = res.filter((item) => item.properties.length > 1);
         return asyncForEach(resNew, (element) => {
+          console.log(element);
           if (
-            element.properties[0].displayValue === 'IMP_Beton' &&
-            element.properties[1].displayValue === 'Walls'
+            element.properties[0].displayValue ===
+              'hbt_Beton_Konstruktionsbeton' &&
+            element.properties[1].displayValue === 'Wände'
           ) {
             const wall = new Wall(
               this.makeid(5),
@@ -1068,23 +1199,27 @@ export class MainComponent implements OnInit {
             wall.category = 'Wall';
             this.walls.push(wall);
           } else if (
-            element.properties[0].displayValue === 'IMP_Beton' &&
-            element.properties[1].displayValue === 'Floors'
+            element.properties[0].displayValue ===
+              'hbt_Beton_Konstruktionsbeton' &&
+            element.properties[1].displayValue === 'Geschossdecken'
           ) {
             const slab = new Slab(
               this.makeid(5),
               element.dbId,
+              // element.dbId
               this.getLeafComponentsRec(element.dbId)
             );
             slab.category = 'Slab';
             this.slabs.push(slab);
           } else if (
-            element.properties[0].displayValue === 'IMP_Beton' &&
-            element.properties[1].displayValue === 'Structural Columns'
+            element.properties[0].displayValue ===
+              'hbt_Beton_Konstruktionsbeton' &&
+            element.properties[1].displayValue === 'Tragwerksstützen'
           ) {
             const column = new Column(
               this.makeid(5),
               element.dbId,
+              // element.dbId
               this.getLeafComponentsRec(element.dbId)
             );
             column.category = 'Column';
@@ -1099,7 +1234,8 @@ export class MainComponent implements OnInit {
               let resNew = res.filter((item) => item.properties.length > 1);
               asyncForEach(resNew, (element) => {
                 if (
-                  element.properties[0].displayValue === 'IMP_Beton' &&
+                  element.properties[0].displayValue ===
+                    'hbt_Beton_Konstruktionsbeton' &&
                   element.properties[1].displayValue === 'ROOF'
                 ) {
                   const slab = new Slab(
@@ -1154,26 +1290,29 @@ export class MainComponent implements OnInit {
           return await asyncForEach(data, async (element) => {
             return await asyncForEach(element.properties, (prop) => {
               if (
-                prop.displayName === 'GrossVolume' ||
-                prop.displayName === 'Volume'
+                // prop.displayName === 'NetVolume' ||
+                prop.displayName === 'Volumen'
               ) {
                 item.volume = parseFloat(prop.displayValue);
                 // console.log(item);
               } else if (
-                prop.displayName === 'GrossArea' || // GrossArea is taekn from Quantities
-                prop.displayName === 'Area' // Area is taken from Dimensions, but it's the same value
+                prop.displayName === 'GrossArea' || // GrossArea is taekn from Quantities,Area is taken from Dimensions, but it's the same value
+                prop.displayName === 'Fläche' //
               ) {
                 item.area = parseFloat(prop.displayValue);
-              } else if (prop.displayName === 'Thickness') {
+              } else if (prop.displayName === 'Dicke') {
                 item.thickness = parseFloat(prop.displayValue);
               } else if (
-                prop.displayName === 'Perimeter' ||
-                prop.displayName === 'Umfang' ||
+                prop.displayName === 'Perimeter'
+                // prop.displayName === 'Umfang' ||
                 // not all columns especially prefabricated have property perimeter
-                prop.displayName === 'Umfang_Kreis'
+                // prop.displayName === 'Umfang_Kreis'
               ) {
                 item.perimeter = parseFloat(prop.displayValue);
-              } else if (prop.displayName === 'GrossSideArea') {
+              } else if (
+                prop.displayName === 'NetSideArea' || //the 2nd NetSideArea is the correct one, normally here id the GrossSideArea used
+                prop.displayName === 'NetSideArea'
+              ) {
                 item.sideArea = parseFloat(prop.displayValue);
               } else if (prop.displayName === 'Width') {
                 item.width = parseFloat(prop.displayValue);
@@ -1181,14 +1320,15 @@ export class MainComponent implements OnInit {
                 item.height = parseFloat(prop.displayValue);
               } else if (
                 prop.displayName === 'Length' &&
-                // There is the same property in the category of dimensions [especially for WALLS] and it's not the same value
+                // There is  for WALLS
                 prop.displayCategory === 'Quantities'
               ) {
                 item.length = parseFloat(prop.displayValue);
-              } else if (
-                // There is the same property in the category of dimensions [especially for WALLS] and it's not the same value
-                prop.displayName === 'Stützenhöhe'
-              ) {
+              } else if (prop.displayName === 'Breite') {
+                item.Breite = parseFloat(prop.displayValue);
+              } else if (prop.displayName === 'Tiefe') {
+                item.Tiefe = parseFloat(prop.displayValue);
+              } else if (!item.length && prop.displayName === 'Länge') {
                 item.length = parseFloat(prop.displayValue);
               }
             }).then(() => {
@@ -1281,6 +1421,9 @@ export class MainComponent implements OnInit {
         break;
       case this.columns:
         this.columns.forEach((element) => {
+          if (!element.perimeter) {
+            element.perimeter = 2 * element.Breite * element.Tiefe;
+          }
           element.WDcF =
             (element.perimeter * element.length * element.prF) / element.csF;
           element.WDcR = (0.15 * element.volume * element.prR) / element.csR;
@@ -2024,8 +2167,14 @@ export class MainComponent implements OnInit {
           correspondingWall.sideArea.toFixed(2) +
           '</div>';
         // @ts-ignore
+        $(this.panel.container).find('#lengthProp')[0].childNodes[1].innerHTML =
+          "<div class='box'>" + 'Unset' + '</div>';
+        // @ts-ignore
         $(this.panel.container).find('#heightProp')[0].childNodes[1].innerHTML =
           "<div class='box'>" + correspondingWall.height.toFixed(2) + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#perimProp')[0].childNodes[1].innerHTML =
+          "<div class='box'>" + 'Unset' + '</div>';
         // @ts-ignore
         $(this.panel.container).find('#widthProp')[0].childNodes[1].innerHTML =
           "<div class='box'>" + correspondingWall.width.toFixed(2) + '</div>';
@@ -2086,15 +2235,24 @@ export class MainComponent implements OnInit {
           correspondingColumn.volume.toFixed(2) +
           '</div>';
         // @ts-ignore
-        $(this.panel.container).find('#perimProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" +
-          correspondingColumn.perimeter.toFixed(2) +
-          '</div>';
+        $(this.panel.container).find('#areaProp')[0].childNodes[1].innerHTML =
+          "<div class='box'>" + 'Unset' + '</div>';
         // @ts-ignore
         $(this.panel.container).find('#lengthProp')[0].childNodes[1].innerHTML =
           "<div class='box'>" +
           correspondingColumn.length.toFixed(2) +
           '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#heightProp')[0].childNodes[1].innerHTML =
+          "<div class='box'>" + 'Unset' + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#perimProp')[0].childNodes[1].innerHTML =
+          "<div class='box'>" +
+          correspondingColumn.perimeter.toFixed(2) +
+          '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#widthProp')[0].childNodes[1].innerHTML =
+          "<div class='box'>" + 'Unset' + '</div>';
         // @ts-ignore
         $(this.panel.container).find('#prFormProp')[0].childNodes[1].innerHTML =
           "<div class='box'>" + correspondingColumn.prF + '</div>';
@@ -2150,13 +2308,19 @@ export class MainComponent implements OnInit {
         $(this.panel.container).find('#volumeProp')[0].childNodes[1].innerHTML =
           "<div class='box'>" + correspondingSlab.volume.toFixed(2) + '</div>';
         // @ts-ignore
+        $(this.panel.container).find('#areaProp')[0].childNodes[1].innerHTML =
+          "<div class='box'>" + correspondingSlab.area.toFixed(2) + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#lengthProp')[0].childNodes[1].innerHTML =
+          "<div class='box'>" + 'Unset' + '</div>';
+        // @ts-ignore
+        $(this.panel.container).find('#heightProp')[0].childNodes[1].innerHTML =
+          "<div class='box'>" + 'Unset' + '</div>';
+        // @ts-ignore
         $(this.panel.container).find('#perimProp')[0].childNodes[1].innerHTML =
           "<div class='box'>" +
           correspondingSlab.perimeter.toFixed(2) +
           '</div>';
-        // @ts-ignore
-        $(this.panel.container).find('#areaProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + correspondingSlab.area.toFixed(2) + '</div>';
         // @ts-ignore
         $(this.panel.container).find('#widthProp')[0].childNodes[1].innerHTML =
           "<div class='box'>" +
@@ -2209,6 +2373,8 @@ export class MainComponent implements OnInit {
     console.log('selectionChanged');
     const dbIdArray = (event as any).dbIdArray;
     this.changePanelValue(dbIdArray);
+    console.log(this.getLeafComponentsRec(dbIdArray[0]));
+
     // this.storeConcrCategObjects();
     ///////////////////////////// TESTING THREEJS/////////////////////////////////////////
     this.handleMouseMove(event);
@@ -2216,30 +2382,52 @@ export class MainComponent implements OnInit {
 
     var meshInfo = this.getComponentGeometry(dbIdArray[0]);
 
-    console.log(meshInfo);
+    // console.log(meshInfo);
 
     // console.log(meshInfo);
     ///////////////////////////// TESTING ///////////////////////////////////////
-    // this.viewerComponent.viewer.model.getProperties(dbIdArray[0], (data) =>
-    // console.log(data)
-    // );
+    console.log(this.walls);
+    console.log(this.slabs);
+    console.log(this.columns);
+
     // var root = this.viewerComponent.viewer.model.getInstanceTree().getRootId();
-    // // console.log(root);
-    // var parent = this.viewerComponent.viewer.model
-    //   .getInstanceTree()
-    //   .getNodeParentId(dbIdArray[0]);
-    // // console.log(parent);
-    // var parentOfParent = this.viewerComponent.viewer.model
-    //   .getInstanceTree()
-    //   .getNodeParentId(parent);
-    // // console.log(parentOfParent);
-    // var parentOfParentOfParent = this.viewerComponent.viewer.model
-    //   .getInstanceTree()
-    //   .getNodeParentId(parentOfParent);
-    // // console.log(parentOfParentOfParent);
-    // this.viewerComponent.viewer.model.getProperties(parent, (data) =>
-    //   console.log(data)
-    // );
+    // console.log(root);
+    console.log('dbid');
+    console.log('----------');
+    console.log(dbIdArray[0]);
+    var parent = this.viewerComponent.viewer.model
+      .getInstanceTree()
+      .getNodeParentId(dbIdArray[0]);
+    console.log('parent');
+    console.log('----------');
+    console.log(parent);
+    var parentOfParent = this.viewerComponent.viewer.model
+      .getInstanceTree()
+      .getNodeParentId(parent);
+    console.log('parentOFparent');
+    console.log('----------');
+    console.log(parentOfParent);
+    var parentOfParentOfParent = this.viewerComponent.viewer.model
+      .getInstanceTree()
+      .getNodeParentId(parentOfParent);
+    console.log('parentOFparentOFparent');
+    console.log('----------');
+    console.log(parentOfParentOfParent);
+    console.log('dbId DATA');
+    console.log('----------');
+    this.viewerComponent.viewer.model.getProperties(dbIdArray[0], (data) =>
+      console.log(data)
+    );
+    console.log('parentDATA');
+    console.log('----------');
+    this.viewerComponent.viewer.model.getProperties(parent, (data) =>
+      console.log(data)
+    );
+    console.log('ParentOfparentDATA');
+    console.log('----------');
+    this.viewerComponent.viewer.model.getProperties(parentOfParent, (data) =>
+      console.log(data)
+    );
 
     // this.workDensityColorMap();
     // this.colorWdObjects(this.walls, 'WDwCR');

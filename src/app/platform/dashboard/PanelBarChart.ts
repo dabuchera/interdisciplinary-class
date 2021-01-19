@@ -103,7 +103,7 @@ export class BarChart extends DashboardPanelChart {
         labels: [],
         datasets: [
           {
-            label: 'Formwork',
+            label: 'Install Formwork',
             // data: this.modelData.getCountInstances(this.propertyToUse),
             data: [],
 
@@ -111,15 +111,42 @@ export class BarChart extends DashboardPanelChart {
             borderColor: colors.borders,
             borderWidth: 1,
           },
-          // {
-          //   label: 'Reinforcement',
-          //   // data: this.modelData.getCountInstances(this.propertyToUse),
-          //   data: [],
+          {
+            label: 'Install Reinforcement',
+            // data: this.modelData.getCountInstances(this.propertyToUse),
+            data: [],
 
-          //   backgroundColor: colors.background,
-          //   borderColor: colors.borders,
-          //   borderWidth: 1,
-          // },
+            backgroundColor: colors.background,
+            borderColor: colors.borders,
+            borderWidth: 1,
+          },
+          {
+            label: 'Pour Concrete',
+            // data: this.modelData.getCountInstances(this.propertyToUse),
+            data: [],
+
+            backgroundColor: colors.background,
+            borderColor: colors.borders,
+            borderWidth: 1,
+          },
+          {
+            label: 'Curing',
+            // data: this.modelData.getCountInstances(this.propertyToUse),
+            data: [],
+
+            backgroundColor: colors.background,
+            borderColor: colors.borders,
+            borderWidth: 1,
+          },
+          {
+            label: 'Strip Formwork',
+            // data: this.modelData.getCountInstances(this.propertyToUse),
+            data: [],
+
+            backgroundColor: colors.background,
+            borderColor: colors.borders,
+            borderWidth: 1,
+          },
         ],
       },
       options: {
