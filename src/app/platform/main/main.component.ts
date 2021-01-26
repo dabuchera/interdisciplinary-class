@@ -500,39 +500,48 @@ export class MainComponent implements OnInit {
     //buttons for Crew Size (3,4,5,6)
     const button3 = new Autodesk.Viewing.UI.Button('optimizing-crewSizeF');
     button3.addClass('optimizing-crewSizeF');
+    button3.setToolTip('Change CS of Installing Formwork');
     //@ts-ignore
     button3.container.children[0].classList.add('fab', 'fa-facebook-f');
 
     const button4 = new Autodesk.Viewing.UI.Button('optimizing-crewSizeR');
     button4.addClass('optimizing-crewSizeR');
+    button4.setToolTip('Change CS of Installing Reinforcement');
     //@ts-ignore
     button4.container.children[0].classList.add('far', 'fa-registered');
-    // const button5 = new Autodesk.Viewing.UI.Button('optimizing-crewSizeC');
-    // button5.addClass('optimizing-crewSizeC');
-    // //@ts-ignore
-    // button5.container.children[0].classList.add('fas', 'fa-truck-pickup');
-    // const button6 = new Autodesk.Viewing.UI.Button('optimizing-crewSizeS');
-    // button6.addClass('optimizing-crewSizeS');
-    // //@ts-ignore
-    // button6.container.children[0].classList.add('fab', 'fa-stripe-s');
-    // //buttons for Crew Size (7,8,9,10)
+    const button5 = new Autodesk.Viewing.UI.Button('optimizing-crewSizeC');
+    button5.addClass('optimizing-crewSizeC');
+    button5.setToolTip('Change CS of Pouring Concrete');
+    //@ts-ignore
+    button5.container.children[0].classList.add('fas', 'fa-truck-pickup');
+    const button6 = new Autodesk.Viewing.UI.Button('optimizing-crewSizeS');
+    button6.addClass('optimizing-crewSizeS');
+    button6.setToolTip('Change CS of Stripping Formwork');
+    //@ts-ignore
+    button6.container.children[0].classList.add('fab', 'fa-stripe-s');
+    //buttons for Production Rates (7,8,9,10)
     const button7 = new Autodesk.Viewing.UI.Button('optimizing-ProdRateF');
     button7.addClass('optimizing-ProdRateF');
+    button7.setToolTip('Change PR of Installing Formwork');
     //@ts-ignore
     button7.container.children[0].classList.add('fab', 'fa-facebook-f');
 
     const button8 = new Autodesk.Viewing.UI.Button('optimizing-ProdRateR');
     button8.addClass('optimizing-ProdRateR');
+    button8.setToolTip('Change PR of Installing Reinforcement');
     //@ts-ignore
     button8.container.children[0].classList.add('far', 'fa-registered');
-    // const button9 = new Autodesk.Viewing.UI.Button('optimizing-ProdRateC');
-    // button9.addClass('optimizing-ProdRateC');
-    // //@ts-ignore
-    // button9.container.children[0].classList.add('fas', 'fa-truck-pickup');
-    // const button10 = new Autodesk.Viewing.UI.Button('optimizing-ProdRateS');
-    // button10.addClass('optimizing-ProdRateS');
-    // //@ts-ignore
-    // button10.container.children[0].classList.add('fab', 'fa-stripe-s');
+    const button9 = new Autodesk.Viewing.UI.Button('optimizing-ProdRateC');
+    button9.addClass('optimizing-ProdRateC');
+    button9.setToolTip('Change PR of Pouring Concrete');
+    //@ts-ignore
+    button9.container.children[0].classList.add('fas', 'fa-truck-pickup');
+    const button10 = new Autodesk.Viewing.UI.Button('optimizing-ProdRateS');
+    button10.addClass('optimizing-ProdRateS');
+    button10.setToolTip('Change PR of Stripping Formwork');
+    //@ts-ignore
+    button10.container.children[0].classList.add('fab', 'fa-stripe-s');
+    //Buttons for deleting (11,12)
     const button11 = new Autodesk.Viewing.UI.Button('deleting-lastZone');
     button11.addClass('deleting-lastZone');
     button11.setToolTip('Delete last Zone');
@@ -542,8 +551,8 @@ export class MainComponent implements OnInit {
     button12.addClass('deleting-allZones');
     button12.setToolTip('Delete All Zones');
     //@ts-ignore
-    button12.container.children[0].classList.add('far', 'fa-trash-alt');
-
+    button12.container.children[0].classList.add('fas', 'fa-trash');
+    //Combo Buttons
     const combButton1 = new Autodesk.Viewing.UI.ComboButton(
       'my-custom-comboButton-crewSize'
     );
@@ -559,222 +568,53 @@ export class MainComponent implements OnInit {
     combButton2.setToolTip('Optimize Production Rate');
     //@ts-ignore
     combButton2.container.children[2].classList.add('fas', 'fa-people-carry');
+    const combButton3 = new Autodesk.Viewing.UI.ComboButton(
+      'my-custom-comboButton-delete'
+    );
+    combButton3.addClass('my-custom-comboButton-delete');
+    combButton3.setToolTip('Delete Options');
+    //@ts-ignore
+    combButton3.container.children[2].classList.add('far', 'fa-trash-alt');
     //@ts-ignore
     combButton1.addControl(button3);
     //@ts-ignore
     combButton1.addControl(button4);
-    // //@ts-ignore
-    // combButton1.addControl(button5);
-    // //@ts-ignore
-    // combButton1.addControl(button6);
+    //@ts-ignore
+    combButton1.addControl(button5);
+    //@ts-ignore
+    combButton1.addControl(button6);
     //@ts-ignore
     combButton2.addControl(button7);
     //@ts-ignore
     combButton2.addControl(button8);
-    // //@ts-ignore
-    // combButton2.addControl(button9);
-    // //@ts-ignore
-    // combButton2.addControl(button10);
-
+    //@ts-ignore
+    combButton2.addControl(button9);
+    //@ts-ignore
+    combButton2.addControl(button10);
+    //@ts-ignore
+    combButton3.addControl(button11);
+    //@ts-ignore
+    combButton3.addControl(button12);
+    //Control Group
     controlGroup.addControl(button1);
     controlGroup.addControl(button2);
-    controlGroup.addControl(button11);
-    controlGroup.addControl(button12);
-
+    controlGroup.addControl(combButton3);
     controlGroup.addControl(combButton1);
     controlGroup.addControl(combButton2);
 
     button1.onClick = (event) => {
-      // if (button1.getState() === 1) {
-      // button1.setState(0);
       //Test functions
       console.log('Test started');
       this.showPropLegend();
       //get current selection
       const selection = this.viewerComponent.viewer.getSelection();
-      console.log(selection);
-      // console.log(this.belongsToAllZones(selection));
+      // console.log(selection);
       this.viewerComponent.viewer.clearSelection();
       if (selection.length > 0 && !this.belongsToAllZones(selection)) {
         var zone = new Zone(this.makeid(5));
-        // console.log(selection);
-        zone.wdF = 0;
-        zone.wdR = 0;
-        zone.wdC = 0;
-        zone.wdCR = 0;
-        zone.wdS = 0;
-        selection.forEach((dbId) => {
-          // console.log(props)
-          this.columns.find((column) => {
-            if (column.viewerdbId === dbId) {
-              zone.objects.push(column);
-            }
-          });
-          this.walls.find((wall) => {
-            if (wall.viewerdbId === dbId) {
-              zone.objects.push(wall);
-            }
-          });
-          this.slabs.find((slab) => {
-            if (slab.viewerdbId === dbId) {
-              zone.objects.push(slab);
-            }
-          });
-          zone.dbIds.push(dbId);
-          //assign levelName to class Zone temporary solution
-          // because its doing it for every dbId, maybe if Zone[level]
-          //was an array we could throw an error if !allEntries were the same
-          // since all objects of a zone should be at the same level
-
-          var correspondingLevel = this.objectsPerLevel.find((obj) =>
-            obj.dbIds.includes(dbId)
-          );
-          // console.log(correspondingLevel);
-          zone.level = correspondingLevel.levelName;
-          //FORMWORK
-          if (this.isWall(dbId)) {
-            var correspondingWall = this.walls.find(
-              (obj) => obj.viewerdbId === dbId
-            );
-
-            zone.wdF += correspondingWall.WDwF;
-          }
-          if (this.isColumn(dbId)) {
-            var correspondingColumn = this.columns.find(
-              (obj) => obj.viewerdbId === dbId
-            );
-
-            zone.wdF += correspondingColumn.WDcF;
-          }
-          if (this.isSlab(dbId)) {
-            var correspondingSlab = this.slabs.find(
-              (obj) => obj.viewerdbId === dbId
-            );
-
-            zone.wdF += correspondingSlab.WDsF;
-          }
-          //REINFORCEMENT
-          if (this.isWall(dbId)) {
-            var correspondingWall = this.walls.find(
-              (obj) => obj.viewerdbId === dbId
-            );
-
-            zone.wdR += correspondingWall.WDwR;
-          }
-          if (this.isColumn(dbId)) {
-            var correspondingColumn = this.columns.find(
-              (obj) => obj.viewerdbId === dbId
-            );
-
-            zone.wdR += correspondingColumn.WDcR;
-          }
-          if (this.isSlab(dbId)) {
-            var correspondingSlab = this.slabs.find(
-              (obj) => obj.viewerdbId === dbId
-            );
-
-            zone.wdR += correspondingSlab.WDsR;
-          }
-          //CONCRETE
-          if (this.isWall(dbId)) {
-            var correspondingWall = this.walls.find(
-              (obj) => obj.viewerdbId === dbId
-            );
-
-            zone.wdC += correspondingWall.WDwC;
-          }
-          if (this.isColumn(dbId)) {
-            var correspondingColumn = this.columns.find(
-              (obj) => obj.viewerdbId === dbId
-            );
-
-            zone.wdC += correspondingColumn.WDcC;
-          }
-          if (this.isSlab(dbId)) {
-            var correspondingSlab = this.slabs.find(
-              (obj) => obj.viewerdbId === dbId
-            );
-
-            zone.wdC += correspondingSlab.WDsC;
-          }
-          //CURING
-          if (this.isWall(dbId)) {
-            var correspondingWall = this.walls.find(
-              (obj) => obj.viewerdbId === dbId
-            );
-
-            zone.wdCR = correspondingWall.WDwCR;
-          }
-          if (this.isColumn(dbId)) {
-            var correspondingColumn = this.columns.find(
-              (obj) => obj.viewerdbId === dbId
-            );
-
-            zone.wdCR = correspondingColumn.WDcCR;
-          }
-          if (this.isSlab(dbId)) {
-            var correspondingSlab = this.slabs.find(
-              (obj) => obj.viewerdbId === dbId
-            );
-
-            zone.wdCR = correspondingSlab.WDsCR;
-          }
-          //STRIP
-          if (this.isWall(dbId)) {
-            var correspondingWall = this.walls.find(
-              (obj) => obj.viewerdbId === dbId
-            );
-
-            zone.wdS += correspondingWall.WDwS;
-          }
-          if (this.isColumn(dbId)) {
-            var correspondingColumn = this.columns.find(
-              (obj) => obj.viewerdbId === dbId
-            );
-
-            zone.wdS += correspondingColumn.WDcS;
-          }
-          if (this.isSlab(dbId)) {
-            var correspondingSlab = this.slabs.find(
-              (obj) => obj.viewerdbId === dbId
-            );
-
-            zone.wdS += correspondingSlab.WDsS;
-          }
-          const color = new THREE.Vector4(0 / 256, 128 / 256, 0 / 256, 1);
-          this.viewerComponent.viewer.setThemingColor(
-            dbId,
-            color,
-            this.viewerComponent.viewer.model,
-            true
-          );
-        });
-        this.allZones.push(zone);
-        console.log(this.allZones);
-
-        this.allTradesBarchart.chart.data.datasets[0].data = [];
-        this.allTradesBarchart.chart.data.labels = [];
-        this.allTradesBarchart.chart.data.datasets[1].data = [];
-
-        this.allTradesBarchart.chart.data.datasets[2].data = [];
-
-        this.allTradesBarchart.chart.data.datasets[3].data = [];
-
-        this.allTradesBarchart.chart.data.datasets[4].data = [];
-
-        this.allZones.forEach((z) => {
-          this.allTradesBarchart.chart.data.datasets[0].data.push(z.wdF);
-          this.allTradesBarchart.chart.data.labels.push(z.id);
-          this.allTradesBarchart.chart.data.datasets[1].data.push(z.wdR);
-
-          this.allTradesBarchart.chart.data.datasets[2].data.push(z.wdC);
-
-          this.allTradesBarchart.chart.data.datasets[3].data.push(z.wdCR);
-
-          this.allTradesBarchart.chart.data.datasets[4].data.push(z.wdS);
-        });
-        this.allTradesBarchart.chart.update();
+        this.computeWDbars(selection, zone);
       }
+      this.createAndUpdateBarChart();
     };
     button2.onClick = (event) => {
       //////////TESTING ZONES ///////////////////////
@@ -992,20 +832,12 @@ export class MainComponent implements OnInit {
         this.tradeBarchart.chart.update();
       }
     };
-
     button3.onClick = (event) => {
-      // if (button3.getState() === 1) {
-      // button3.setState(0);
-      //Test functions
       console.log('Optimization Crew Size Formwork Test started');
-      //////////TESTING ZONES ///////////////////////
       //get current selection
-
       const selection = this.viewerComponent.viewer.getSelection();
-      console.log(selection);
+      // console.log(selection);
       this.viewerComponent.viewer.clearSelection();
-      console.log(this.allZones);
-
       this.allZones.forEach((zone) => {
         var count = 0;
         selection.forEach((dbId) => {
@@ -1013,178 +845,25 @@ export class MainComponent implements OnInit {
             count++;
           }
         });
-        console.log(count);
-        console.log(selection.length);
         if (selection.length !== 0 && selection.length === count) {
-          // console.log(zone.id);
-          // var correspondingZoneId = zone.id;
           zone.objects.forEach((obj) => {
             obj.csF = 4;
           });
-          console.log(zone.objects);
+          // console.log(zone.objects);
           this.calcWD(this.slabs);
           this.calcWD(this.walls);
           this.calcWD(this.columns);
-          // console.log(correspondingZoneId);
-          zone.wdF = 0;
-          zone.wdR = 0;
-          zone.wdC = 0;
-          zone.wdCR = 0;
-          zone.wdS = 0;
-          selection.forEach((dbId) => {
-            //FORMWORK
-            if (this.isWall(dbId)) {
-              var correspondingWall = this.walls.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdF += correspondingWall.WDwF;
-            }
-            if (this.isColumn(dbId)) {
-              var correspondingColumn = this.columns.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdF += correspondingColumn.WDcF;
-            }
-            if (this.isSlab(dbId)) {
-              var correspondingSlab = this.slabs.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdF += correspondingSlab.WDsF;
-            }
-            //REINFORCEMENT
-            if (this.isWall(dbId)) {
-              var correspondingWall = this.walls.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdR += correspondingWall.WDwR;
-            }
-            if (this.isColumn(dbId)) {
-              var correspondingColumn = this.columns.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdR += correspondingColumn.WDcR;
-            }
-            if (this.isSlab(dbId)) {
-              var correspondingSlab = this.slabs.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdR += correspondingSlab.WDsR;
-            }
-            //CONCRETE
-            if (this.isWall(dbId)) {
-              var correspondingWall = this.walls.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdC += correspondingWall.WDwC;
-            }
-            if (this.isColumn(dbId)) {
-              var correspondingColumn = this.columns.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdC += correspondingColumn.WDcC;
-            }
-            if (this.isSlab(dbId)) {
-              var correspondingSlab = this.slabs.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdC += correspondingSlab.WDsC;
-            }
-            //CURING
-            if (this.isWall(dbId)) {
-              var correspondingWall = this.walls.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdCR = correspondingWall.WDwCR;
-            }
-            if (this.isColumn(dbId)) {
-              var correspondingColumn = this.columns.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdCR = correspondingColumn.WDcCR;
-            }
-            if (this.isSlab(dbId)) {
-              var correspondingSlab = this.slabs.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdCR = correspondingSlab.WDsCR;
-            }
-            //STRIP
-            if (this.isWall(dbId)) {
-              var correspondingWall = this.walls.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdS += correspondingWall.WDwS;
-            }
-            if (this.isColumn(dbId)) {
-              var correspondingColumn = this.columns.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdS += correspondingColumn.WDcS;
-            }
-            if (this.isSlab(dbId)) {
-              var correspondingSlab = this.slabs.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdS += correspondingSlab.WDsS;
-            }
-          });
+          this.updateWDbars(selection, zone);
         }
       });
-      console.log(this.allZones);
-
-      // this.zones[0].objects[0].csF = 4;
-      this.allTradesBarchart.chart.data.datasets[0].data = [];
-      this.allTradesBarchart.chart.data.labels = [];
-      this.allTradesBarchart.chart.data.datasets[1].data = [];
-      // this.allTradesBarchart.chart.data.labels = [];
-      this.allTradesBarchart.chart.data.datasets[2].data = [];
-      // this.allTradesBarchart.chart.data.labels = [];
-      this.allTradesBarchart.chart.data.datasets[3].data = [];
-      // this.allTradesBarchart.chart.data.labels = [];
-      this.allTradesBarchart.chart.data.datasets[4].data = [];
-      // this.allTradesBarchart.chart.data.labels = [];
-
-      this.allZones.forEach((z) => {
-        // this.tradeBarchart.chart.data.datasets[0].data.push(z.wd);
-        this.allTradesBarchart.chart.data.datasets[0].data.push(z.wdF);
-        this.allTradesBarchart.chart.data.labels.push(z.id);
-        this.allTradesBarchart.chart.data.datasets[1].data.push(z.wdR);
-        // this.allTradesBarchart.chart.data.labels.push(z.id);
-        this.allTradesBarchart.chart.data.datasets[2].data.push(z.wdC);
-        // this.allTradesBarchart.chart.data.labels.push(z.id);
-        this.allTradesBarchart.chart.data.datasets[3].data.push(z.wdCR);
-        // this.allTradesBarchart.chart.data.labels.push(z.id);
-        this.allTradesBarchart.chart.data.datasets[4].data.push(z.wdS);
-        // this.allTradesBarchart.chart.data.labels.push(z.id);
-      });
-      this.allTradesBarchart.chart.update();
+      this.createAndUpdateBarChart();
     };
     button4.onClick = (event) => {
-      //Test functions
       console.log('Optimization Crew Size Reinforcement Test started');
-      //////////TESTING ZONES ///////////////////////
       //get current selection
-
       const selection = this.viewerComponent.viewer.getSelection();
-      console.log(selection);
+      // console.log(selection);
       this.viewerComponent.viewer.clearSelection();
-      console.log(this.allZones);
-
       if (selection.length > 0) {
         this.allZones.forEach((zone) => {
           var count = 0;
@@ -1194,316 +873,78 @@ export class MainComponent implements OnInit {
             }
           });
           if (selection.length !== 0 && selection.length === count) {
-            console.log(zone.id);
-            var correspondingZoneId = zone.id;
             zone.objects.forEach((obj) => {
               obj.csR = 4;
             });
-            console.log(zone.objects);
             this.calcWD(this.slabs);
             this.calcWD(this.walls);
             this.calcWD(this.columns);
-            // console.log(correspondingZoneId);
-            zone.wdF = 0;
-            zone.wdR = 0;
-            zone.wdC = 0;
-            zone.wdCR = 0;
-            zone.wdS = 0;
-            selection.forEach((dbId) => {
-              //FORMWORK
-              if (this.isWall(dbId)) {
-                var correspondingWall = this.walls.find(
-                  (obj) => obj.viewerdbId === dbId
-                );
-
-                zone.wdF += correspondingWall.WDwF;
-              }
-              if (this.isColumn(dbId)) {
-                var correspondingColumn = this.columns.find(
-                  (obj) => obj.viewerdbId === dbId
-                );
-
-                zone.wdF += correspondingColumn.WDcF;
-              }
-              if (this.isSlab(dbId)) {
-                var correspondingSlab = this.slabs.find(
-                  (obj) => obj.viewerdbId === dbId
-                );
-
-                zone.wdF += correspondingSlab.WDsF;
-              }
-              //REINFORCEMENT
-              if (this.isWall(dbId)) {
-                var correspondingWall = this.walls.find(
-                  (obj) => obj.viewerdbId === dbId
-                );
-
-                zone.wdR += correspondingWall.WDwR;
-              }
-              if (this.isColumn(dbId)) {
-                var correspondingColumn = this.columns.find(
-                  (obj) => obj.viewerdbId === dbId
-                );
-
-                zone.wdR += correspondingColumn.WDcR;
-              }
-              if (this.isSlab(dbId)) {
-                var correspondingSlab = this.slabs.find(
-                  (obj) => obj.viewerdbId === dbId
-                );
-
-                zone.wdR += correspondingSlab.WDsR;
-              }
-              //CONCRETE
-              if (this.isWall(dbId)) {
-                var correspondingWall = this.walls.find(
-                  (obj) => obj.viewerdbId === dbId
-                );
-
-                zone.wdC += correspondingWall.WDwC;
-              }
-              if (this.isColumn(dbId)) {
-                var correspondingColumn = this.columns.find(
-                  (obj) => obj.viewerdbId === dbId
-                );
-
-                zone.wdC += correspondingColumn.WDcC;
-              }
-              if (this.isSlab(dbId)) {
-                var correspondingSlab = this.slabs.find(
-                  (obj) => obj.viewerdbId === dbId
-                );
-
-                zone.wdC += correspondingSlab.WDsC;
-              }
-              //CURING
-              if (this.isWall(dbId)) {
-                var correspondingWall = this.walls.find(
-                  (obj) => obj.viewerdbId === dbId
-                );
-
-                zone.wdCR = correspondingWall.WDwCR;
-              }
-              if (this.isColumn(dbId)) {
-                var correspondingColumn = this.columns.find(
-                  (obj) => obj.viewerdbId === dbId
-                );
-
-                zone.wdCR = correspondingColumn.WDcCR;
-              }
-              if (this.isSlab(dbId)) {
-                var correspondingSlab = this.slabs.find(
-                  (obj) => obj.viewerdbId === dbId
-                );
-
-                zone.wdCR = correspondingSlab.WDsCR;
-              }
-              //STRIP
-              if (this.isWall(dbId)) {
-                var correspondingWall = this.walls.find(
-                  (obj) => obj.viewerdbId === dbId
-                );
-
-                zone.wdS += correspondingWall.WDwS;
-              }
-              if (this.isColumn(dbId)) {
-                var correspondingColumn = this.columns.find(
-                  (obj) => obj.viewerdbId === dbId
-                );
-
-                zone.wdS += correspondingColumn.WDcS;
-              }
-              if (this.isSlab(dbId)) {
-                var correspondingSlab = this.slabs.find(
-                  (obj) => obj.viewerdbId === dbId
-                );
-
-                zone.wdS += correspondingSlab.WDsS;
-              }
-            });
+            this.updateWDbars(selection, zone);
           }
         });
-        console.log(this.allZones);
-
-        this.allTradesBarchart.chart.data.datasets[0].data = [];
-        this.allTradesBarchart.chart.data.labels = [];
-        this.allTradesBarchart.chart.data.datasets[1].data = [];
-        // this.allTradesBarchart.chart.data.labels = [];
-        this.allTradesBarchart.chart.data.datasets[2].data = [];
-        // this.allTradesBarchart.chart.data.labels = [];
-        this.allTradesBarchart.chart.data.datasets[3].data = [];
-        // this.allTradesBarchart.chart.data.labels = [];
-        this.allTradesBarchart.chart.data.datasets[4].data = [];
-        // this.allTradesBarchart.chart.data.labels = [];
-
-        this.allZones.forEach((z) => {
-          // this.tradeBarchart.chart.data.datasets[0].data.push(z.wd);
-          this.allTradesBarchart.chart.data.datasets[0].data.push(z.wdF);
-          this.allTradesBarchart.chart.data.labels.push(z.id);
-          this.allTradesBarchart.chart.data.datasets[1].data.push(z.wdR);
-          // this.allTradesBarchart.chart.data.labels.push(z.id);
-          this.allTradesBarchart.chart.data.datasets[2].data.push(z.wdC);
-          // this.allTradesBarchart.chart.data.labels.push(z.id);
-          this.allTradesBarchart.chart.data.datasets[3].data.push(z.wdCR);
-          // this.allTradesBarchart.chart.data.labels.push(z.id);
-          this.allTradesBarchart.chart.data.datasets[4].data.push(z.wdS);
-          // this.allTradesBarchart.chart.data.labels.push(z.id);
-        });
-        this.allTradesBarchart.chart.update();
+        this.createAndUpdateBarChart();
       }
     };
-    // button5.onClick = (event) => {
+    button5.onClick = (event) => {
+      console.log('Optimization Crew Size Pouring Concrete Test started');
+      //get current selection
+      const selection = this.viewerComponent.viewer.getSelection();
+      // console.log(selection);
+      this.viewerComponent.viewer.clearSelection();
+      if (selection.length > 0) {
+        this.allZones.forEach((zone) => {
+          var count = 0;
+          selection.forEach((dbId) => {
+            if (zone.dbIds.includes(dbId)) {
+              count++;
+            }
+          });
+          if (selection.length !== 0 && selection.length === count) {
+            zone.objects.forEach((obj) => {
+              obj.csC = 4;
+            });
+            this.calcWD(this.slabs);
+            this.calcWD(this.walls);
+            this.calcWD(this.columns);
+            this.updateWDbars(selection, zone);
+          }
+        });
+        this.createAndUpdateBarChart();
+      }
+    };
+    button6.onClick = (event) => {
+      console.log('Optimization Crew Size Strip Formwork Test started');
+      //get current selection
+      const selection = this.viewerComponent.viewer.getSelection();
+      // console.log(selection);
+      this.viewerComponent.viewer.clearSelection();
+      if (selection.length > 0) {
+        this.allZones.forEach((zone) => {
+          var count = 0;
+          selection.forEach((dbId) => {
+            if (zone.dbIds.includes(dbId)) {
+              count++;
+            }
+          });
+          if (selection.length !== 0 && selection.length === count) {
+            zone.objects.forEach((obj) => {
+              obj.csS = 4;
+            });
+            this.calcWD(this.slabs);
+            this.calcWD(this.walls);
+            this.calcWD(this.columns);
+            this.updateWDbars(selection, zone);
+          }
+        });
+        this.createAndUpdateBarChart();
+      }
+    };
 
-    //     //Test functions
-    //     console.log('Optimization Crew Size Pouring Concrete Test started');
-    //     //////////TESTING ZONES ///////////////////////
-    //     //get current selection
-
-    //     const selection = this.viewerComponent.viewer.getSelection();
-    //     console.log(selection);
-    //     this.viewerComponent.viewer.clearSelection();
-    //     console.log(this.zones);
-
-    //     if (selection.length>0) {
-    //
-    //       this.zones.forEach((zone) => {
-    // var count = 0;
-    //         selection.forEach((dbId) => {
-    //           if (zone.dbIds.includes(dbId)) {
-    //             count++;
-    //           }
-    //         });
-    //         if (selection.length !== 0 && selection.length === count) {
-    //           console.log(zone.id);
-    //           var correspondingZoneId = zone.id;
-    //           zone.objects.forEach((obj) => {
-    //             obj.csC = 4;
-    //           });
-    //           this.calcWD(this.slabs);
-    //           this.calcWD(this.walls);
-    //           this.calcWD(this.columns);
-    //           // console.log(correspondingZoneId);
-    //           zone.wd = 0;
-    //           selection.forEach((dbId) => {
-    //             if (this.isWall(dbId)) {
-    //               var correspondingWall = this.walls.find(
-    //                 (obj) => obj.viewerdbId === dbId
-    //               );
-
-    //               zone.wd += correspondingWall.WDwC;
-    //             }
-    //             if (this.isColumn(dbId)) {
-    //               var correspondingColumn = this.columns.find(
-    //                 (obj) => obj.viewerdbId === dbId
-    //               );
-
-    //               zone.wd += correspondingColumn.WDcC;
-    //             }
-    //             if (this.isSlab(dbId)) {
-    //               var correspondingSlab = this.slabs.find(
-    //                 (obj) => obj.viewerdbId === dbId
-    //               );
-
-    //               zone.wd += correspondingSlab.WDsC;
-    //             }
-    //           });
-    //         }
-    //       });
-    //       console.log(this.zones);
-
-    //       // this.zones[0].objects[0].csF = 4;
-
-    //       this.tradeBarchart.chart.data.datasets[2].data = [];
-    //       this.tradeBarchart.chart.data.labels = [];
-    //       // this.tradeBarchart.chart.data.datasets[0].label =
-    //       //   'Work Desnity of Installing Formwork per Zone';
-    //       this.zones.forEach((z) => {
-    //         this.tradeBarchart.chart.data.datasets[2].data.push(z.wd);
-    //         this.tradeBarchart.chart.data.labels.push(z.id);
-    //       });
-    //       this.tradeBarchart.chart.update();
-    //     }
-    //
-    // };
-    // button6.onClick = (event) => {
-    //
-    //     //Test functions
-    //     console.log('Optimization Crew Size Stripping Formwork Test started');
-    //     //////////TESTING ZONES ///////////////////////
-    //     //get current selection
-
-    //     const selection = this.viewerComponent.viewer.getSelection();
-    //     console.log(selection);
-    //     this.viewerComponent.viewer.clearSelection();
-    //     console.log(this.zones);
-
-    //     if (selection.length>0) {
-
-    //       this.zones.forEach((zone) => {
-    //       var count = 0;
-    //         selection.forEach((dbId) => {
-    //           if (zone.dbIds.includes(dbId)) {
-    //             count++;
-    //           }
-    //         });
-    //         if (selection.length !== 0 && selection.length === count) {
-    //           console.log(zone.id);
-    //           var correspondingZoneId = zone.id;
-    //           zone.objects.forEach((obj) => {
-    //             obj.csS = 4;
-    //           });
-    //           this.calcWD(this.slabs);
-    //           this.calcWD(this.walls);
-    //           this.calcWD(this.columns);
-    //           // console.log(correspondingZoneId);
-    //           zone.wd = 0;
-    //           selection.forEach((dbId) => {
-    //             if (this.isWall(dbId)) {
-    //               var correspondingWall = this.walls.find(
-    //                 (obj) => obj.viewerdbId === dbId
-    //               );
-
-    //               zone.wd += correspondingWall.WDwS;
-    //             }
-    //             if (this.isColumn(dbId)) {
-    //               var correspondingColumn = this.columns.find(
-    //                 (obj) => obj.viewerdbId === dbId
-    //               );
-
-    //               zone.wd += correspondingColumn.WDcS;
-    //             }
-    //             if (this.isSlab(dbId)) {
-    //               var correspondingSlab = this.slabs.find(
-    //                 (obj) => obj.viewerdbId === dbId
-    //               );
-
-    //               zone.wd += correspondingSlab.WDsS;
-    //             }
-    //           });
-    //         }
-    //       });
-    //       console.log(this.zones);
-
-    //       // this.zones[0].objects[0].csF = 4;
-
-    //       this.tradeBarchart.chart.data.datasets[4].data = [];
-    //       this.tradeBarchart.chart.data.labels = [];
-    //       // this.tradeBarchart.chart.data.datasets[0].label =
-    //       //   'Work Desnity of Installing Formwork per Zone';
-    //       this.zones.forEach((z) => {
-    //         this.tradeBarchart.chart.data.datasets[4].data.push(z.wd);
-    //         this.tradeBarchart.chart.data.labels.push(z.id);
-    //       });
-    //       this.tradeBarchart.chart.update();
-    //     }
-    //
-    // };
     button7.onClick = (event) => {
       //Test functions
       console.log('Optimization Production Rate Inst Formwork Test started');
       //////////TESTING ZONES ///////////////////////
       //get current selection
-
       const selection = this.viewerComponent.viewer.getSelection();
       console.log(selection);
       this.viewerComponent.viewer.clearSelection();
@@ -1522,173 +963,20 @@ export class MainComponent implements OnInit {
           this.calcWD(this.slabs);
           this.calcWD(this.walls);
           this.calcWD(this.columns);
-
-          zone.wdF = 0;
-          zone.wdR = 0;
-          zone.wdC = 0;
-          zone.wdCR = 0;
-          zone.wdS = 0;
-          selection.forEach((dbId) => {
-            //FORMWORK
-            if (this.isWall(dbId)) {
-              var correspondingWall = this.walls.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdF += correspondingWall.WDwF;
-            }
-            if (this.isColumn(dbId)) {
-              var correspondingColumn = this.columns.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdF += correspondingColumn.WDcF;
-            }
-            if (this.isSlab(dbId)) {
-              var correspondingSlab = this.slabs.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdF += correspondingSlab.WDsF;
-            }
-            //REINFORCEMENT
-            if (this.isWall(dbId)) {
-              var correspondingWall = this.walls.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdR += correspondingWall.WDwR;
-            }
-            if (this.isColumn(dbId)) {
-              var correspondingColumn = this.columns.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdR += correspondingColumn.WDcR;
-            }
-            if (this.isSlab(dbId)) {
-              var correspondingSlab = this.slabs.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdR += correspondingSlab.WDsR;
-            }
-            //CONCRETE
-            if (this.isWall(dbId)) {
-              var correspondingWall = this.walls.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdC += correspondingWall.WDwC;
-            }
-            if (this.isColumn(dbId)) {
-              var correspondingColumn = this.columns.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdC += correspondingColumn.WDcC;
-            }
-            if (this.isSlab(dbId)) {
-              var correspondingSlab = this.slabs.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdC += correspondingSlab.WDsC;
-            }
-            //CURING
-            if (this.isWall(dbId)) {
-              var correspondingWall = this.walls.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdCR = correspondingWall.WDwCR;
-            }
-            if (this.isColumn(dbId)) {
-              var correspondingColumn = this.columns.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdCR = correspondingColumn.WDcCR;
-            }
-            if (this.isSlab(dbId)) {
-              var correspondingSlab = this.slabs.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdCR = correspondingSlab.WDsCR;
-            }
-            //STRIP
-            if (this.isWall(dbId)) {
-              var correspondingWall = this.walls.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdS += correspondingWall.WDwS;
-            }
-            if (this.isColumn(dbId)) {
-              var correspondingColumn = this.columns.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdS += correspondingColumn.WDcS;
-            }
-            if (this.isSlab(dbId)) {
-              var correspondingSlab = this.slabs.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdS += correspondingSlab.WDsS;
-            }
-          });
+          this.updateWDbars(selection, zone);
         }
       });
-      console.log(this.allZones);
-      this.allTradesBarchart.chart.data.datasets[0].data = [];
-      this.allTradesBarchart.chart.data.labels = [];
-      this.allTradesBarchart.chart.data.datasets[1].data = [];
-      // this.allTradesBarchart.chart.data.labels = [];
-      this.allTradesBarchart.chart.data.datasets[2].data = [];
-      // this.allTradesBarchart.chart.data.labels = [];
-      this.allTradesBarchart.chart.data.datasets[3].data = [];
-      // this.allTradesBarchart.chart.data.labels = [];
-      this.allTradesBarchart.chart.data.datasets[4].data = [];
-      // this.allTradesBarchart.chart.data.labels = [];
-
-      this.allZones.forEach((z) => {
-        // this.tradeBarchart.chart.data.datasets[0].data.push(z.wd);
-        this.allTradesBarchart.chart.data.datasets[0].data.push(z.wdF);
-        this.allTradesBarchart.chart.data.labels.push(z.id);
-        this.allTradesBarchart.chart.data.datasets[1].data.push(z.wdR);
-        // this.allTradesBarchart.chart.data.labels.push(z.id);
-        this.allTradesBarchart.chart.data.datasets[2].data.push(z.wdC);
-        // this.allTradesBarchart.chart.data.labels.push(z.id);
-        this.allTradesBarchart.chart.data.datasets[3].data.push(z.wdCR);
-        // this.allTradesBarchart.chart.data.labels.push(z.id);
-        this.allTradesBarchart.chart.data.datasets[4].data.push(z.wdS);
-        // this.allTradesBarchart.chart.data.labels.push(z.id);
-      });
-      //   button7.setState(1);
-      // } else {
-      //   while (controlGroup.getNumberOfControls() > 6) {
-      //     var tempID = controlGroup.getControlId(6);
-      //     controlGroup.removeControl(tempID);
-      //   }
-      // }
+      this.createAndUpdateBarChart();
     };
     button8.onClick = (event) => {
-      // if (button8.getState() === 1) {
-      //   button8.setState(0);
-      //Test functions
       console.log(
         'Optimization Production Rate Inst Reinforcement Test started'
       );
-      //////////TESTING ZONES ///////////////////////
       //get current selection
       const selection = this.viewerComponent.viewer.getSelection();
       console.log(selection);
       this.viewerComponent.viewer.clearSelection();
-      console.log(this.allZones);
-
+      // console.log(this.allZones);
       this.allZones.forEach((zone) => {
         var count = 0;
         selection.forEach((dbId) => {
@@ -1697,319 +985,70 @@ export class MainComponent implements OnInit {
           }
         });
         if (selection.length !== 0 && selection.length === count) {
-          console.log(zone.id);
-          var correspondingZoneId = zone.id;
           zone.objects.forEach((obj) => {
             obj.prR = 14;
           });
           this.calcWD(this.slabs);
           this.calcWD(this.walls);
           this.calcWD(this.columns);
-          // console.log(correspondingZoneId);
-          zone.wdF = 0;
-          zone.wdR = 0;
-          zone.wdC = 0;
-          zone.wdCR = 0;
-          zone.wdS = 0;
-          selection.forEach((dbId) => {
-            //FORMWORK
-            if (this.isWall(dbId)) {
-              var correspondingWall = this.walls.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdF += correspondingWall.WDwF;
-            }
-            if (this.isColumn(dbId)) {
-              var correspondingColumn = this.columns.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdF += correspondingColumn.WDcF;
-            }
-            if (this.isSlab(dbId)) {
-              var correspondingSlab = this.slabs.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdF += correspondingSlab.WDsF;
-            }
-            //REINFORCEMENT
-            if (this.isWall(dbId)) {
-              var correspondingWall = this.walls.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdR += correspondingWall.WDwR;
-            }
-            if (this.isColumn(dbId)) {
-              var correspondingColumn = this.columns.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdR += correspondingColumn.WDcR;
-            }
-            if (this.isSlab(dbId)) {
-              var correspondingSlab = this.slabs.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdR += correspondingSlab.WDsR;
-            }
-            //CONCRETE
-            if (this.isWall(dbId)) {
-              var correspondingWall = this.walls.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdC += correspondingWall.WDwC;
-            }
-            if (this.isColumn(dbId)) {
-              var correspondingColumn = this.columns.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdC += correspondingColumn.WDcC;
-            }
-            if (this.isSlab(dbId)) {
-              var correspondingSlab = this.slabs.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdC += correspondingSlab.WDsC;
-            }
-            //CURING
-            if (this.isWall(dbId)) {
-              var correspondingWall = this.walls.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdCR = correspondingWall.WDwCR;
-            }
-            if (this.isColumn(dbId)) {
-              var correspondingColumn = this.columns.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdCR = correspondingColumn.WDcCR;
-            }
-            if (this.isSlab(dbId)) {
-              var correspondingSlab = this.slabs.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdCR = correspondingSlab.WDsCR;
-            }
-            //STRIP
-            if (this.isWall(dbId)) {
-              var correspondingWall = this.walls.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdS += correspondingWall.WDwS;
-            }
-            if (this.isColumn(dbId)) {
-              var correspondingColumn = this.columns.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdS += correspondingColumn.WDcS;
-            }
-            if (this.isSlab(dbId)) {
-              var correspondingSlab = this.slabs.find(
-                (obj) => obj.viewerdbId === dbId
-              );
-
-              zone.wdS += correspondingSlab.WDsS;
-            }
-          });
+          this.updateWDbars(selection, zone);
         }
       });
-      console.log(this.allZones);
-
-      // this.allZones[0].objects[0].csF = 4;
-      this.allTradesBarchart.chart.data.datasets[0].data = [];
-      this.allTradesBarchart.chart.data.labels = [];
-      this.allTradesBarchart.chart.data.datasets[1].data = [];
-      // this.allTradesBarchart.chart.data.labels = [];
-      this.allTradesBarchart.chart.data.datasets[2].data = [];
-      // this.allTradesBarchart.chart.data.labels = [];
-      this.allTradesBarchart.chart.data.datasets[3].data = [];
-      // this.allTradesBarchart.chart.data.labels = [];
-      this.allTradesBarchart.chart.data.datasets[4].data = [];
-      // this.allTradesBarchart.chart.data.labels = [];
-
-      this.allZones.forEach((z) => {
-        this.allTradesBarchart.chart.data.datasets[0].data.push(z.wdF);
-        this.allTradesBarchart.chart.data.datasets[1].data.push(z.wdR);
-        this.allTradesBarchart.chart.data.datasets[2].data.push(z.wdC);
-        this.allTradesBarchart.chart.data.datasets[3].data.push(z.wdCR);
-        this.allTradesBarchart.chart.data.datasets[4].data.push(z.wdS);
-      });
-      this.tradeBarchart.chart.update();
+      this.createAndUpdateBarChart();
     };
-    // button9.onClick = (event) => {
-    //   if (button9.getState() === 1) {
-    //     button9.setState(0);
-    //     //Test functions
-    //     console.log(
-    //       'Optimization Production Rate Pouring Concrete Test started'
-    //     );
-    //     //////////TESTING ZONES ///////////////////////
-    //     //get current selection
+    button9.onClick = (event) => {
+      console.log('Optimization Production Rate Pouring Concrete Test started');
+      //get current selection
+      const selection = this.viewerComponent.viewer.getSelection();
+      console.log(selection);
+      this.viewerComponent.viewer.clearSelection();
+      // console.log(this.allZones);
+      this.allZones.forEach((zone) => {
+        var count = 0;
+        selection.forEach((dbId) => {
+          if (zone.dbIds.includes(dbId)) {
+            count++;
+          }
+        });
+        if (selection.length !== 0 && selection.length === count) {
+          zone.objects.forEach((obj) => {
+            obj.prC = 0.12;
+          });
+          this.calcWD(this.slabs);
+          this.calcWD(this.walls);
+          this.calcWD(this.columns);
+          this.updateWDbars(selection, zone);
+        }
+      });
+      this.createAndUpdateBarChart();
+    };
+    button10.onClick = (event) => {
+      console.log('Optimization Production Rate Strip Formwork Test started');
+      //get current selection
+      const selection = this.viewerComponent.viewer.getSelection();
+      console.log(selection);
+      this.viewerComponent.viewer.clearSelection();
+      // console.log(this.allZones);
+      this.allZones.forEach((zone) => {
+        var count = 0;
+        selection.forEach((dbId) => {
+          if (zone.dbIds.includes(dbId)) {
+            count++;
+          }
+        });
+        if (selection.length !== 0 && selection.length === count) {
+          zone.objects.forEach((obj) => {
+            obj.prS = 0.1;
+          });
+          this.calcWD(this.slabs);
+          this.calcWD(this.walls);
+          this.calcWD(this.columns);
+          this.updateWDbars(selection, zone);
+        }
+      });
+      this.createAndUpdateBarChart();
+    };
 
-    //     const selection = this.viewerComponent.viewer.getSelection();
-    //     console.log(selection);
-    //     this.viewerComponent.viewer.clearSelection();
-    //     console.log(this.zones);
-
-    //     if (this.belongsToZone(selection)) {
-    //       var count = 0;
-    //       this.zones.forEach((zone) => {
-    //         selection.forEach((dbId) => {
-    //           if (zone.dbIds.includes(dbId)) {
-    //             count++;
-    //           }
-    //         });
-    //         if (selection.length !== 0 && selection.length === count) {
-    //           console.log(zone.id);
-    //           var correspondingZoneId = zone.id;
-    //           zone.objects.forEach((obj) => {
-    //             obj.prC = 0.12;
-    //           });
-    //           this.calcWD(this.slabs);
-    //           this.calcWD(this.walls);
-    //           this.calcWD(this.columns);
-    //           // console.log(correspondingZoneId);
-    //           zone.wd = 0;
-    //           selection.forEach((dbId) => {
-    //             if (this.isWall(dbId)) {
-    //               var correspondingWall = this.walls.find(
-    //                 (obj) => obj.viewerdbId === dbId
-    //               );
-
-    //               zone.wd += correspondingWall.WDwC;
-    //             }
-    //             if (this.isColumn(dbId)) {
-    //               var correspondingColumn = this.columns.find(
-    //                 (obj) => obj.viewerdbId === dbId
-    //               );
-
-    //               zone.wd += correspondingColumn.WDcC;
-    //             }
-    //             if (this.isSlab(dbId)) {
-    //               var correspondingSlab = this.slabs.find(
-    //                 (obj) => obj.viewerdbId === dbId
-    //               );
-
-    //               zone.wd += correspondingSlab.WDsC;
-    //             }
-    //           });
-    //         }
-    //       });
-    //       console.log(this.zones);
-
-    //       // this.zones[0].objects[0].csF = 4;
-
-    //       this.tradeBarchart.chart.data.datasets[0].data = [];
-    //       this.tradeBarchart.chart.data.labels = [];
-    //       // this.tradeBarchart.chart.data.datasets[0].label =
-    //       //   'Work Desnity of Installing Formwork per Zone';
-    //       this.zones.forEach((z) => {
-    //         this.tradeBarchart.chart.data.datasets[0].data.push(z.wd);
-    //         this.tradeBarchart.chart.data.labels.push(z.id);
-    //       });
-    //       this.tradeBarchart.chart.update();
-    //     }
-    //     button9.setState(1);
-    //   } else {
-    //     while (controlGroup.getNumberOfControls() > 10) {
-    //       var tempID = controlGroup.getControlId(10);
-    //       controlGroup.removeControl(tempID);
-    //     }
-    //   }
-    // };
-    // button10.onClick = (event) => {
-    //   if (button10.getState() === 1) {
-    //     button10.setState(0);
-    //     //Test functions
-    //     console.log(
-    //       'Optimization Production Rate Stripping Formwork Test started'
-    //     );
-    //     //////////TESTING ZONES ///////////////////////
-    //     //get current selection
-
-    //     const selection = this.viewerComponent.viewer.getSelection();
-    //     console.log(selection);
-    //     this.viewerComponent.viewer.clearSelection();
-    //     console.log(this.zones);
-
-    //     if (this.belongsToZone(selection)) {
-    //       var count = 0;
-    //       this.zones.forEach((zone) => {
-    //         selection.forEach((dbId) => {
-    //           if (zone.dbIds.includes(dbId)) {
-    //             count++;
-    //           }
-    //         });
-    //         if (selection.length !== 0 && selection.length === count) {
-    //           console.log(zone.id);
-    //           var correspondingZoneId = zone.id;
-    //           zone.objects.forEach((obj) => {
-    //             obj.prS = 0.1;
-    //           });
-    //           this.calcWD(this.slabs);
-    //           this.calcWD(this.walls);
-    //           this.calcWD(this.columns);
-    //           // console.log(correspondingZoneId);
-    //           zone.wd = 0;
-    //           selection.forEach((dbId) => {
-    //             if (this.isWall(dbId)) {
-    //               var correspondingWall = this.walls.find(
-    //                 (obj) => obj.viewerdbId === dbId
-    //               );
-
-    //               zone.wd += correspondingWall.WDwS;
-    //             }
-    //             if (this.isColumn(dbId)) {
-    //               var correspondingColumn = this.columns.find(
-    //                 (obj) => obj.viewerdbId === dbId
-    //               );
-
-    //               zone.wd += correspondingColumn.WDcS;
-    //             }
-    //             if (this.isSlab(dbId)) {
-    //               var correspondingSlab = this.slabs.find(
-    //                 (obj) => obj.viewerdbId === dbId
-    //               );
-
-    //               zone.wd += correspondingSlab.WDsS;
-    //             }
-    //           });
-    //         }
-    //       });
-    //       console.log(this.zones);
-
-    //       // this.zones[0].objects[0].csF = 4;
-
-    //       this.tradeBarchart.chart.data.datasets[0].data = [];
-    //       this.tradeBarchart.chart.data.labels = [];
-    //       // this.tradeBarchart.chart.data.datasets[0].label =
-    //       //   'Work Desnity of Installing Formwork per Zone';
-    //       this.zones.forEach((z) => {
-    //         this.tradeBarchart.chart.data.datasets[0].data.push(z.wd);
-    //         this.tradeBarchart.chart.data.labels.push(z.id);
-    //       });
-    //       this.tradeBarchart.chart.update();
-    //     }
-    //     button10.setState(1);
-    //   } else {
-    //     while (controlGroup.getNumberOfControls() > 10) {
-    //       var tempID = controlGroup.getControlId(10);
-    //       controlGroup.removeControl(tempID);
-    //     }
-    //   }
-    // };
     button11.onClick = (event) => {
       if (this.allZones.length > 0) {
         const fragList = this.viewerComponent.viewer.model.getFragmentList();
@@ -2019,30 +1058,14 @@ export class MainComponent implements OnInit {
         deletedZone.dbIds.forEach((dbid) => {
           delete coloringMap[dbid];
         });
-        this.viewerComponent.viewer.impl.invalidate(true);
-        this.allTradesBarchart.chart.data.datasets[0].data = [];
-        this.allTradesBarchart.chart.data.labels = [];
-        this.allTradesBarchart.chart.data.datasets[1].data = [];
-        this.allTradesBarchart.chart.data.datasets[2].data = [];
-        this.allTradesBarchart.chart.data.datasets[3].data = [];
-        this.allTradesBarchart.chart.data.datasets[4].data = [];
-
-        this.allZones.forEach((z) => {
-          this.allTradesBarchart.chart.data.datasets[0].data.push(z.wdF);
-          this.allTradesBarchart.chart.data.labels.push(z.id);
-          this.allTradesBarchart.chart.data.datasets[1].data.push(z.wdR);
-
-          this.allTradesBarchart.chart.data.datasets[2].data.push(z.wdC);
-
-          this.allTradesBarchart.chart.data.datasets[3].data.push(z.wdCR);
-
-          this.allTradesBarchart.chart.data.datasets[4].data.push(z.wdS);
-        });
-        this.allTradesBarchart.chart.update();
+        this.createAndUpdateBarChart();
       }
     };
     button12.onClick = (event) => {
       if (this.allZones.length > 0) {
+        // this.viewerComponent.viewer.clearThemingColors(
+        //   this.viewerComponent.viewer.model
+        // );
         const fragList = this.viewerComponent.viewer.model.getFragmentList();
         const coloringMap = fragList.db2ThemingColor;
         this.allZones.forEach((zone) => {
@@ -2051,26 +1074,7 @@ export class MainComponent implements OnInit {
           });
           this.allZones = [];
         });
-        this.viewerComponent.viewer.impl.invalidate(true);
-        this.allTradesBarchart.chart.data.datasets[0].data = [];
-        this.allTradesBarchart.chart.data.labels = [];
-        this.allTradesBarchart.chart.data.datasets[1].data = [];
-        this.allTradesBarchart.chart.data.datasets[2].data = [];
-        this.allTradesBarchart.chart.data.datasets[3].data = [];
-        this.allTradesBarchart.chart.data.datasets[4].data = [];
-
-        this.allZones.forEach((z) => {
-          this.allTradesBarchart.chart.data.datasets[0].data.push(z.wdF);
-          this.allTradesBarchart.chart.data.labels.push(z.id);
-          this.allTradesBarchart.chart.data.datasets[1].data.push(z.wdR);
-
-          this.allTradesBarchart.chart.data.datasets[2].data.push(z.wdC);
-
-          this.allTradesBarchart.chart.data.datasets[3].data.push(z.wdCR);
-
-          this.allTradesBarchart.chart.data.datasets[4].data.push(z.wdS);
-        });
-        this.allTradesBarchart.chart.update();
+        this.createAndUpdateBarChart();
       }
     };
 
@@ -2155,11 +1159,11 @@ export class MainComponent implements OnInit {
         var list = document.getElementById('tempPanel');
         document.body.removeChild(list);
 
-        while (controlGroup.getNumberOfControls() > 5) {
-          var tempID = controlGroup.getControlId(5);
-          console.log(tempID);
-          controlGroup.removeControl(tempID);
-        }
+        // while (controlGroup.getNumberOfControls() > 5) {
+        //   var tempID = controlGroup.getControlId(5);
+        //   console.log(tempID);
+        //   controlGroup.removeControl(tempID);
+        // }
       }
     };
     button2.onClick = (event) => {
@@ -2188,10 +1192,10 @@ export class MainComponent implements OnInit {
         var list = document.getElementById('tempPanel');
         document.body.removeChild(list);
 
-        while (controlGroup.getNumberOfControls() > 5) {
-          var tempID = controlGroup.getControlId(5);
-          controlGroup.removeControl(tempID);
-        }
+        // while (controlGroup.getNumberOfControls() > 5) {
+        //   var tempID = controlGroup.getControlId(5);
+        //   controlGroup.removeControl(tempID);
+        // }
       }
     };
     button3.onClick = (event) => {
@@ -2220,10 +1224,10 @@ export class MainComponent implements OnInit {
         var list = document.getElementById('tempPanel');
         document.body.removeChild(list);
 
-        while (controlGroup.getNumberOfControls() > 5) {
-          var tempID = controlGroup.getControlId(5);
-          controlGroup.removeControl(tempID);
-        }
+        // while (controlGroup.getNumberOfControls() > 5) {
+        //   var tempID = controlGroup.getControlId(5);
+        //   controlGroup.removeControl(tempID);
+        // }
       }
     };
     button4.onClick = (event) => {
@@ -2253,10 +1257,10 @@ export class MainComponent implements OnInit {
         var list = document.getElementById('tempPanel');
         document.body.removeChild(list);
 
-        while (controlGroup.getNumberOfControls() > 5) {
-          var tempID = controlGroup.getControlId(5);
-          controlGroup.removeControl(tempID);
-        }
+        // while (controlGroup.getNumberOfControls() > 5) {
+        //   var tempID = controlGroup.getControlId(5);
+        //   controlGroup.removeControl(tempID);
+        // }
       }
     };
     button5.onClick = (event) => {
@@ -2289,10 +1293,10 @@ export class MainComponent implements OnInit {
         // console.log(list);
         document.body.removeChild(list);
 
-        while (controlGroup.getNumberOfControls() > 5) {
-          var tempID = controlGroup.getControlId(5);
-          controlGroup.removeControl(tempID);
-        }
+        // while (controlGroup.getNumberOfControls() > 5) {
+        //   var tempID = controlGroup.getControlId(5);
+        //   controlGroup.removeControl(tempID);
+        // }
       }
     };
     // There we have to wait since the toolbar is not loaded
@@ -3717,10 +2721,10 @@ export class MainComponent implements OnInit {
 
     // this.storeConcrCategObjects();
     ///////////////////////////// TESTING THREEJS/////////////////////////////////////////
-    this.handleMouseMove(event);
+    // this.handleMouseMove(event);
     ///////////////////////////// TESTING /////////////////////////////////////////
 
-    var meshInfo = this.getComponentGeometry(dbIdArray[0]);
+    // var meshInfo = this.getComponentGeometry(dbIdArray[0]);
 
     // console.log(meshInfo);
 
@@ -3779,52 +2783,348 @@ export class MainComponent implements OnInit {
     // console.log(this.isSlab(dbIdArray[0]));
   }
 
-  public getLeafFragIds(model, leafId) {
-    const instanceTree = model.getData().instanceTree;
-    const fragIds = [];
+  public computeWDbars(selection, zone) {
+    zone.wdF = 0;
+    zone.wdR = 0;
+    zone.wdC = 0;
+    zone.wdCR = 0;
+    zone.wdS = 0;
+    selection.forEach((dbId) => {
+      // console.log(props)
+      this.columns.find((column) => {
+        if (column.viewerdbId === dbId) {
+          zone.objects.push(column);
+        }
+      });
+      this.walls.find((wall) => {
+        if (wall.viewerdbId === dbId) {
+          zone.objects.push(wall);
+        }
+      });
+      this.slabs.find((slab) => {
+        if (slab.viewerdbId === dbId) {
+          zone.objects.push(slab);
+        }
+      });
+      zone.dbIds.push(dbId);
+      //assign levelName to class Zone temporary solution
+      // because its doing it for every dbId, maybe if Zone[level]
+      //was an array we could throw an error if !allEntries were the same
+      // since all objects of a zone should be at the same level
 
-    instanceTree.enumNodeFragments(leafId, function (fragId) {
-      fragIds.push(fragId);
+      var correspondingLevel = this.objectsPerLevel.find((obj) =>
+        obj.dbIds.includes(dbId)
+      );
+      // console.log(correspondingLevel);
+      zone.level = correspondingLevel.levelName;
+      //FORMWORK
+      if (this.isWall(dbId)) {
+        var correspondingWall = this.walls.find(
+          (obj) => obj.viewerdbId === dbId
+        );
+
+        zone.wdF += correspondingWall.WDwF;
+      }
+      if (this.isColumn(dbId)) {
+        var correspondingColumn = this.columns.find(
+          (obj) => obj.viewerdbId === dbId
+        );
+
+        zone.wdF += correspondingColumn.WDcF;
+      }
+      if (this.isSlab(dbId)) {
+        var correspondingSlab = this.slabs.find(
+          (obj) => obj.viewerdbId === dbId
+        );
+
+        zone.wdF += correspondingSlab.WDsF;
+      }
+      //REINFORCEMENT
+      if (this.isWall(dbId)) {
+        var correspondingWall = this.walls.find(
+          (obj) => obj.viewerdbId === dbId
+        );
+
+        zone.wdR += correspondingWall.WDwR;
+      }
+      if (this.isColumn(dbId)) {
+        var correspondingColumn = this.columns.find(
+          (obj) => obj.viewerdbId === dbId
+        );
+
+        zone.wdR += correspondingColumn.WDcR;
+      }
+      if (this.isSlab(dbId)) {
+        var correspondingSlab = this.slabs.find(
+          (obj) => obj.viewerdbId === dbId
+        );
+
+        zone.wdR += correspondingSlab.WDsR;
+      }
+      //CONCRETE
+      if (this.isWall(dbId)) {
+        var correspondingWall = this.walls.find(
+          (obj) => obj.viewerdbId === dbId
+        );
+
+        zone.wdC += correspondingWall.WDwC;
+      }
+      if (this.isColumn(dbId)) {
+        var correspondingColumn = this.columns.find(
+          (obj) => obj.viewerdbId === dbId
+        );
+
+        zone.wdC += correspondingColumn.WDcC;
+      }
+      if (this.isSlab(dbId)) {
+        var correspondingSlab = this.slabs.find(
+          (obj) => obj.viewerdbId === dbId
+        );
+
+        zone.wdC += correspondingSlab.WDsC;
+      }
+      //CURING
+      if (this.isWall(dbId)) {
+        var correspondingWall = this.walls.find(
+          (obj) => obj.viewerdbId === dbId
+        );
+
+        zone.wdCR = correspondingWall.WDwCR;
+      }
+      if (this.isColumn(dbId)) {
+        var correspondingColumn = this.columns.find(
+          (obj) => obj.viewerdbId === dbId
+        );
+
+        zone.wdCR = correspondingColumn.WDcCR;
+      }
+      if (this.isSlab(dbId)) {
+        var correspondingSlab = this.slabs.find(
+          (obj) => obj.viewerdbId === dbId
+        );
+
+        zone.wdCR = correspondingSlab.WDsCR;
+      }
+      //STRIP
+      if (this.isWall(dbId)) {
+        var correspondingWall = this.walls.find(
+          (obj) => obj.viewerdbId === dbId
+        );
+
+        zone.wdS += correspondingWall.WDwS;
+      }
+      if (this.isColumn(dbId)) {
+        var correspondingColumn = this.columns.find(
+          (obj) => obj.viewerdbId === dbId
+        );
+
+        zone.wdS += correspondingColumn.WDcS;
+      }
+      if (this.isSlab(dbId)) {
+        var correspondingSlab = this.slabs.find(
+          (obj) => obj.viewerdbId === dbId
+        );
+
+        zone.wdS += correspondingSlab.WDsS;
+      }
+      const color = new THREE.Vector4(0 / 256, 128 / 256, 0 / 256, 1);
+      this.viewerComponent.viewer.setThemingColor(
+        dbId,
+        color,
+        this.viewerComponent.viewer.model,
+        true
+      );
     });
-
-    return fragIds;
+    this.allZones.push(zone);
   }
+  public updateWDbars(selection, zone) {
+    zone.wdF = 0;
+    zone.wdR = 0;
+    zone.wdC = 0;
+    zone.wdCR = 0;
+    zone.wdS = 0;
+    selection.forEach((dbId) => {
+      //FORMWORK
+      if (this.isWall(dbId)) {
+        var correspondingWall = this.walls.find(
+          (obj) => obj.viewerdbId === dbId
+        );
 
-  public getComponentGeometry(dbId) {
-    const viewer = this.viewerComponent.viewer;
-    const fragIds = this.getLeafFragIds(viewer.model, dbId);
+        zone.wdF += correspondingWall.WDwF;
+      }
+      if (this.isColumn(dbId)) {
+        var correspondingColumn = this.columns.find(
+          (obj) => obj.viewerdbId === dbId
+        );
 
-    let matrixWorld = null;
+        zone.wdF += correspondingColumn.WDcF;
+      }
+      if (this.isSlab(dbId)) {
+        var correspondingSlab = this.slabs.find(
+          (obj) => obj.viewerdbId === dbId
+        );
 
-    const meshes = fragIds.map(function (fragId) {
-      const renderProxy = viewer.impl.getRenderProxy(viewer.model, fragId);
+        zone.wdF += correspondingSlab.WDsF;
+      }
+      //REINFORCEMENT
+      if (this.isWall(dbId)) {
+        var correspondingWall = this.walls.find(
+          (obj) => obj.viewerdbId === dbId
+        );
 
-      const geometry = renderProxy.geometry;
-      const attributes = geometry.attributes;
-      const positions = geometry.vb ? geometry.vb : attributes.position.array;
+        zone.wdR += correspondingWall.WDwR;
+      }
+      if (this.isColumn(dbId)) {
+        var correspondingColumn = this.columns.find(
+          (obj) => obj.viewerdbId === dbId
+        );
 
-      const indices = attributes.index.array || geometry.ib;
-      const stride = geometry.vb ? geometry.vbstride : 3;
-      const offsets = geometry.offsets;
+        zone.wdR += correspondingColumn.WDcR;
+      }
+      if (this.isSlab(dbId)) {
+        var correspondingSlab = this.slabs.find(
+          (obj) => obj.viewerdbId === dbId
+        );
 
-      matrixWorld = matrixWorld || renderProxy.matrixWorld.elements;
+        zone.wdR += correspondingSlab.WDsR;
+      }
+      //CONCRETE
+      if (this.isWall(dbId)) {
+        var correspondingWall = this.walls.find(
+          (obj) => obj.viewerdbId === dbId
+        );
 
-      return {
-        positions,
-        indices,
-        offsets,
-        stride,
-      };
+        zone.wdC += correspondingWall.WDwC;
+      }
+      if (this.isColumn(dbId)) {
+        var correspondingColumn = this.columns.find(
+          (obj) => obj.viewerdbId === dbId
+        );
+
+        zone.wdC += correspondingColumn.WDcC;
+      }
+      if (this.isSlab(dbId)) {
+        var correspondingSlab = this.slabs.find(
+          (obj) => obj.viewerdbId === dbId
+        );
+
+        zone.wdC += correspondingSlab.WDsC;
+      }
+      //CURING
+      if (this.isWall(dbId)) {
+        var correspondingWall = this.walls.find(
+          (obj) => obj.viewerdbId === dbId
+        );
+
+        zone.wdCR = correspondingWall.WDwCR;
+      }
+      if (this.isColumn(dbId)) {
+        var correspondingColumn = this.columns.find(
+          (obj) => obj.viewerdbId === dbId
+        );
+
+        zone.wdCR = correspondingColumn.WDcCR;
+      }
+      if (this.isSlab(dbId)) {
+        var correspondingSlab = this.slabs.find(
+          (obj) => obj.viewerdbId === dbId
+        );
+
+        zone.wdCR = correspondingSlab.WDsCR;
+      }
+      //STRIP
+      if (this.isWall(dbId)) {
+        var correspondingWall = this.walls.find(
+          (obj) => obj.viewerdbId === dbId
+        );
+
+        zone.wdS += correspondingWall.WDwS;
+      }
+      if (this.isColumn(dbId)) {
+        var correspondingColumn = this.columns.find(
+          (obj) => obj.viewerdbId === dbId
+        );
+
+        zone.wdS += correspondingColumn.WDcS;
+      }
+      if (this.isSlab(dbId)) {
+        var correspondingSlab = this.slabs.find(
+          (obj) => obj.viewerdbId === dbId
+        );
+
+        zone.wdS += correspondingSlab.WDsS;
+      }
     });
+  }
+  public createAndUpdateBarChart() {
+    this.allTradesBarchart.chart.data.datasets[0].data = [];
+    this.allTradesBarchart.chart.data.labels = [];
+    this.allTradesBarchart.chart.data.datasets[1].data = [];
 
-    return {
-      matrixWorld,
-      meshes,
-    };
+    this.allTradesBarchart.chart.data.datasets[2].data = [];
+
+    this.allTradesBarchart.chart.data.datasets[3].data = [];
+
+    this.allTradesBarchart.chart.data.datasets[4].data = [];
+
+    this.allZones.forEach((z) => {
+      this.allTradesBarchart.chart.data.datasets[0].data.push(z.wdF);
+      this.allTradesBarchart.chart.data.labels.push(z.id);
+      this.allTradesBarchart.chart.data.datasets[1].data.push(z.wdR);
+
+      this.allTradesBarchart.chart.data.datasets[2].data.push(z.wdC);
+
+      this.allTradesBarchart.chart.data.datasets[3].data.push(z.wdCR);
+
+      this.allTradesBarchart.chart.data.datasets[4].data.push(z.wdS);
+    });
+    this.allTradesBarchart.chart.update();
   }
 }
-
 ///////////////////////////////////// NOT USED ///////////////////////////////////////////////////
+// public getLeafFragIds(model, leafId) {
+//   const instanceTree = model.getData().instanceTree;
+//   const fragIds = [];
+
+//   instanceTree.enumNodeFragments(leafId, function (fragId) {
+//     fragIds.push(fragId);
+//   });
+
+//   return fragIds;
+// }
+
+// public getComponentGeometry(dbId) {
+//   const viewer = this.viewerComponent.viewer;
+//   const fragIds = this.getLeafFragIds(viewer.model, dbId);
+
+//   let matrixWorld = null;
+
+//   const meshes = fragIds.map(function (fragId) {
+//     const renderProxy = viewer.impl.getRenderProxy(viewer.model, fragId);
+
+//     const geometry = renderProxy.geometry;
+//     const attributes = geometry.attributes;
+//     const positions = geometry.vb ? geometry.vb : attributes.position.array;
+
+//     const indices = attributes.index.array || geometry.ib;
+//     const stride = geometry.vb ? geometry.vbstride : 3;
+//     const offsets = geometry.offsets;
+
+//     matrixWorld = matrixWorld || renderProxy.matrixWorld.elements;
+
+//     return {
+//       positions,
+//       indices,
+//       offsets,
+//       stride,
+//     };
+//   });
+
+//   return {
+//     matrixWorld,
+//     meshes,
+//   };
+// }
 
 // let correctLevel = true;
 // const id = dbIdArray[0];
