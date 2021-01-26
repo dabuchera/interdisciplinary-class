@@ -19,11 +19,11 @@
 
 #dashboard {
   position: relative;
-  height: 100%;
+  /* height: 100%; */
   width: 100%;
   /* right: 0px; */
-  /* overflow: auto; */
-  /* height: calc(100vh - 100px); */
+  overflow: auto;
+  height: calc(100vh - 100px);
 }
 
 .transition-width {
@@ -32,9 +32,10 @@
 
 :host ::ng-deep .dashboardPanel {
   width: 100% !important;
-  height: 100% !important;
+  /* width: 100%; */
+  /* height: 100% !important; */
   padding: 3%;
-  /* display: block; */
+  display: block;
 }
 
 .viewer {
@@ -68,8 +69,11 @@
   .adsk-viewing-viewer
   .adsk-toolbar-vertical
   .adsk-control-tooltip {
-  right: unset;
-  left: 120%;
+  bottom: 130%;
+  /* top: unset; */
+  right: 20%;
+  /* right: unset; */
+  /* left: 120%; */
 }
 
 /* Hoover des Buttons geändert */

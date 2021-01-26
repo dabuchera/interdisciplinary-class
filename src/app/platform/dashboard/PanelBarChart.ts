@@ -89,9 +89,9 @@ export class BarChart extends DashboardPanelChart {
     // @ts-ignore
     var ctx = document.getElementById(this.canvasId).getContext('2d');
     console.log(ctx);
-    var colors = this.generateColors(
-      this.modelData.getLabels(this.propertyToUse).length
-    );
+    var colors = this.generateColors(500);
+    // this.modelData.getLabels(this.propertyToUse).length
+    // );
     // console.log(this.modelData.getCountInstances(this.propertyToUse));
 
     // _this.modelData.getIds(_this.propertyToUse, ctx[0]._model.label);
@@ -107,7 +107,7 @@ export class BarChart extends DashboardPanelChart {
             // data: this.modelData.getCountInstances(this.propertyToUse),
             data: [],
 
-            backgroundColor: colors.background,
+            backgroundColor: 'rgb(141,121,102)', //colors.background,
             borderColor: colors.borders,
             borderWidth: 1,
           },
@@ -116,7 +116,7 @@ export class BarChart extends DashboardPanelChart {
             // data: this.modelData.getCountInstances(this.propertyToUse),
             data: [],
 
-            backgroundColor: colors.background,
+            backgroundColor: 'rgb(168,163,157)', //colors.background,
             borderColor: colors.borders,
             borderWidth: 1,
           },
@@ -125,7 +125,7 @@ export class BarChart extends DashboardPanelChart {
             // data: this.modelData.getCountInstances(this.propertyToUse),
             data: [],
 
-            backgroundColor: colors.background,
+            backgroundColor: 'rgb(216,200,184)', //colors.background,
             borderColor: colors.borders,
             borderWidth: 1,
           },
@@ -134,7 +134,7 @@ export class BarChart extends DashboardPanelChart {
             // data: this.modelData.getCountInstances(this.propertyToUse),
             data: [],
 
-            backgroundColor: colors.background,
+            backgroundColor: 'rgb(226,221,217)', //colors.background,
             borderColor: colors.borders,
             borderWidth: 1,
           },
@@ -143,7 +143,7 @@ export class BarChart extends DashboardPanelChart {
             // data: this.modelData.getCountInstances(this.propertyToUse),
             data: [],
 
-            backgroundColor: colors.background,
+            backgroundColor: 'rgb(248,241,233)', //colors.background,
             borderColor: colors.borders,
             borderWidth: 1,
           },
@@ -169,12 +169,14 @@ export class BarChart extends DashboardPanelChart {
           var activeZoneLabel = this.getElementsAtEvent(evt)[0]._model.label;
           console.log(activeZoneLabel);
 
-          console.log(_this.zones);
+          // console.log(_this.zones);
           var correspondingZone = _this.zones.find((obj) => {
             return obj.id === activeZoneLabel;
           });
           console.log(correspondingZone.dbIds);
           _this.viewer.isolate(correspondingZone.dbIds);
+          _this.viewer.select(correspondingZone.dbIds);
+          // var zoneIdActive = correspondingZone.id;
           // _this.viewer.isolate(
           // _this.modelData.getIds(_this.propertyToUse, item[0]._model.label);
           // );
