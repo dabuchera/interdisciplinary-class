@@ -21,6 +21,45 @@
   background-color: rgba(255, 0, 0, 0) !important;
 }
 
+/* Input Panel Stuff*/
+
+:host ::ng-deep #inputPanel {
+  top: 100px;
+  left: 75px;
+  /* background-color: rgba(255, 255, 255, 0.1); */
+  background-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+:host ::ng-deep .custom-input {
+  background-color: #ecb31656;
+  width: 80%;
+  border-radius: 5px;
+  border-color: #ecb216;
+  padding: 5px;
+}
+
+:host ::ng-deep .button-footer-panel {
+  height: 35px;
+  width: 160px;
+  transition: background-color 0.2s;
+  border-radius: 5px;
+  background-color: #ecb216;
+  color: white;
+  border: 1px solid black;
+  margin-top: 2.5px;
+}
+
+:host ::ng-deep .button-footer-panel:hover {
+  height: 35px;
+  width: 160px;
+  transition: background-color 0.2s;
+  border-radius: 5px;
+  background-color: #8b6a0d;
+  color: white;
+  border: 1px solid black;
+  margin-top: 2.5px;
+}
+
 :host ::ng-deep .lds-roller {
   /* added */
   margin: auto;

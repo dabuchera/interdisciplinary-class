@@ -45,6 +45,8 @@ const asyncForEach = async (array, callback) => {
   }
 };
 
+import inputHTML from './inputPanel.html';
+
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
@@ -60,6 +62,8 @@ export class MainComponent implements OnInit {
   public toolbarLevels: Autodesk.Viewing.UI.ToolBar;
   public toolbarConcrete: Autodesk.Viewing.UI.ToolBar;
   public toolbarTest: Autodesk.Viewing.UI.ToolBar;
+
+  public inputPanel: Autodesk.Viewing.UI.DockingPanel;
 
   public isolatedNodesConcrete: number[] = new Array();
   public isolatedNodesLevels: number[] = new Array();
@@ -109,7 +113,7 @@ export class MainComponent implements OnInit {
 
           // CoordinatesAxesExtension.extensionName,
         ],
-        //,'GetPositionExtension'], //[IconMarkupExtension.extensionName], // [GetParameterExtension.extensionName],
+        // ,'GetPositionExtension'], //[IconMarkupExtension.extensionName], // [GetParameterExtension.extensionName],
         theme: 'dark-theme',
       },
       onViewerScriptsLoaded: this.scriptsLoaded,
@@ -199,10 +203,10 @@ export class MainComponent implements OnInit {
             object.levelName = 'null';
           }
           // Braucht einen Anhang an jede Klasse, da CSS Klasse nicht mit [0-9] beginnen kann
-          var annexClass = 'Class_';
+          const annexClass = 'Class_';
 
           // iterative Button
-          var buttonIterativ = new Autodesk.Viewing.UI.Button(
+          const buttonIterativ = new Autodesk.Viewing.UI.Button(
             annexClass + object.id
           );
 
@@ -316,7 +320,7 @@ export class MainComponent implements OnInit {
         button1.setState(1);
         this.isolatedNodesLevels = new Array();
         while (controlGroup.getNumberOfControls() > 1) {
-          var tempID = controlGroup.getControlId(1);
+          const tempID = controlGroup.getControlId(1);
           controlGroup.removeControl(tempID);
         }
       }
@@ -328,7 +332,7 @@ export class MainComponent implements OnInit {
   }
 
   public loadConcreteToolbar() {
-    //Button Concrete
+    // Button Concrete
     const button1 = new Autodesk.Viewing.UI.Button('showing-concrete');
     button1.addClass('showing-concrete');
     button1.setToolTip('Concrete Materials');
@@ -353,10 +357,10 @@ export class MainComponent implements OnInit {
             object.materialName = 'null';
           }
           // Braucht einen Anhang an jede Klasse, da CSS Klasse nicht mit [0-9] beginnen kann
-          var annexClass = 'Class_';
+          const annexClass = 'Class_';
 
           // iterative Button
-          var buttonIterativ = new Autodesk.Viewing.UI.Button(
+          const buttonIterativ = new Autodesk.Viewing.UI.Button(
             annexClass + object.id
           );
 
@@ -464,7 +468,7 @@ export class MainComponent implements OnInit {
         button1.setState(1);
         this.isolatedNodesConcrete = new Array();
         while (controlGroup.getNumberOfControls() > 1) {
-          var tempID = controlGroup.getControlId(1);
+          const tempID = controlGroup.getControlId(1);
           controlGroup.removeControl(tempID);
         }
       }
@@ -484,81 +488,81 @@ export class MainComponent implements OnInit {
     const controlGroup = new Autodesk.Viewing.UI.ControlGroup(
       'my-custom-toolbar-test-controlgroup'
     );
-    //button1
+    // button1
     const button1 = new Autodesk.Viewing.UI.Button('showing-testing');
     button1.addClass('showing-testing');
     button1.setToolTip('Create WDbars for all trades');
-    //@ts-ignore
+    // @ts-ignore
     button1.container.children[0].classList.add('far', 'fa-question-circle');
     // button1.setIcon('far fa-question-circle');
-    //button2
+    // button2
     const button2 = new Autodesk.Viewing.UI.Button('showing-zoning');
     button2.addClass('showing-zoning');
     button2.setToolTip('Create WDbars for one trade');
-    //@ts-ignore
+    // @ts-ignore
     button2.container.children[0].classList.add('fas', 'fa-puzzle-piece');
-    //buttons for Crew Size (3,4,5,6)
+    // buttons for Crew Size (3,4,5,6)
     const button3 = new Autodesk.Viewing.UI.Button('optimizing-crewSizeF');
     button3.addClass('optimizing-crewSizeF');
     button3.setToolTip('Change CS of Installing Formwork');
-    //@ts-ignore
+    // @ts-ignore
     button3.container.children[0].classList.add('fab', 'fa-facebook-f');
 
     const button4 = new Autodesk.Viewing.UI.Button('optimizing-crewSizeR');
     button4.addClass('optimizing-crewSizeR');
     button4.setToolTip('Change CS of Installing Reinforcement');
-    //@ts-ignore
+    // @ts-ignore
     button4.container.children[0].classList.add('far', 'fa-registered');
     const button5 = new Autodesk.Viewing.UI.Button('optimizing-crewSizeC');
     button5.addClass('optimizing-crewSizeC');
     button5.setToolTip('Change CS of Pouring Concrete');
-    //@ts-ignore
+    // @ts-ignore
     button5.container.children[0].classList.add('fas', 'fa-truck-pickup');
     const button6 = new Autodesk.Viewing.UI.Button('optimizing-crewSizeS');
     button6.addClass('optimizing-crewSizeS');
     button6.setToolTip('Change CS of Stripping Formwork');
-    //@ts-ignore
+    // @ts-ignore
     button6.container.children[0].classList.add('fab', 'fa-stripe-s');
-    //buttons for Production Rates (7,8,9,10)
+    // buttons for Production Rates (7,8,9,10)
     const button7 = new Autodesk.Viewing.UI.Button('optimizing-ProdRateF');
     button7.addClass('optimizing-ProdRateF');
     button7.setToolTip('Change PR of Installing Formwork');
-    //@ts-ignore
+    // @ts-ignore
     button7.container.children[0].classList.add('fab', 'fa-facebook-f');
 
     const button8 = new Autodesk.Viewing.UI.Button('optimizing-ProdRateR');
     button8.addClass('optimizing-ProdRateR');
     button8.setToolTip('Change PR of Installing Reinforcement');
-    //@ts-ignore
+    // @ts-ignore
     button8.container.children[0].classList.add('far', 'fa-registered');
     const button9 = new Autodesk.Viewing.UI.Button('optimizing-ProdRateC');
     button9.addClass('optimizing-ProdRateC');
     button9.setToolTip('Change PR of Pouring Concrete');
-    //@ts-ignore
+    // @ts-ignore
     button9.container.children[0].classList.add('fas', 'fa-truck-pickup');
     const button10 = new Autodesk.Viewing.UI.Button('optimizing-ProdRateS');
     button10.addClass('optimizing-ProdRateS');
     button10.setToolTip('Change PR of Stripping Formwork');
-    //@ts-ignore
+    // @ts-ignore
     button10.container.children[0].classList.add('fab', 'fa-stripe-s');
-    //Buttons for deleting (11,12)
+    // Buttons for deleting (11,12)
     const button11 = new Autodesk.Viewing.UI.Button('deleting-lastZone');
     button11.addClass('deleting-lastZone');
     button11.setToolTip('Delete last Zone');
-    //@ts-ignore
+    // @ts-ignore
     button11.container.children[0].classList.add('fas', 'fa-backspace');
     const button12 = new Autodesk.Viewing.UI.Button('deleting-allZones');
     button12.addClass('deleting-allZones');
     button12.setToolTip('Delete All Zones');
-    //@ts-ignore
+    // @ts-ignore
     button12.container.children[0].classList.add('fas', 'fa-trash');
-    //Combo Buttons
+    // Combo Buttons
     const combButton1 = new Autodesk.Viewing.UI.ComboButton(
       'my-custom-comboButton-crewSize'
     );
     combButton1.addClass('my-custom-comboButton-crewSize');
     combButton1.setToolTip('Optimize Crew Size');
-    //@ts-ignore
+    // @ts-ignore
     combButton1.container.children[2].classList.add('fas', 'fa-user-friends');
     // // .classList.add('fas', 'fa-puzzle-piece');
     const combButton2 = new Autodesk.Viewing.UI.ComboButton(
@@ -566,36 +570,36 @@ export class MainComponent implements OnInit {
     );
     combButton2.addClass('my-custom-comboButton-productionRates');
     combButton2.setToolTip('Optimize Production Rate');
-    //@ts-ignore
+    // @ts-ignore
     combButton2.container.children[2].classList.add('fas', 'fa-people-carry');
     const combButton3 = new Autodesk.Viewing.UI.ComboButton(
       'my-custom-comboButton-delete'
     );
     combButton3.addClass('my-custom-comboButton-delete');
     combButton3.setToolTip('Delete Options');
-    //@ts-ignore
+    // @ts-ignore
     combButton3.container.children[2].classList.add('far', 'fa-trash-alt');
-    //@ts-ignore
+    // @ts-ignore
     combButton1.addControl(button3);
-    //@ts-ignore
+    // @ts-ignore
     combButton1.addControl(button4);
-    //@ts-ignore
+    // @ts-ignore
     combButton1.addControl(button5);
-    //@ts-ignore
+    // @ts-ignore
     combButton1.addControl(button6);
-    //@ts-ignore
+    // @ts-ignore
     combButton2.addControl(button7);
-    //@ts-ignore
+    // @ts-ignore
     combButton2.addControl(button8);
-    //@ts-ignore
+    // @ts-ignore
     combButton2.addControl(button9);
-    //@ts-ignore
+    // @ts-ignore
     combButton2.addControl(button10);
-    //@ts-ignore
+    // @ts-ignore
     combButton3.addControl(button11);
-    //@ts-ignore
+    // @ts-ignore
     combButton3.addControl(button12);
-    //Control Group
+    // Control Group
     controlGroup.addControl(button1);
     controlGroup.addControl(button2);
     controlGroup.addControl(combButton3);
@@ -603,22 +607,22 @@ export class MainComponent implements OnInit {
     controlGroup.addControl(combButton2);
 
     button1.onClick = (event) => {
-      //Test functions
+      // Test functions
       console.log('Test started');
       this.showPropLegend();
-      //get current selection
+      // get current selection
       const selection = this.viewerComponent.viewer.getSelection();
       // console.log(selection);
       this.viewerComponent.viewer.clearSelection();
       if (selection.length > 0 && !this.belongsToAllZones(selection)) {
-        var zone = new Zone(this.makeid(5));
+        const zone = new Zone(this.makeid(5));
         this.computeWDbars(selection, zone);
       }
       this.createAndUpdateBarChart();
     };
     button2.onClick = (event) => {
-      //////////TESTING ZONES ///////////////////////
-      //get current selection
+      ////////// TESTING ZONES ///////////////////////
+      // get current selection
       const selection = this.viewerComponent.viewer.getSelection();
       console.log(selection);
       this.viewerComponent.viewer.clearSelection();
@@ -626,16 +630,16 @@ export class MainComponent implements OnInit {
         'my-custom-toolbar-WD-controlgroup'
       );
       // @ts-ignore
-      var controlInstFormwork = wdControlGroup._controls[0].getState();
+      const controlInstFormwork = wdControlGroup._controls[0].getState();
       // console.log(controlInstFormwork);
       // @ts-ignore
-      var controlInstReinforcement = wdControlGroup._controls[1].getState();
+      const controlInstReinforcement = wdControlGroup._controls[1].getState();
       // @ts-ignore
-      var controlPourConcrete = wdControlGroup._controls[2].getState();
+      const controlPourConcrete = wdControlGroup._controls[2].getState();
       // @ts-ignore
-      var controlCuring = wdControlGroup._controls[3].getState();
+      const controlCuring = wdControlGroup._controls[3].getState();
       // @ts-ignore
-      var controlStripFormwork = wdControlGroup._controls[4].getState();
+      const controlStripFormwork = wdControlGroup._controls[4].getState();
 
       if (
         selection.length > 0 &&
@@ -648,7 +652,7 @@ export class MainComponent implements OnInit {
           controlStripFormwork
         )
       ) {
-        var zone = new Zone(this.makeid(5));
+        const zone = new Zone(this.makeid(5));
         // console.log(selection);
         zone.wd = 0;
 
@@ -671,121 +675,121 @@ export class MainComponent implements OnInit {
             }
           });
           zone.dbIds.push(dbId);
-          //assign levelName to class Zone temporary solution
+          // assign levelName to class Zone temporary solution
           // because its doing it for every dbId, maybe if Zone[level]
-          //was an array we could throw an error if !allEntries were the same
+          // was an array we could throw an error if !allEntries were the same
           // since all objects of a zone should be at the same level
 
-          var correspondingLevel = this.objectsPerLevel.find((obj) =>
+          const correspondingLevel = this.objectsPerLevel.find((obj) =>
             obj.dbIds.includes(dbId)
           );
           // console.log(correspondingLevel);
           zone.level = correspondingLevel.levelName;
-          //Case 1: Install Formwork
+          // Case 1: Install Formwork
           if (this.isWall(dbId) && controlInstFormwork === 0) {
-            var correspondingWall = this.walls.find(
+            const correspondingWall = this.walls.find(
               (obj) => obj.viewerdbId === dbId
             );
 
             zone.wd += correspondingWall.WDwF;
           }
           if (this.isColumn(dbId) && controlInstFormwork === 0) {
-            var correspondingColumn = this.columns.find(
+            const correspondingColumn = this.columns.find(
               (obj) => obj.viewerdbId === dbId
             );
 
             zone.wd += correspondingColumn.WDcF;
           }
           if (this.isSlab(dbId) && controlInstFormwork === 0) {
-            var correspondingSlab = this.slabs.find(
+            const correspondingSlab = this.slabs.find(
               (obj) => obj.viewerdbId === dbId
             );
 
             zone.wd += correspondingSlab.WDsF;
           }
-          //Case 2: Install Reinforcemenr
+          // Case 2: Install Reinforcemenr
           if (this.isWall(dbId) && controlInstReinforcement === 0) {
-            var correspondingWall = this.walls.find(
+            const correspondingWall = this.walls.find(
               (obj) => obj.viewerdbId === dbId
             );
 
             zone.wd += correspondingWall.WDwR;
           }
           if (this.isColumn(dbId) && controlInstReinforcement === 0) {
-            var correspondingColumn = this.columns.find(
+            const correspondingColumn = this.columns.find(
               (obj) => obj.viewerdbId === dbId
             );
 
             zone.wd += correspondingColumn.WDcR;
           }
           if (this.isSlab(dbId) && controlInstReinforcement === 0) {
-            var correspondingSlab = this.slabs.find(
+            const correspondingSlab = this.slabs.find(
               (obj) => obj.viewerdbId === dbId
             );
 
             zone.wd += correspondingSlab.WDsR;
           }
-          //Case 3: Pour Concrete
+          // Case 3: Pour Concrete
           if (this.isWall(dbId) && controlPourConcrete === 0) {
-            var correspondingWall = this.walls.find(
+            const correspondingWall = this.walls.find(
               (obj) => obj.viewerdbId === dbId
             );
 
             zone.wd += correspondingWall.WDwC;
           }
           if (this.isColumn(dbId) && controlPourConcrete === 0) {
-            var correspondingColumn = this.columns.find(
+            const correspondingColumn = this.columns.find(
               (obj) => obj.viewerdbId === dbId
             );
 
             zone.wd += correspondingColumn.WDcC;
           }
           if (this.isSlab(dbId) && controlPourConcrete === 0) {
-            var correspondingSlab = this.slabs.find(
+            const correspondingSlab = this.slabs.find(
               (obj) => obj.viewerdbId === dbId
             );
 
             zone.wd += correspondingSlab.WDsC;
           }
-          //Case 4: Curing of Concrete
+          // Case 4: Curing of Concrete
           if (this.isWall(dbId) && controlCuring === 0) {
-            var correspondingWall = this.walls.find(
+            const correspondingWall = this.walls.find(
               (obj) => obj.viewerdbId === dbId
             );
 
             zone.wd += correspondingWall.WDwCR;
           }
           if (this.isColumn(dbId) && controlCuring === 0) {
-            var correspondingColumn = this.columns.find(
+            const correspondingColumn = this.columns.find(
               (obj) => obj.viewerdbId === dbId
             );
 
             zone.wd += correspondingColumn.WDcCR;
           }
           if (this.isSlab(dbId) && controlCuring === 0) {
-            var correspondingSlab = this.slabs.find(
+            const correspondingSlab = this.slabs.find(
               (obj) => obj.viewerdbId === dbId
             );
 
             zone.wd += correspondingSlab.WDsCR;
           }
-          //Case 5: Strip Formwork
+          // Case 5: Strip Formwork
           if (this.isWall(dbId) && controlStripFormwork === 0) {
-            var correspondingWall = this.walls.find(
+            const correspondingWall = this.walls.find(
               (obj) => obj.viewerdbId === dbId
             );
 
             zone.wd += correspondingWall.WDwS;
           }
           if (this.isColumn(dbId) && controlStripFormwork === 0) {
-            var correspondingColumn = this.columns.find(
+            const correspondingColumn = this.columns.find(
               (obj) => obj.viewerdbId === dbId
             );
 
             zone.wd += correspondingColumn.WDcS;
           }
           if (this.isSlab(dbId) && controlStripFormwork === 0) {
-            var correspondingSlab = this.slabs.find(
+            const correspondingSlab = this.slabs.find(
               (obj) => obj.viewerdbId === dbId
             );
 
@@ -805,16 +809,18 @@ export class MainComponent implements OnInit {
         // console.log(controlGroup);
         // var data = this.zones.map((e) => e.wd);
 
+        let dataSet;
+
         if (controlInstFormwork === 0) {
-          var dataSet = 0;
+          dataSet = 0;
         } else if (controlInstReinforcement === 0) {
-          var dataSet = 1;
+          dataSet = 1;
         } else if (controlPourConcrete === 0) {
-          var dataSet = 2;
+          dataSet = 2;
         } else if (controlCuring === 0) {
-          var dataSet = 3;
+          dataSet = 3;
         } else if (controlStripFormwork === 0) {
-          var dataSet = 4;
+          dataSet = 4;
         }
         console.log(dataSet);
 
@@ -833,227 +839,36 @@ export class MainComponent implements OnInit {
       }
     };
     button3.onClick = (event) => {
-      console.log('Optimization Crew Size Formwork Test started');
-      //get current selection
-      const selection = this.viewerComponent.viewer.getSelection();
-      // console.log(selection);
-      this.viewerComponent.viewer.clearSelection();
-      this.allZones.forEach((zone) => {
-        var count = 0;
-        selection.forEach((dbId) => {
-          if (zone.dbIds.includes(dbId)) {
-            count++;
-          }
-        });
-        if (selection.length !== 0 && selection.length === count) {
-          zone.objects.forEach((obj) => {
-            obj.csF = 4;
-          });
-          // console.log(zone.objects);
-          this.calcWD(this.slabs);
-          this.calcWD(this.walls);
-          this.calcWD(this.columns);
-          this.updateWDbars(selection, zone);
-        }
-      });
-      this.createAndUpdateBarChart();
+      this.showInputPanel('Change Crewsize Formwork', 'csF');
     };
     button4.onClick = (event) => {
-      console.log('Optimization Crew Size Reinforcement Test started');
-      //get current selection
-      const selection = this.viewerComponent.viewer.getSelection();
-      // console.log(selection);
-      this.viewerComponent.viewer.clearSelection();
-      if (selection.length > 0) {
-        this.allZones.forEach((zone) => {
-          var count = 0;
-          selection.forEach((dbId) => {
-            if (zone.dbIds.includes(dbId)) {
-              count++;
-            }
-          });
-          if (selection.length !== 0 && selection.length === count) {
-            zone.objects.forEach((obj) => {
-              obj.csR = 4;
-            });
-            this.calcWD(this.slabs);
-            this.calcWD(this.walls);
-            this.calcWD(this.columns);
-            this.updateWDbars(selection, zone);
-          }
-        });
-        this.createAndUpdateBarChart();
-      }
+      this.showInputPanel('Change Crewsize Reinforcement', 'csR');
     };
     button5.onClick = (event) => {
-      console.log('Optimization Crew Size Pouring Concrete Test started');
-      //get current selection
-      const selection = this.viewerComponent.viewer.getSelection();
-      // console.log(selection);
-      this.viewerComponent.viewer.clearSelection();
-      if (selection.length > 0) {
-        this.allZones.forEach((zone) => {
-          var count = 0;
-          selection.forEach((dbId) => {
-            if (zone.dbIds.includes(dbId)) {
-              count++;
-            }
-          });
-          if (selection.length !== 0 && selection.length === count) {
-            zone.objects.forEach((obj) => {
-              obj.csC = 4;
-            });
-            this.calcWD(this.slabs);
-            this.calcWD(this.walls);
-            this.calcWD(this.columns);
-            this.updateWDbars(selection, zone);
-          }
-        });
-        this.createAndUpdateBarChart();
-      }
+      this.showInputPanel('Change Crewsize Pouring Concrete', 'csC');
     };
     button6.onClick = (event) => {
-      console.log('Optimization Crew Size Strip Formwork Test started');
-      //get current selection
-      const selection = this.viewerComponent.viewer.getSelection();
-      // console.log(selection);
-      this.viewerComponent.viewer.clearSelection();
-      if (selection.length > 0) {
-        this.allZones.forEach((zone) => {
-          var count = 0;
-          selection.forEach((dbId) => {
-            if (zone.dbIds.includes(dbId)) {
-              count++;
-            }
-          });
-          if (selection.length !== 0 && selection.length === count) {
-            zone.objects.forEach((obj) => {
-              obj.csS = 4;
-            });
-            this.calcWD(this.slabs);
-            this.calcWD(this.walls);
-            this.calcWD(this.columns);
-            this.updateWDbars(selection, zone);
-          }
-        });
-        this.createAndUpdateBarChart();
-      }
+      this.showInputPanel('Change Crewsize Strip Formwork', 'csS');
     };
 
     button7.onClick = (event) => {
-      //Test functions
-      console.log('Optimization Production Rate Inst Formwork Test started');
-      //////////TESTING ZONES ///////////////////////
-      //get current selection
-      const selection = this.viewerComponent.viewer.getSelection();
-      console.log(selection);
-      this.viewerComponent.viewer.clearSelection();
-
-      this.allZones.forEach((zone) => {
-        var count = 0;
-        selection.forEach((dbId) => {
-          if (zone.dbIds.includes(dbId)) {
-            count++;
-          }
-        });
-        if (selection.length !== 0 && selection.length === count) {
-          zone.objects.forEach((obj) => {
-            obj.prF = 0.1;
-          });
-          this.calcWD(this.slabs);
-          this.calcWD(this.walls);
-          this.calcWD(this.columns);
-          this.updateWDbars(selection, zone);
-        }
-      });
-      this.createAndUpdateBarChart();
+      this.showInputPanel('Change Production Rate Inst Formwork', 'prF');
     };
     button8.onClick = (event) => {
-      console.log(
-        'Optimization Production Rate Inst Reinforcement Test started'
-      );
-      //get current selection
-      const selection = this.viewerComponent.viewer.getSelection();
-      console.log(selection);
-      this.viewerComponent.viewer.clearSelection();
-      // console.log(this.allZones);
-      this.allZones.forEach((zone) => {
-        var count = 0;
-        selection.forEach((dbId) => {
-          if (zone.dbIds.includes(dbId)) {
-            count++;
-          }
-        });
-        if (selection.length !== 0 && selection.length === count) {
-          zone.objects.forEach((obj) => {
-            obj.prR = 14;
-          });
-          this.calcWD(this.slabs);
-          this.calcWD(this.walls);
-          this.calcWD(this.columns);
-          this.updateWDbars(selection, zone);
-        }
-      });
-      this.createAndUpdateBarChart();
+      this.showInputPanel('Change Production Rate Inst Reinforcement', 'prR');
     };
     button9.onClick = (event) => {
-      console.log('Optimization Production Rate Pouring Concrete Test started');
-      //get current selection
-      const selection = this.viewerComponent.viewer.getSelection();
-      console.log(selection);
-      this.viewerComponent.viewer.clearSelection();
-      // console.log(this.allZones);
-      this.allZones.forEach((zone) => {
-        var count = 0;
-        selection.forEach((dbId) => {
-          if (zone.dbIds.includes(dbId)) {
-            count++;
-          }
-        });
-        if (selection.length !== 0 && selection.length === count) {
-          zone.objects.forEach((obj) => {
-            obj.prC = 0.12;
-          });
-          this.calcWD(this.slabs);
-          this.calcWD(this.walls);
-          this.calcWD(this.columns);
-          this.updateWDbars(selection, zone);
-        }
-      });
-      this.createAndUpdateBarChart();
+      this.showInputPanel('Change Production Rate Pouring Concrete', 'prC');
     };
     button10.onClick = (event) => {
-      console.log('Optimization Production Rate Strip Formwork Test started');
-      //get current selection
-      const selection = this.viewerComponent.viewer.getSelection();
-      console.log(selection);
-      this.viewerComponent.viewer.clearSelection();
-      // console.log(this.allZones);
-      this.allZones.forEach((zone) => {
-        var count = 0;
-        selection.forEach((dbId) => {
-          if (zone.dbIds.includes(dbId)) {
-            count++;
-          }
-        });
-        if (selection.length !== 0 && selection.length === count) {
-          zone.objects.forEach((obj) => {
-            obj.prS = 0.1;
-          });
-          this.calcWD(this.slabs);
-          this.calcWD(this.walls);
-          this.calcWD(this.columns);
-          this.updateWDbars(selection, zone);
-        }
-      });
-      this.createAndUpdateBarChart();
+      this.showInputPanel('Change Production Rate Strip Formwork', 'prS');
     };
 
     button11.onClick = (event) => {
       if (this.allZones.length > 0) {
         const fragList = this.viewerComponent.viewer.model.getFragmentList();
         const coloringMap = fragList.db2ThemingColor;
-        var deletedZone = this.allZones.pop();
+        const deletedZone = this.allZones.pop();
         console.log(deletedZone);
         deletedZone.dbIds.forEach((dbid) => {
           delete coloringMap[dbid];
@@ -1084,16 +899,13 @@ export class MainComponent implements OnInit {
     }, 5000);
     $('#guiviewer3d-toolbar').append(controlGroup.container);
   }
-  //////TESTING THREEJS////////////
-
-  ///////////////////////////////////////////////////////////
 
   public loadWDToolbar() {
-    //button test
+    // button test
     const button1 = new Autodesk.Viewing.UI.Button('showing-WDformwork');
     button1.addClass('showing-WDformwork');
     button1.setToolTip('WDmap for Installing Formwork');
-    //@ts-ignore
+    // @ts-ignore
     button1.container.children[0].classList.add('fab', 'fa-facebook-f');
     // button1.setIcon('far fa-question-circle');
     // SubToolbar
@@ -1101,25 +913,25 @@ export class MainComponent implements OnInit {
 
     button2.addClass('showing-WDreinforcement');
     button2.setToolTip('WDmap for Installing Reinforcement');
-    //@ts-ignore
+    // @ts-ignore
     button2.container.children[0].classList.add('far', 'fa-registered');
     const button3 = new Autodesk.Viewing.UI.Button('showing-WDconcrete');
 
     button3.addClass('showing-WDconcrete');
     button3.setToolTip('WDmap for Pouring Concrete');
-    //@ts-ignore
+    // @ts-ignore
     button3.container.children[0].classList.add('fas', 'fa-truck-pickup');
     const button4 = new Autodesk.Viewing.UI.Button('showing-WDcuring');
 
     button4.addClass('showing-WDcuring');
     button4.setToolTip('WDmap for Curing of Concrete');
-    //@ts-ignore
+    // @ts-ignore
     button4.container.children[0].classList.add('fab', 'fa-cuttlefish');
     const button5 = new Autodesk.Viewing.UI.Button('showing-WDstrip');
 
     button5.addClass('showing-WDstrip');
     button5.setToolTip('WDmap for Stripping Formwork');
-    //@ts-ignore
+    // @ts-ignore
     button5.container.children[0].classList.add('fab', 'fa-stripe-s');
 
     const controlGroup = new Autodesk.Viewing.UI.ControlGroup(
@@ -1143,7 +955,7 @@ export class MainComponent implements OnInit {
         button3.setState(1);
         button4.setState(1);
         button5.setState(1);
-        var list = document.getElementById('tempPanel');
+        const list = document.getElementById('tempPanel');
         if (list) {
           document.body.removeChild(list);
         }
@@ -1156,7 +968,7 @@ export class MainComponent implements OnInit {
         this.viewerComponent.viewer.clearThemingColors(
           this.viewerComponent.viewer.model
         );
-        var list = document.getElementById('tempPanel');
+        const list = document.getElementById('tempPanel');
         document.body.removeChild(list);
 
         // while (controlGroup.getNumberOfControls() > 5) {
@@ -1173,7 +985,7 @@ export class MainComponent implements OnInit {
         button3.setState(1);
         button4.setState(1);
         button5.setState(1);
-        var list = document.getElementById('tempPanel');
+        const list = document.getElementById('tempPanel');
         // console.log(list);
         if (list) {
           document.body.removeChild(list);
@@ -1189,7 +1001,7 @@ export class MainComponent implements OnInit {
         this.viewerComponent.viewer.clearThemingColors(
           this.viewerComponent.viewer.model
         );
-        var list = document.getElementById('tempPanel');
+        const list = document.getElementById('tempPanel');
         document.body.removeChild(list);
 
         // while (controlGroup.getNumberOfControls() > 5) {
@@ -1205,7 +1017,7 @@ export class MainComponent implements OnInit {
         button1.setState(1);
         button4.setState(1);
         button5.setState(1);
-        var list = document.getElementById('tempPanel');
+        const list = document.getElementById('tempPanel');
         // console.log(list);
         if (list) {
           document.body.removeChild(list);
@@ -1221,7 +1033,7 @@ export class MainComponent implements OnInit {
         this.viewerComponent.viewer.clearThemingColors(
           this.viewerComponent.viewer.model
         );
-        var list = document.getElementById('tempPanel');
+        const list = document.getElementById('tempPanel');
         document.body.removeChild(list);
 
         // while (controlGroup.getNumberOfControls() > 5) {
@@ -1237,7 +1049,7 @@ export class MainComponent implements OnInit {
         button3.setState(1);
         button1.setState(1);
         button5.setState(1);
-        var list = document.getElementById('tempPanel');
+        const list = document.getElementById('tempPanel');
         // console.log(list);
         if (list) {
           document.body.removeChild(list);
@@ -1254,7 +1066,7 @@ export class MainComponent implements OnInit {
         this.viewerComponent.viewer.clearThemingColors(
           this.viewerComponent.viewer.model
         );
-        var list = document.getElementById('tempPanel');
+        const list = document.getElementById('tempPanel');
         document.body.removeChild(list);
 
         // while (controlGroup.getNumberOfControls() > 5) {
@@ -1270,10 +1082,10 @@ export class MainComponent implements OnInit {
         button3.setState(1);
         button4.setState(1);
         button1.setState(1);
-        /////test////////
+        ///// test////////
         // new Dashboard(this.viewerComponent.viewer, [new BarChart()]);
         /////////////
-        var list = document.getElementById('tempPanel');
+        const list = document.getElementById('tempPanel');
         // console.log(list);
         if (list) {
           document.body.removeChild(list);
@@ -1289,7 +1101,7 @@ export class MainComponent implements OnInit {
         this.viewerComponent.viewer.clearThemingColors(
           this.viewerComponent.viewer.model
         );
-        var list = document.getElementById('tempPanel');
+        const list = document.getElementById('tempPanel');
         // console.log(list);
         document.body.removeChild(list);
 
@@ -1305,6 +1117,118 @@ export class MainComponent implements OnInit {
     }, 5000);
     $('#guiviewer3d-toolbar').append(controlGroup.container);
   }
+
+  public showInputPanel(what: string, parameter: string) {
+    // $('#sectionPanel').hide();
+    const container = this.viewerComponent.viewer.container as HTMLElement;
+    this.inputPanel = new Autodesk.Viewing.UI.DockingPanel(container, 'inputPanel', 'Input Panel -> ' + what, { localizeTitle: true, addFooter: true });
+    this.inputPanel.setVisible(true);
+    this.inputPanel.addVisibilityListener((show) => {
+      // Logic for closing the panel
+      if (!show) {
+        // this.onCloseNewSectionPanel();
+      }
+    });
+    this.inputPanel.content = document.createElement('div');
+    const contentDiv = this.inputPanel.content as HTMLElement;
+    contentDiv.classList.add('container', 'border-box');
+    contentDiv.style.boxSizing = 'border-box';
+    $(this.inputPanel.content).append(inputHTML);
+    contentDiv.style.overflowY = 'hidden';
+    contentDiv.style.height = 'calc(100% - 105px)';
+    contentDiv.style.color = 'black';
+    this.inputPanel.container.classList.add('docking-panel-container-solid-color-a');
+    this.inputPanel.container.style.height = '250px';
+    this.inputPanel.container.style.width = '500px';
+    this.inputPanel.container.style.minWidth = '500px';
+    this.inputPanel.container.style.resize = 'none';
+
+    // // FOOTER ==> Orginal Grösse 20 px
+    this.inputPanel.footer.style.height = '55px';
+    // this.inputPanel.footer.style.paddingLeft = '14px';
+    this.inputPanel.footer.style.paddingTop = '12.5px';
+    const valuesDivFooter = document.createElement('div');
+    valuesDivFooter.setAttribute('class', 'p-grid p-align-center');
+
+    const saveButton = document.createElement('button');
+    saveButton.setAttribute('class', 'button-footer-panel');
+    saveButton.setAttribute('style', 'margin-left: 45px');
+    saveButton.setAttribute('id', 'saveNewSection');
+    saveButton.textContent = 'Save';
+    valuesDivFooter.appendChild(saveButton);
+    const cancelButton = document.createElement('button');
+    cancelButton.setAttribute('class', 'button-footer-panel');
+    cancelButton.setAttribute('style', 'margin-left: 60px');
+    cancelButton.setAttribute('id', 'cancelNewSection');
+    cancelButton.textContent = 'Cancel';
+    valuesDivFooter.appendChild(cancelButton);
+    // Workaround, da onclick Button irgendwie nicht funktioniert
+    valuesDivFooter.addEventListener('click', (event) => {
+      // @ts-ignore
+      if (event.target.id === 'saveNewSection') {
+        // @ts-ignore
+        const userInput = document.getElementById('userInput').value;
+        // get current selection
+        const selection = this.viewerComponent.viewer.getSelection();
+        // console.log(selection);
+        this.viewerComponent.viewer.clearSelection();
+        this.allZones.forEach((zone) => {
+          let count = 0;
+          selection.forEach((dbId) => {
+            if (zone.dbIds.includes(dbId)) {
+              count++;
+            }
+          });
+          if (selection.length !== 0 && selection.length === count) {
+            zone.objects.forEach((obj) => {
+              obj[parameter] = userInput;
+            });
+            // console.log(zone.objects);
+            this.calcWD(this.slabs);
+            this.calcWD(this.walls);
+            this.calcWD(this.columns);
+            this.updateWDbars(selection, zone);
+          }
+        });
+        this.createAndUpdateBarChart();
+        $('#inputPanel').hide();
+        // @ts-ignore
+        // document.getElementById('userInput').value = null;
+        const inputContainer = this.inputPanel.container;
+        this.viewerComponent.viewer.container.removeChild(inputContainer);
+      }
+      // @ts-ignore
+      else if (event.target.id === 'cancelNewSection') {
+        $('#inputPanel').hide();
+        // @ts-ignore
+        // document.getElementById('userInput').value = null;
+        const inputContainer = this.inputPanel.container;
+        this.viewerComponent.viewer.container.removeChild(inputContainer);
+      }
+    });
+    this.inputPanel.footer.append(valuesDivFooter as HTMLElement);
+
+    this.inputPanel.container.appendChild(this.inputPanel.content as HTMLElement);
+
+    const textDivHeader11 = document.createElement('div');
+    textDivHeader11.setAttribute('class', 'p-col-6');
+    textDivHeader11.setAttribute('style', 'width: 45%');
+    textDivHeader11.innerHTML = '<div class="box-section-new">' + 'Number' + '</div>';
+    textDivHeader11.style.color = 'black';
+    $(this.inputPanel.container).find('#newInput')[0].appendChild(textDivHeader11 as HTMLElement);
+
+    const textDivHeader12 = document.createElement('div');
+    textDivHeader12.setAttribute('class', 'p-col-6');
+    textDivHeader12.setAttribute('style', 'width: 45%');
+    const inputNumber = document.createElement('input');
+
+    inputNumber.setAttribute('class', 'custom-input');
+    inputNumber.setAttribute('id', 'userInput');
+    inputNumber.setAttribute('type', 'number');
+    textDivHeader12.appendChild(inputNumber);
+    $(this.inputPanel.container).find('#newInput')[0].appendChild(textDivHeader12 as HTMLElement);
+  }
+
   public async runDifferentFunc() {
     $('.lds-roller').show();
     // SetTimeout only for vizualization purposes
@@ -1478,7 +1402,7 @@ export class MainComponent implements OnInit {
     ]).then((res) => {
       // console.log(allDbIds);
       if (Array.isArray(res)) {
-        let resNew = res.filter((item) => item.properties.length > 1);
+        const resNew = res.filter((item) => item.properties.length > 1);
         return asyncForEach(resNew, (element) => {
           // console.log(element);
           if (
@@ -1492,8 +1416,8 @@ export class MainComponent implements OnInit {
               this.getLeafComponentsRec(element.dbId)
             );
             wall.category = 'Wall';
-            //This step is necessary if properties (Material and Category) have values in both parents and clildren
-            //for example a leaf component of slab has some values in Material and Category so it meets the requirements to form an Element
+            // This step is necessary if properties (Material and Category) have values in both parents and clildren
+            // for example a leaf component of slab has some values in Material and Category so it meets the requirements to form an Element
             // and then also the parent has exactly the same values so an identical second Element is created also
             if (!this.walls.find((x) => x.viewerdbId === wall.viewerdbId)) {
               this.walls.push(wall);
@@ -1534,7 +1458,7 @@ export class MainComponent implements OnInit {
             'Material',
           ]).then((res) => {
             if (Array.isArray(res)) {
-              let resNew = res.filter((item) => item.properties.length > 1);
+              const resNew = res.filter((item) => item.properties.length > 1);
               asyncForEach(resNew, (element) => {
                 if (
                   element.properties[0].displayValue ===
@@ -1613,7 +1537,7 @@ export class MainComponent implements OnInit {
               ) {
                 item.perimeter = parseFloat(prop.displayValue);
               } else if (
-                prop.displayName === 'NetSideArea' || //the 2nd NetSideArea is the correct one, normally here id the GrossSideArea used
+                prop.displayName === 'NetSideArea' || // the 2nd NetSideArea is the correct one, normally here id the GrossSideArea used
                 prop.displayName === 'NetSideArea'
               ) {
                 item.sideArea = parseFloat(prop.displayValue);
@@ -1757,7 +1681,7 @@ export class MainComponent implements OnInit {
       case this.foundations:
         this.foundations.forEach((element) => {
           if (!element.thickness) {
-            //roofs are slabs but they have the width property instead of thickness
+            // roofs are slabs but they have the width property instead of thickness
             element.thickness = element.width;
           }
           element.WDfF =
@@ -1955,7 +1879,7 @@ export class MainComponent implements OnInit {
 
     this.panel.container.appendChild(this.panel.content as HTMLElement);
 
-    var textDivHeader = document.createElement('div');
+    const textDivHeader = document.createElement('div');
     textDivHeader.setAttribute('class', 'p-col-6');
     textDivHeader.innerHTML = '<div class="box">' + 'Property Name' + '</div>';
     textDivHeader.style.color = 'black';
@@ -1964,7 +1888,7 @@ export class MainComponent implements OnInit {
       .find('#headerLabel')[0]
       .appendChild(textDivHeader as HTMLElement);
 
-    var textDivHeader2 = document.createElement('div');
+    const textDivHeader2 = document.createElement('div');
     textDivHeader2.setAttribute('class', 'p-col-6');
     textDivHeader2.innerHTML =
       '<div class="box">' + 'Property Value' + '</div>';
@@ -1974,7 +1898,7 @@ export class MainComponent implements OnInit {
       .find('#headerLabel')[0]
       .appendChild(textDivHeader2 as HTMLElement);
 
-    var textDivA = document.createElement('div');
+    const textDivA = document.createElement('div');
     textDivA.setAttribute('class', 'p-col-6');
     textDivA.innerHTML = '<div class="box">' + 'Id' + '</div>';
     textDivA.style.color = 'black';
@@ -1982,7 +1906,7 @@ export class MainComponent implements OnInit {
       .find('#idProp')[0]
       .appendChild(textDivA as HTMLElement);
 
-    var textDivA2 = document.createElement('div');
+    const textDivA2 = document.createElement('div');
     textDivA2.setAttribute('class', 'p-col-6');
     textDivA2.innerHTML = '<div class="box">' + 'Unset' + '</div>';
     textDivA2.style.color = 'red';
@@ -1990,7 +1914,7 @@ export class MainComponent implements OnInit {
       .find('#idProp')[0]
       .appendChild(textDivA2 as HTMLElement);
 
-    var textDivB = document.createElement('div');
+    const textDivB = document.createElement('div');
     textDivB.setAttribute('class', 'p-col-6');
     textDivB.innerHTML = '<div class="box">' + 'dbId' + '</div>';
     textDivB.style.color = 'black';
@@ -1998,7 +1922,7 @@ export class MainComponent implements OnInit {
       .find('#dbIdProp')[0]
       .appendChild(textDivB as HTMLElement);
 
-    var textDivB2 = document.createElement('div');
+    const textDivB2 = document.createElement('div');
     textDivB2.setAttribute('class', 'p-col-6');
     textDivB2.innerHTML = '<div class="box">' + 'Unset' + '</div>';
     textDivB2.style.color = 'red';
@@ -2006,7 +1930,7 @@ export class MainComponent implements OnInit {
       .find('#dbIdProp')[0]
       .appendChild(textDivB2 as HTMLElement);
 
-    var textDivC = document.createElement('div');
+    const textDivC = document.createElement('div');
     textDivC.setAttribute('class', 'p-col-6');
     textDivC.innerHTML = '<div class="box">' + 'Volume [m3]' + '</div>';
     textDivC.style.color = 'black';
@@ -2014,7 +1938,7 @@ export class MainComponent implements OnInit {
       .find('#volumeProp')[0]
       .appendChild(textDivC as HTMLElement);
 
-    var textDivC2 = document.createElement('div');
+    const textDivC2 = document.createElement('div');
     textDivC2.setAttribute('class', 'p-col-6');
     textDivC2.innerHTML = '<div class="box">' + 'Unset' + '</div>';
     textDivC2.style.color = 'red';
@@ -2022,7 +1946,7 @@ export class MainComponent implements OnInit {
       .find('#volumeProp')[0]
       .appendChild(textDivC2 as HTMLElement);
 
-    var textDivD = document.createElement('div');
+    const textDivD = document.createElement('div');
     textDivD.setAttribute('class', 'p-col-6');
     textDivD.innerHTML = '<div class="box">' + 'Area [m2]' + '</div>';
     textDivD.style.color = 'black';
@@ -2030,7 +1954,7 @@ export class MainComponent implements OnInit {
       .find('#areaProp')[0]
       .appendChild(textDivD as HTMLElement);
 
-    var textDivD2 = document.createElement('div');
+    const textDivD2 = document.createElement('div');
     textDivD2.setAttribute('class', 'p-col-6');
     textDivD2.innerHTML = '<div class="box">' + 'Unset' + '</div>';
     textDivD2.style.color = 'red';
@@ -2038,7 +1962,7 @@ export class MainComponent implements OnInit {
       .find('#areaProp')[0]
       .appendChild(textDivD2 as HTMLElement);
 
-    var textDivE = document.createElement('div');
+    const textDivE = document.createElement('div');
     textDivE.setAttribute('class', 'p-col-6');
     textDivE.innerHTML = '<div class="box">' + 'Length [m]' + '</div>';
     textDivE.style.color = 'black';
@@ -2046,7 +1970,7 @@ export class MainComponent implements OnInit {
       .find('#lengthProp')[0]
       .appendChild(textDivE as HTMLElement);
 
-    var textDivE2 = document.createElement('div');
+    const textDivE2 = document.createElement('div');
     textDivE2.setAttribute('class', 'p-col-6');
     textDivE2.innerHTML = '<div class="box">' + 'Unset' + '</div>';
     textDivE2.style.color = 'red';
@@ -2054,7 +1978,7 @@ export class MainComponent implements OnInit {
       .find('#lengthProp')[0]
       .appendChild(textDivE2 as HTMLElement);
 
-    var textDivF = document.createElement('div');
+    const textDivF = document.createElement('div');
     textDivF.setAttribute('class', 'p-col-6');
     textDivF.innerHTML = '<div class="box">' + 'Height [m]' + '</div>';
     textDivF.style.color = 'black';
@@ -2062,7 +1986,7 @@ export class MainComponent implements OnInit {
       .find('#heightProp')[0]
       .appendChild(textDivF as HTMLElement);
 
-    var textDivF2 = document.createElement('div');
+    const textDivF2 = document.createElement('div');
     textDivF2.setAttribute('class', 'p-col-6');
     textDivF2.innerHTML = '<div class="box">' + 'Unset' + '</div>';
     textDivF2.style.color = 'red';
@@ -2070,7 +1994,7 @@ export class MainComponent implements OnInit {
       .find('#heightProp')[0]
       .appendChild(textDivF2 as HTMLElement);
 
-    var textDivG = document.createElement('div');
+    const textDivG = document.createElement('div');
     textDivG.setAttribute('class', 'p-col-6');
     textDivG.innerHTML = '<div class="box">' + 'Perimeter [m]' + '</div>';
     textDivG.style.color = 'black';
@@ -2078,7 +2002,7 @@ export class MainComponent implements OnInit {
       .find('#perimProp')[0]
       .appendChild(textDivG as HTMLElement);
 
-    var textDivG2 = document.createElement('div');
+    const textDivG2 = document.createElement('div');
     textDivG2.setAttribute('class', 'p-col-6');
     textDivG2.innerHTML = '<div class="box">' + 'Unset' + '</div>';
     textDivG2.style.color = 'red';
@@ -2086,7 +2010,7 @@ export class MainComponent implements OnInit {
       .find('#perimProp')[0]
       .appendChild(textDivG2 as HTMLElement);
 
-    var textDivH = document.createElement('div');
+    const textDivH = document.createElement('div');
     textDivH.setAttribute('class', 'p-col-6');
     textDivH.innerHTML = '<div class="box">' + 'Width [m]' + '</div>';
     textDivH.style.color = 'black';
@@ -2094,7 +2018,7 @@ export class MainComponent implements OnInit {
       .find('#widthProp')[0]
       .appendChild(textDivH as HTMLElement);
 
-    var textDivH2 = document.createElement('div');
+    const textDivH2 = document.createElement('div');
     textDivH2.setAttribute('class', 'p-col-6');
     textDivH2.innerHTML = '<div class="box">' + 'Unset' + '</div>';
     textDivH2.style.color = 'red';
@@ -2102,7 +2026,7 @@ export class MainComponent implements OnInit {
       .find('#widthProp')[0]
       .appendChild(textDivH2 as HTMLElement);
 
-    var textDivI = document.createElement('div');
+    const textDivI = document.createElement('div');
     textDivI.setAttribute('class', 'p-col-6');
     textDivI.innerHTML =
       '<div class="box">' +
@@ -2113,7 +2037,7 @@ export class MainComponent implements OnInit {
       .find('#prFormProp')[0]
       .appendChild(textDivI as HTMLElement);
 
-    var textDivI2 = document.createElement('div');
+    const textDivI2 = document.createElement('div');
     textDivI2.setAttribute('class', 'p-col-6');
     textDivI2.innerHTML = '<div class="box">' + 'Unset' + '</div>';
     textDivI2.style.color = 'red';
@@ -2121,7 +2045,7 @@ export class MainComponent implements OnInit {
       .find('#prFormProp')[0]
       .appendChild(textDivI2 as HTMLElement);
 
-    var textDivY = document.createElement('div');
+    const textDivY = document.createElement('div');
     textDivY.setAttribute('class', 'p-col-6');
     textDivY.innerHTML =
       '<div class="box">' +
@@ -2132,7 +2056,7 @@ export class MainComponent implements OnInit {
       .find('#prReinProp')[0]
       .appendChild(textDivY as HTMLElement);
 
-    var textDivY2 = document.createElement('div');
+    const textDivY2 = document.createElement('div');
     textDivY2.setAttribute('class', 'p-col-6');
     textDivY2.innerHTML = '<div class="box">' + 'Unset' + '</div>';
     textDivY2.style.color = 'red';
@@ -2140,7 +2064,7 @@ export class MainComponent implements OnInit {
       .find('#prReinProp')[0]
       .appendChild(textDivY2 as HTMLElement);
 
-    var textDivT = document.createElement('div');
+    const textDivT = document.createElement('div');
     textDivT.setAttribute('class', 'p-col-6');
     textDivT.innerHTML =
       '<div class="box">' + 'Production Rate Pour Concrete [h/m3]' + '</div>';
@@ -2149,7 +2073,7 @@ export class MainComponent implements OnInit {
       .find('#prConcProp')[0]
       .appendChild(textDivT as HTMLElement);
 
-    var textDivT2 = document.createElement('div');
+    const textDivT2 = document.createElement('div');
     textDivT2.setAttribute('class', 'p-col-6');
     textDivT2.innerHTML = '<div class="box">' + 'Unset' + '</div>';
     textDivT2.style.color = 'red';
@@ -2157,7 +2081,7 @@ export class MainComponent implements OnInit {
       .find('#prConcProp')[0]
       .appendChild(textDivT2 as HTMLElement);
 
-    var textDivU = document.createElement('div');
+    const textDivU = document.createElement('div');
     textDivU.setAttribute('class', 'p-col-6');
     textDivU.innerHTML =
       '<div class="box">' + 'Production Rate Strip Formwork [h/m2]' + '</div>';
@@ -2166,7 +2090,7 @@ export class MainComponent implements OnInit {
       .find('#prStrProp')[0]
       .appendChild(textDivU as HTMLElement);
 
-    var textDivU2 = document.createElement('div');
+    const textDivU2 = document.createElement('div');
     textDivU2.setAttribute('class', 'p-col-6');
     textDivU2.innerHTML = '<div class="box">' + 'Unset' + '</div>';
     textDivU2.style.color = 'red';
@@ -2174,7 +2098,7 @@ export class MainComponent implements OnInit {
       .find('#prStrProp')[0]
       .appendChild(textDivU2 as HTMLElement);
 
-    var textDivK = document.createElement('div');
+    const textDivK = document.createElement('div');
     textDivK.setAttribute('class', 'p-col-6');
     textDivK.innerHTML =
       '<div class="box">' + 'Crew Size Install Formwork [ppl]' + '</div>';
@@ -2183,7 +2107,7 @@ export class MainComponent implements OnInit {
       .find('#csFormProp')[0]
       .appendChild(textDivK as HTMLElement);
 
-    var textDivK2 = document.createElement('div');
+    const textDivK2 = document.createElement('div');
     textDivK2.setAttribute('class', 'p-col-6');
     textDivK2.innerHTML = '<div class="box">' + 'Unset' + '</div>';
     textDivK2.style.color = 'red';
@@ -2191,7 +2115,7 @@ export class MainComponent implements OnInit {
       .find('#csFormProp')[0]
       .appendChild(textDivK2 as HTMLElement);
 
-    var textDivL = document.createElement('div');
+    const textDivL = document.createElement('div');
     textDivL.setAttribute('class', 'p-col-6');
     textDivL.innerHTML =
       '<div class="box">' + 'Crew Size Install Reinforcement [ppl]' + '</div>';
@@ -2200,7 +2124,7 @@ export class MainComponent implements OnInit {
       .find('#csReinProp')[0]
       .appendChild(textDivL as HTMLElement);
 
-    var textDivL2 = document.createElement('div');
+    const textDivL2 = document.createElement('div');
     textDivL2.setAttribute('class', 'p-col-6');
     textDivL2.innerHTML = '<div class="box">' + 'Unset' + '</div>';
     textDivL2.style.color = 'red';
@@ -2208,7 +2132,7 @@ export class MainComponent implements OnInit {
       .find('#csReinProp')[0]
       .appendChild(textDivL2 as HTMLElement);
 
-    var textDivM = document.createElement('div');
+    const textDivM = document.createElement('div');
     textDivM.setAttribute('class', 'p-col-6');
     textDivM.innerHTML =
       '<div class="box">' + 'Crew Size Pour Concrete [ppl]' + '</div>';
@@ -2217,7 +2141,7 @@ export class MainComponent implements OnInit {
       .find('#csConcProp')[0]
       .appendChild(textDivM as HTMLElement);
 
-    var textDivM2 = document.createElement('div');
+    const textDivM2 = document.createElement('div');
     textDivM2.setAttribute('class', 'p-col-6');
     textDivM2.innerHTML = '<div class="box">' + 'Unset' + '</div>';
     textDivM2.style.color = 'red';
@@ -2225,7 +2149,7 @@ export class MainComponent implements OnInit {
       .find('#csConcProp')[0]
       .appendChild(textDivM2 as HTMLElement);
 
-    var textDivO = document.createElement('div');
+    const textDivO = document.createElement('div');
     textDivO.setAttribute('class', 'p-col-6');
     textDivO.innerHTML =
       '<div class="box">' + 'Crew Size Strip Formwork [ppl]' + '</div>';
@@ -2234,7 +2158,7 @@ export class MainComponent implements OnInit {
       .find('#csStrProp')[0]
       .appendChild(textDivO as HTMLElement);
 
-    var textDivO2 = document.createElement('div');
+    const textDivO2 = document.createElement('div');
     textDivO2.setAttribute('class', 'p-col-6');
     textDivO2.innerHTML = '<div class="box">' + 'Unset' + '</div>';
     textDivO2.style.color = 'red';
@@ -2242,7 +2166,7 @@ export class MainComponent implements OnInit {
       .find('#csStrProp')[0]
       .appendChild(textDivO2 as HTMLElement);
 
-    var textDivJ = document.createElement('div');
+    const textDivJ = document.createElement('div');
     textDivJ.setAttribute('class', 'p-col-6');
     textDivJ.innerHTML =
       '<div class="box">' + 'Work Density Install Formwork [h]' + '</div>';
@@ -2251,7 +2175,7 @@ export class MainComponent implements OnInit {
       .find('#wdFormProp')[0]
       .appendChild(textDivJ as HTMLElement);
 
-    var textDivJ2 = document.createElement('div');
+    const textDivJ2 = document.createElement('div');
     textDivJ2.setAttribute('class', 'p-col-6');
     textDivJ2.innerHTML = '<div class="box">' + 'Unset' + '</div>';
     textDivJ2.style.color = 'red';
@@ -2259,7 +2183,7 @@ export class MainComponent implements OnInit {
       .find('#wdFormProp')[0]
       .appendChild(textDivJ2 as HTMLElement);
 
-    var textDivP = document.createElement('div');
+    const textDivP = document.createElement('div');
     textDivP.setAttribute('class', 'p-col-6');
     textDivP.innerHTML =
       '<div class="box">' + 'Work Density Install Reinforcement [h]' + '</div>';
@@ -2268,7 +2192,7 @@ export class MainComponent implements OnInit {
       .find('#wdReinProp')[0]
       .appendChild(textDivP as HTMLElement);
 
-    var textDivP2 = document.createElement('div');
+    const textDivP2 = document.createElement('div');
     textDivP2.setAttribute('class', 'p-col-6');
     textDivP2.innerHTML = '<div class="box">' + 'Unset' + '</div>';
     textDivP2.style.color = 'red';
@@ -2276,7 +2200,7 @@ export class MainComponent implements OnInit {
       .find('#wdReinProp')[0]
       .appendChild(textDivP2 as HTMLElement);
 
-    var textDivQ = document.createElement('div');
+    const textDivQ = document.createElement('div');
     textDivQ.setAttribute('class', 'p-col-6');
     textDivQ.innerHTML =
       '<div class="box">' + 'Work Density Pour Concrete [h]' + '</div>';
@@ -2285,7 +2209,7 @@ export class MainComponent implements OnInit {
       .find('#wdConcProp')[0]
       .appendChild(textDivQ as HTMLElement);
 
-    var textDivQ2 = document.createElement('div');
+    const textDivQ2 = document.createElement('div');
     textDivQ2.setAttribute('class', 'p-col-6');
     textDivQ2.innerHTML = '<div class="box">' + 'Unset' + '</div>';
     textDivQ2.style.color = 'red';
@@ -2293,7 +2217,7 @@ export class MainComponent implements OnInit {
       .find('#wdConcProp')[0]
       .appendChild(textDivQ2 as HTMLElement);
 
-    var textDivR = document.createElement('div');
+    const textDivR = document.createElement('div');
     textDivR.setAttribute('class', 'p-col-6');
     textDivR.innerHTML =
       '<div class="box">' + 'Work Density Curing of Concrete [h]' + '</div>';
@@ -2302,7 +2226,7 @@ export class MainComponent implements OnInit {
       .find('#wdCurProp')[0]
       .appendChild(textDivR as HTMLElement);
 
-    var textDivR2 = document.createElement('div');
+    const textDivR2 = document.createElement('div');
     textDivR2.setAttribute('class', 'p-col-6');
     textDivR2.innerHTML = '<div class="box">' + 'Unset' + '</div>';
     textDivR2.style.color = 'red';
@@ -2310,7 +2234,7 @@ export class MainComponent implements OnInit {
       .find('#wdCurProp')[0]
       .appendChild(textDivR2 as HTMLElement);
 
-    var textDivS = document.createElement('div');
+    const textDivS = document.createElement('div');
     textDivS.setAttribute('class', 'p-col-6');
     textDivS.innerHTML =
       '<div class="box">' + 'Work Density Strip Formwork [h]' + '</div>';
@@ -2319,7 +2243,7 @@ export class MainComponent implements OnInit {
       .find('#wdStrProp')[0]
       .appendChild(textDivS as HTMLElement);
 
-    var textDivS2 = document.createElement('div');
+    const textDivS2 = document.createElement('div');
     textDivS2.setAttribute('class', 'p-col-6');
     textDivS2.innerHTML = '<div class="box">' + 'Unset' + '</div>';
     textDivS2.style.color = 'red';
@@ -2327,11 +2251,11 @@ export class MainComponent implements OnInit {
       .find('#wdStrProp')[0]
       .appendChild(textDivS2 as HTMLElement);
   }
-  //try to find all last children dbids
+  // try to find all last children dbids
   public getAllLeafComponents(viewer, callback) {
-    var cbCount = 0; // count pending callbacks
-    var components = []; // store the results
-    var tree; // the instance tree
+    let cbCount = 0; // count pending callbacks
+    const components = []; // store the results
+    let tree; // the instance tree
 
     function getLeafComponentsRec(parent) {
       cbCount++;
@@ -2352,7 +2276,7 @@ export class MainComponent implements OnInit {
     }
     viewer.getObjectTree(function (objectTree) {
       tree = objectTree;
-      var allLeafComponents = getLeafComponentsRec(tree.getRootId());
+      const allLeafComponents = getLeafComponentsRec(tree.getRootId());
     });
   }
 
@@ -2380,7 +2304,7 @@ export class MainComponent implements OnInit {
 
   public setupUI() {
     // info panel part
-    let tempPanel = document.createElement('div');
+    const tempPanel = document.createElement('div');
     tempPanel.id = 'tempPanel';
     // tempPanel.className = "infoPanel";
     tempPanel.style.cssText = `
@@ -2431,7 +2355,7 @@ export class MainComponent implements OnInit {
     }
   }
   public belongsToZone(selection) {
-    var count = 0;
+    let count = 0;
     this.zones.forEach((zone) => {
       selection.forEach((dbId) => {
         if (zone.dbIds.includes(dbId)) {
@@ -2448,7 +2372,7 @@ export class MainComponent implements OnInit {
     }
   }
   public belongsToAllZones(selection) {
-    var count = 0;
+    let count = 0;
     this.allZones.forEach((zone) => {
       selection.forEach((dbId) => {
         if (zone.dbIds.includes(dbId)) {
@@ -2484,14 +2408,14 @@ export class MainComponent implements OnInit {
     // console.log(hitTest);
 
     if (hitTest !== null) {
-      let hitPoint = hitTest.point;
+      const hitPoint = hitTest.point;
     }
     return false;
   }
 
   public changePanelValue(dbIdArray) {
     if (this.isWall(dbIdArray[0])) {
-      var correspondingWall = this.walls.find(
+      const correspondingWall = this.walls.find(
         (obj) => obj.viewerdbId === dbIdArray[0]
       );
       // console.log(correspondingWall);
@@ -2563,7 +2487,7 @@ export class MainComponent implements OnInit {
           "<div class='box'>" + correspondingWall.WDwS.toFixed(2) + '</div>';
       }
     } else if (this.isColumn(dbIdArray[0])) {
-      var correspondingColumn = this.columns.find(
+      const correspondingColumn = this.columns.find(
         (obj) => obj.viewerdbId === dbIdArray[0]
       );
       if (this.panel) {
@@ -2638,7 +2562,7 @@ export class MainComponent implements OnInit {
           "<div class='box'>" + correspondingColumn.WDcS.toFixed(2) + '</div>';
       }
     } else if (this.isSlab(dbIdArray[0])) {
-      var correspondingSlab = this.slabs.find(
+      const correspondingSlab = this.slabs.find(
         (obj) => obj.viewerdbId === dbIdArray[0]
       );
       if (this.panel) {
@@ -2807,121 +2731,121 @@ export class MainComponent implements OnInit {
         }
       });
       zone.dbIds.push(dbId);
-      //assign levelName to class Zone temporary solution
+      // assign levelName to class Zone temporary solution
       // because its doing it for every dbId, maybe if Zone[level]
-      //was an array we could throw an error if !allEntries were the same
+      // was an array we could throw an error if !allEntries were the same
       // since all objects of a zone should be at the same level
 
-      var correspondingLevel = this.objectsPerLevel.find((obj) =>
+      const correspondingLevel = this.objectsPerLevel.find((obj) =>
         obj.dbIds.includes(dbId)
       );
       // console.log(correspondingLevel);
       zone.level = correspondingLevel.levelName;
-      //FORMWORK
+      // FORMWORK
       if (this.isWall(dbId)) {
-        var correspondingWall = this.walls.find(
+        const correspondingWall = this.walls.find(
           (obj) => obj.viewerdbId === dbId
         );
 
         zone.wdF += correspondingWall.WDwF;
       }
       if (this.isColumn(dbId)) {
-        var correspondingColumn = this.columns.find(
+        const correspondingColumn = this.columns.find(
           (obj) => obj.viewerdbId === dbId
         );
 
         zone.wdF += correspondingColumn.WDcF;
       }
       if (this.isSlab(dbId)) {
-        var correspondingSlab = this.slabs.find(
+        const correspondingSlab = this.slabs.find(
           (obj) => obj.viewerdbId === dbId
         );
 
         zone.wdF += correspondingSlab.WDsF;
       }
-      //REINFORCEMENT
+      // REINFORCEMENT
       if (this.isWall(dbId)) {
-        var correspondingWall = this.walls.find(
+        const correspondingWall = this.walls.find(
           (obj) => obj.viewerdbId === dbId
         );
 
         zone.wdR += correspondingWall.WDwR;
       }
       if (this.isColumn(dbId)) {
-        var correspondingColumn = this.columns.find(
+        const correspondingColumn = this.columns.find(
           (obj) => obj.viewerdbId === dbId
         );
 
         zone.wdR += correspondingColumn.WDcR;
       }
       if (this.isSlab(dbId)) {
-        var correspondingSlab = this.slabs.find(
+        const correspondingSlab = this.slabs.find(
           (obj) => obj.viewerdbId === dbId
         );
 
         zone.wdR += correspondingSlab.WDsR;
       }
-      //CONCRETE
+      // CONCRETE
       if (this.isWall(dbId)) {
-        var correspondingWall = this.walls.find(
+        const correspondingWall = this.walls.find(
           (obj) => obj.viewerdbId === dbId
         );
 
         zone.wdC += correspondingWall.WDwC;
       }
       if (this.isColumn(dbId)) {
-        var correspondingColumn = this.columns.find(
+        const correspondingColumn = this.columns.find(
           (obj) => obj.viewerdbId === dbId
         );
 
         zone.wdC += correspondingColumn.WDcC;
       }
       if (this.isSlab(dbId)) {
-        var correspondingSlab = this.slabs.find(
+        const correspondingSlab = this.slabs.find(
           (obj) => obj.viewerdbId === dbId
         );
 
         zone.wdC += correspondingSlab.WDsC;
       }
-      //CURING
+      // CURING
       if (this.isWall(dbId)) {
-        var correspondingWall = this.walls.find(
+        const correspondingWall = this.walls.find(
           (obj) => obj.viewerdbId === dbId
         );
 
         zone.wdCR = correspondingWall.WDwCR;
       }
       if (this.isColumn(dbId)) {
-        var correspondingColumn = this.columns.find(
+        const correspondingColumn = this.columns.find(
           (obj) => obj.viewerdbId === dbId
         );
 
         zone.wdCR = correspondingColumn.WDcCR;
       }
       if (this.isSlab(dbId)) {
-        var correspondingSlab = this.slabs.find(
+        const correspondingSlab = this.slabs.find(
           (obj) => obj.viewerdbId === dbId
         );
 
         zone.wdCR = correspondingSlab.WDsCR;
       }
-      //STRIP
+      // STRIP
       if (this.isWall(dbId)) {
-        var correspondingWall = this.walls.find(
+        const correspondingWall = this.walls.find(
           (obj) => obj.viewerdbId === dbId
         );
 
         zone.wdS += correspondingWall.WDwS;
       }
       if (this.isColumn(dbId)) {
-        var correspondingColumn = this.columns.find(
+        const correspondingColumn = this.columns.find(
           (obj) => obj.viewerdbId === dbId
         );
 
         zone.wdS += correspondingColumn.WDcS;
       }
       if (this.isSlab(dbId)) {
-        var correspondingSlab = this.slabs.find(
+        const correspondingSlab = this.slabs.find(
           (obj) => obj.viewerdbId === dbId
         );
 
@@ -2944,111 +2868,111 @@ export class MainComponent implements OnInit {
     zone.wdCR = 0;
     zone.wdS = 0;
     selection.forEach((dbId) => {
-      //FORMWORK
+      // FORMWORK
       if (this.isWall(dbId)) {
-        var correspondingWall = this.walls.find(
+        const correspondingWall = this.walls.find(
           (obj) => obj.viewerdbId === dbId
         );
 
         zone.wdF += correspondingWall.WDwF;
       }
       if (this.isColumn(dbId)) {
-        var correspondingColumn = this.columns.find(
+        const correspondingColumn = this.columns.find(
           (obj) => obj.viewerdbId === dbId
         );
 
         zone.wdF += correspondingColumn.WDcF;
       }
       if (this.isSlab(dbId)) {
-        var correspondingSlab = this.slabs.find(
+        const correspondingSlab = this.slabs.find(
           (obj) => obj.viewerdbId === dbId
         );
 
         zone.wdF += correspondingSlab.WDsF;
       }
-      //REINFORCEMENT
+      // REINFORCEMENT
       if (this.isWall(dbId)) {
-        var correspondingWall = this.walls.find(
+        const correspondingWall = this.walls.find(
           (obj) => obj.viewerdbId === dbId
         );
 
         zone.wdR += correspondingWall.WDwR;
       }
       if (this.isColumn(dbId)) {
-        var correspondingColumn = this.columns.find(
+        const correspondingColumn = this.columns.find(
           (obj) => obj.viewerdbId === dbId
         );
 
         zone.wdR += correspondingColumn.WDcR;
       }
       if (this.isSlab(dbId)) {
-        var correspondingSlab = this.slabs.find(
+        const correspondingSlab = this.slabs.find(
           (obj) => obj.viewerdbId === dbId
         );
 
         zone.wdR += correspondingSlab.WDsR;
       }
-      //CONCRETE
+      // CONCRETE
       if (this.isWall(dbId)) {
-        var correspondingWall = this.walls.find(
+        const correspondingWall = this.walls.find(
           (obj) => obj.viewerdbId === dbId
         );
 
         zone.wdC += correspondingWall.WDwC;
       }
       if (this.isColumn(dbId)) {
-        var correspondingColumn = this.columns.find(
+        const correspondingColumn = this.columns.find(
           (obj) => obj.viewerdbId === dbId
         );
 
         zone.wdC += correspondingColumn.WDcC;
       }
       if (this.isSlab(dbId)) {
-        var correspondingSlab = this.slabs.find(
+        const correspondingSlab = this.slabs.find(
           (obj) => obj.viewerdbId === dbId
         );
 
         zone.wdC += correspondingSlab.WDsC;
       }
-      //CURING
+      // CURING
       if (this.isWall(dbId)) {
-        var correspondingWall = this.walls.find(
+        const correspondingWall = this.walls.find(
           (obj) => obj.viewerdbId === dbId
         );
 
         zone.wdCR = correspondingWall.WDwCR;
       }
       if (this.isColumn(dbId)) {
-        var correspondingColumn = this.columns.find(
+        const correspondingColumn = this.columns.find(
           (obj) => obj.viewerdbId === dbId
         );
 
         zone.wdCR = correspondingColumn.WDcCR;
       }
       if (this.isSlab(dbId)) {
-        var correspondingSlab = this.slabs.find(
+        const correspondingSlab = this.slabs.find(
           (obj) => obj.viewerdbId === dbId
         );
 
         zone.wdCR = correspondingSlab.WDsCR;
       }
-      //STRIP
+      // STRIP
       if (this.isWall(dbId)) {
-        var correspondingWall = this.walls.find(
+        const correspondingWall = this.walls.find(
           (obj) => obj.viewerdbId === dbId
         );
 
         zone.wdS += correspondingWall.WDwS;
       }
       if (this.isColumn(dbId)) {
-        var correspondingColumn = this.columns.find(
+        const correspondingColumn = this.columns.find(
           (obj) => obj.viewerdbId === dbId
         );
 
         zone.wdS += correspondingColumn.WDcS;
       }
       if (this.isSlab(dbId)) {
-        var correspondingSlab = this.slabs.find(
+        const correspondingSlab = this.slabs.find(
           (obj) => obj.viewerdbId === dbId
         );
 
