@@ -234,26 +234,6 @@
     right: 0;
   } */
 
-:host ::ng-deep label.markup {
-  position: absolute !important;
-  white-space: nowrap !important;
-  cursor: pointer !important;
-}
-
-:host ::ng-deep label.update {
-  z-index: 1;
-}
-
-:host ::ng-deep label.markupSection {
-  position: absolute !important;
-  white-space: nowrap !important;
-  cursor: pointer !important;
-}
-
-:host ::ng-deep label.updateSection {
-  z-index: 1;
-}
-
 @keyframes slideMe {
   0% {
     transform: skewX(53deg) translateX(-500px);
