@@ -143,7 +143,7 @@ export class MainComponent implements OnInit {
     };
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   public async scriptsLoaded() {
     // Extension.registerExtension('LeanBoxesExtension', LeanBoxesExtension);
@@ -283,21 +283,21 @@ export class MainComponent implements OnInit {
           // tslint:disable-next-line: max-line-length
           $('#' + annexClass + object.id).append(
             '<style>.' +
-              annexClass +
-              object.id +
-              ':before{content: attr(data-before); font-size: 20px; color: white;}</style>'
+            annexClass +
+            object.id +
+            ':before{content: attr(data-before); font-size: 20px; color: white;}</style>'
           );
           $('#' + annexClass + object.id).append(
             '<style>.' +
-              annexClass +
-              object.id +
-              '{width: 178px !important}</style>'
+            annexClass +
+            object.id +
+            '{width: 178px !important}</style>'
           );
           $('#' + annexClass + object.id).append(
             '<style>.' +
-              annexClass +
-              object.id +
-              '{animation: slideMe .7s ease-in;}</style>'
+            annexClass +
+            object.id +
+            '{animation: slideMe .7s ease-in;}</style>'
           );
           $('#' + annexClass + object.id.toString()).attr(
             'data-before',
@@ -430,21 +430,21 @@ export class MainComponent implements OnInit {
           // tslint:disable-next-line: max-line-length
           $('#' + annexClass + object.id).append(
             '<style>.' +
-              annexClass +
-              object.id +
-              ':before{content: attr(data-before); font-size: 20px; color: white;}</style>'
+            annexClass +
+            object.id +
+            ':before{content: attr(data-before); font-size: 20px; color: white;}</style>'
           );
           $('#' + annexClass + object.id).append(
             '<style>.' +
-              annexClass +
-              object.id +
-              '{width: 178px !important}</style>'
+            annexClass +
+            object.id +
+            '{width: 178px !important}</style>'
           );
           $('#' + annexClass + object.id).append(
             '<style>.' +
-              annexClass +
-              object.id +
-              '{animation: slideMe .7s ease-in;}</style>'
+            annexClass +
+            object.id +
+            '{animation: slideMe .7s ease-in;}</style>'
           );
           $('#' + annexClass + object.id.toString()).attr(
             'data-before',
@@ -1186,9 +1186,12 @@ export class MainComponent implements OnInit {
         let resNew = res.filter((item) => item.properties.length > 1);
         return asyncForEach(resNew, (element) => {
           console.log(element);
+          if (element.dbId) {
+
+          }
           if (
             element.properties[0].displayValue ===
-              'hbt_Beton_Konstruktionsbeton' &&
+            'hbt_Beton_Konstruktionsbeton' &&
             element.properties[1].displayValue === 'Wände'
           ) {
             const wall = new Wall(
@@ -1197,10 +1200,12 @@ export class MainComponent implements OnInit {
               this.getLeafComponentsRec(element.dbId)
             );
             wall.category = 'Wall';
-            this.walls.push(wall);
+            if (!this.walls.find(x => x.viewerdbId === wall.viewerdbId)) {
+              this.walls.push(wall);
+            }
           } else if (
             element.properties[0].displayValue ===
-              'hbt_Beton_Konstruktionsbeton' &&
+            'hbt_Beton_Konstruktionsbeton' &&
             element.properties[1].displayValue === 'Geschossdecken'
           ) {
             const slab = new Slab(
@@ -1210,10 +1215,14 @@ export class MainComponent implements OnInit {
               this.getLeafComponentsRec(element.dbId)
             );
             slab.category = 'Slab';
+            console.log(slab);
+            if (slab.viewerdbId === 2600) {
+              console.log('askdjhlkajsd');
+            }
             this.slabs.push(slab);
           } else if (
             element.properties[0].displayValue ===
-              'hbt_Beton_Konstruktionsbeton' &&
+            'hbt_Beton_Konstruktionsbeton' &&
             element.properties[1].displayValue === 'Tragwerksstützen'
           ) {
             const column = new Column(
@@ -1235,7 +1244,7 @@ export class MainComponent implements OnInit {
               asyncForEach(resNew, (element) => {
                 if (
                   element.properties[0].displayValue ===
-                    'hbt_Beton_Konstruktionsbeton' &&
+                  'hbt_Beton_Konstruktionsbeton' &&
                   element.properties[1].displayValue === 'ROOF'
                 ) {
                   const slab = new Slab(
@@ -2057,7 +2066,7 @@ export class MainComponent implements OnInit {
     if (
       this.viewerComponent.viewer.model
         .getInstanceTree()
-        .getChildCount(parent) != 0
+        .getChildCount(parent) !== 0
     ) {
       this.viewerComponent.viewer.model.getInstanceTree().enumNodeChildren(
         parent,
@@ -2373,6 +2382,9 @@ export class MainComponent implements OnInit {
     console.log('selectionChanged');
     const dbIdArray = (event as any).dbIdArray;
     this.changePanelValue(dbIdArray);
+    console.log(this.zones);
+
+
     console.log(this.getLeafComponentsRec(dbIdArray[0]));
 
     // this.storeConcrCategObjects();

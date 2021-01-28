@@ -8,7 +8,6 @@ import {ChartsModule} from 'ng2-charts'
 
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { PlatformModule } from './platform/platform.module';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 @NgModule({
   declarations: [
