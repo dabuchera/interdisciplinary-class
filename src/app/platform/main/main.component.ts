@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, Injector, ComponentFactoryResolver } from '@angular/core';
 import { AppComponent } from 'src/app/app.component';
 
 import { CoordinatesAxesExtension } from '../extensions/coordinatesAxesExtension';
@@ -27,6 +27,7 @@ import { Zone } from '../zones/zone';
 import { AuthToken } from 'forge-apis';
 import { ApiService } from 'src/app/_services/api.service';
 import { Dashboard } from '../dashboard/Dashboard';
+import { TimetableComponent } from '../timetable/timetable.component';
 
 import * as $ from 'jquery';
 declare var THREE: any;
@@ -64,6 +65,7 @@ export class MainComponent implements OnInit {
   public toolbarTest: Autodesk.Viewing.UI.ToolBar;
 
   public inputPanel: Autodesk.Viewing.UI.DockingPanel;
+  public timetablePanel: Autodesk.Viewing.UI.DockingPanel;
 
   public isolatedNodesConcrete: number[] = new Array();
   public isolatedNodesLevels: number[] = new Array();
@@ -82,10 +84,13 @@ export class MainComponent implements OnInit {
   public tradeBarchart: BarChart;
   public allTradesBarchart: BarChart;
 
+  // Show Timetable **************************************************************************
+  public componentRef: any;
+
   @ViewChild(ViewerComponent, { static: false })
   viewerComponent: ViewerComponent;
 
-  constructor(private api: ApiService) {
+  constructor(private api: ApiService, private componentFactoryResolver: ComponentFactoryResolver) {
     // this.api.getspecificProject('5faa62b2079c07001454c421').then((res) => {
     //   this.encodedmodelurn = res.encodedmodelurn;
     // });
@@ -155,7 +160,293 @@ export class MainComponent implements OnInit {
     };
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
+
+  public showTimetablePanel() {
+    //////////////// TESTING ///////////////////////////
+    if (this.timetablePanel && this.componentRef) {
+      console.log('this.timetablePanel && this.componentRef');
+      $('#timetablePanel').hide();
+      $('#timetablePanel').show();
+      const test = {
+        series: [
+          {
+            name: 'Bob',
+            data: [
+              {
+                x: 'Design',
+                y: [
+                  new Date('2019-03-05').getTime(),
+                  new Date('2019-03-08').getTime()
+                ]
+              },
+              {
+                x: 'Code',
+                y: [
+                  new Date('2019-03-02').getTime(),
+                  new Date('2019-03-05').getTime()
+                ]
+              },
+              {
+                x: 'Code',
+                y: [
+                  new Date('2019-03-05').getTime(),
+                  new Date('2019-03-07').getTime()
+                ]
+              },
+              {
+                x: 'Test',
+                y: [
+                  new Date('2019-03-03').getTime(),
+                  new Date('2019-03-09').getTime()
+                ]
+              },
+              {
+                x: 'Test',
+                y: [
+                  new Date('2019-03-08').getTime(),
+                  new Date('2019-03-11').getTime()
+                ]
+              },
+              {
+                x: 'Validation',
+                y: [
+                  new Date('2019-03-11').getTime(),
+                  new Date('2019-03-16').getTime()
+                ]
+              },
+              {
+                x: 'Design',
+                y: [
+                  new Date('2019-03-01').getTime(),
+                  new Date('2019-03-03').getTime()
+                ]
+              }
+            ]
+          }
+        ],
+        chart: {
+          height: 450,
+          type: 'rangeBar'
+        },
+        plotOptions: {
+          bar: {
+            horizontal: true,
+            barHeight: '80%'
+          }
+        },
+        xaxis: {
+          type: 'datetime'
+        },
+        fill: {
+          type: 'gradient',
+          gradient: {
+            shade: 'light',
+            type: 'vertical',
+            shadeIntensity: 0.25,
+            gradientToColors: undefined,
+            inverseColors: true,
+            opacityFrom: 1,
+            opacityTo: 1,
+            stops: [50, 0, 100, 100]
+          }
+        },
+        legend: {
+          position: 'top',
+          horizontalAlign: 'left'
+        }
+      };
+      this.componentRef.instance.chartOptions = test;
+      setTimeout(() => {
+        this.componentRef.changeDetectorRef.detectChanges();
+      }, 1000);
+    }
+    // skdjfldsf
+    //////////////// TESTING ///////////////////////////
+    //////////////// First Click ///////////////////////////
+    else {
+      var container = this.viewerComponent.viewer.container as HTMLElement;
+      this.timetablePanel = new Autodesk.Viewing.UI.DockingPanel(container, 'timetablePanel', 'Showing PDF Panel', { localizeTitle: true, addFooter: true });
+      this.timetablePanel.setVisible(true);
+
+      this.timetablePanel.content = document.createElement('div');
+      const contentDiv = this.timetablePanel.content as HTMLElement;
+      contentDiv.classList.add('container', 'border-box');
+      contentDiv.setAttribute('id', 'timetablePanelInsert');
+      contentDiv.style.boxSizing = 'border-box';
+      // contentDiv.style.overflowY = 'scroll';
+      contentDiv.style.color = 'black';
+      this.timetablePanel.container.classList.add('docking-panel-container-solid-color-a');
+      this.timetablePanel.container.style.resize = 'none';
+
+      // // // FOOTER ==> Orginal Grösse 20 px
+      // this.timetablePanel.footer.style.height = '20px';
+      // this.timetablePanel.footer.style.paddingLeft = '14px';
+      // this.timetablePanel.footer.style.paddingTop = '10px';
+      // var valuesDivFooter = document.createElement('div');
+      // valuesDivFooter.setAttribute('class', 'p-grid p-align-center');
+
+      // this.timetablePanel.footer.append(valuesDivFooter as HTMLElement);
+      this.timetablePanel.container.appendChild(this.timetablePanel.content as HTMLElement);
+
+      const test = {
+        series: [
+          {
+            name: 'Bob',
+            data: [
+              {
+                x: 'Design',
+                y: [
+                  new Date('2019-03-05').getTime(),
+                  new Date('2019-03-08').getTime()
+                ]
+              },
+              {
+                x: 'Code',
+                y: [
+                  new Date('2019-03-02').getTime(),
+                  new Date('2019-03-05').getTime()
+                ]
+              },
+              {
+                x: 'Code',
+                y: [
+                  new Date('2019-03-05').getTime(),
+                  new Date('2019-03-07').getTime()
+                ]
+              },
+              {
+                x: 'Test',
+                y: [
+                  new Date('2019-03-03').getTime(),
+                  new Date('2019-03-09').getTime()
+                ]
+              },
+              {
+                x: 'Test',
+                y: [
+                  new Date('2019-03-08').getTime(),
+                  new Date('2019-03-11').getTime()
+                ]
+              },
+              {
+                x: 'Validation',
+                y: [
+                  new Date('2019-03-11').getTime(),
+                  new Date('2019-03-16').getTime()
+                ]
+              },
+              {
+                x: 'Design',
+                y: [
+                  new Date('2019-03-01').getTime(),
+                  new Date('2019-03-03').getTime()
+                ]
+              }
+            ]
+          },
+          {
+            name: 'Joe',
+            data: [
+              {
+                x: 'Design',
+                y: [
+                  new Date('2019-03-02').getTime(),
+                  new Date('2019-03-05').getTime()
+                ]
+              },
+              {
+                x: 'Test',
+                y: [
+                  new Date('2019-03-06').getTime(),
+                  new Date('2019-03-16').getTime()
+                ]
+              },
+              {
+                x: 'Code',
+                y: [
+                  new Date('2019-03-03').getTime(),
+                  new Date('2019-03-07').getTime()
+                ]
+              },
+              {
+                x: 'Deployment',
+                y: [
+                  new Date('2019-03-20').getTime(),
+                  new Date('2019-03-22').getTime()
+                ]
+              },
+              {
+                x: 'Design',
+                y: [
+                  new Date('2019-03-10').getTime(),
+                  new Date('2019-03-16').getTime()
+                ]
+              }
+            ]
+          },
+          {
+            name: 'Dan',
+            data: [
+              {
+                x: 'Code',
+                y: [
+                  new Date('2019-03-10').getTime(),
+                  new Date('2019-03-17').getTime()
+                ]
+              },
+              {
+                x: 'Validation',
+                y: [
+                  new Date('2019-03-05').getTime(),
+                  new Date('2019-03-09').getTime()
+                ]
+              }
+            ]
+          }
+        ],
+        chart: {
+          height: 450,
+          type: 'rangeBar'
+        },
+        plotOptions: {
+          bar: {
+            horizontal: true,
+            barHeight: '80%'
+          }
+        },
+        xaxis: {
+          type: 'datetime'
+        },
+        fill: {
+          type: 'gradient',
+          gradient: {
+            shade: 'light',
+            type: 'vertical',
+            shadeIntensity: 0.25,
+            gradientToColors: undefined,
+            inverseColors: true,
+            opacityFrom: 1,
+            opacityTo: 1,
+            stops: [50, 0, 100, 100]
+          }
+        },
+        legend: {
+          position: 'top',
+          horizontalAlign: 'left'
+        }
+      };
+
+      let injector = Injector.create([{
+        provide: 'TimetableInjection', useValue: { injection: true, sendedSrc: test }
+      }]);
+      let componentFactory = this.componentFactoryResolver.resolveComponentFactory(TimetableComponent);
+      this.componentRef = componentFactory.create(injector, [], $('#timetablePanelInsert')[0]);
+      setTimeout(() => {
+        this.componentRef.changeDetectorRef.detectChanges();
+      }, 1000);
+    }
+  }
 
   public async scriptsLoaded() {
     // Extension.registerExtension('LeanBoxesExtension', LeanBoxesExtension);
@@ -296,21 +587,21 @@ export class MainComponent implements OnInit {
           // tslint:disable-next-line: max-line-length
           $('#' + annexClass + object.id).append(
             '<style>.' +
-              annexClass +
-              object.id +
-              ':before{content: attr(data-before); font-size: 20px; color: white;}</style>'
+            annexClass +
+            object.id +
+            ':before{content: attr(data-before); font-size: 20px; color: white;}</style>'
           );
           $('#' + annexClass + object.id).append(
             '<style>.' +
-              annexClass +
-              object.id +
-              '{width: 178px !important}</style>'
+            annexClass +
+            object.id +
+            '{width: 178px !important}</style>'
           );
           $('#' + annexClass + object.id).append(
             '<style>.' +
-              annexClass +
-              object.id +
-              '{animation: slideMe .7s ease-in;}</style>'
+            annexClass +
+            object.id +
+            '{animation: slideMe .7s ease-in;}</style>'
           );
           $('#' + annexClass + object.id.toString()).attr(
             'data-before',
@@ -444,21 +735,21 @@ export class MainComponent implements OnInit {
           // tslint:disable-next-line: max-line-length
           $('#' + annexClass + object.id).append(
             '<style>.' +
-              annexClass +
-              object.id +
-              ':before{content: attr(data-before); font-size: 20px; color: white;}</style>'
+            annexClass +
+            object.id +
+            ':before{content: attr(data-before); font-size: 20px; color: white;}</style>'
           );
           $('#' + annexClass + object.id).append(
             '<style>.' +
-              annexClass +
-              object.id +
-              '{width: 178px !important}</style>'
+            annexClass +
+            object.id +
+            '{width: 178px !important}</style>'
           );
           $('#' + annexClass + object.id).append(
             '<style>.' +
-              annexClass +
-              object.id +
-              '{animation: slideMe .7s ease-in;}</style>'
+            annexClass +
+            object.id +
+            '{animation: slideMe .7s ease-in;}</style>'
           );
           $('#' + annexClass + object.id.toString()).attr(
             'data-before',
@@ -1026,6 +1317,7 @@ export class MainComponent implements OnInit {
     }, 5000);
     $('#guiviewer3d-toolbar').append(controlGroup.container);
   }
+
   public loadPropToolbar() {
     //Button 1 fro Properties Legend
     const button1 = new Autodesk.Viewing.UI.Button('show-prop');
@@ -1041,6 +1333,17 @@ export class MainComponent implements OnInit {
       //Test functions
       // console.log('Test started');
       this.showPropLegend();
+    };
+    //Button 2 for timetable
+    const button2 = new Autodesk.Viewing.UI.Button('show-timetable');
+    button2.addClass('show-timetable');
+    button2.setToolTip('Show Timetable');
+    //@ts-ignore
+    button2.container.children[0].classList.add('fas', 'fa-stream');
+
+    controlGroup.addControl(button2);
+    button2.onClick = (event) => {
+      this.showTimetablePanel();
     };
     // There we have to wait since the toolbar is not loaded
     setTimeout(() => {
@@ -1352,7 +1655,7 @@ export class MainComponent implements OnInit {
           // console.log(element);
           if (
             element.properties[0].displayValue ===
-              'hbt_Beton_Konstruktionsbeton' &&
+            'hbt_Beton_Konstruktionsbeton' &&
             element.properties[1].displayValue === 'Wände'
           ) {
             const wall = new Wall(
@@ -1369,7 +1672,7 @@ export class MainComponent implements OnInit {
             }
           } else if (
             element.properties[0].displayValue ===
-              'hbt_Beton_Konstruktionsbeton' &&
+            'hbt_Beton_Konstruktionsbeton' &&
             element.properties[1].displayValue === 'Geschossdecken'
           ) {
             const slab = new Slab(
@@ -1383,7 +1686,7 @@ export class MainComponent implements OnInit {
             }
           } else if (
             element.properties[0].displayValue ===
-              'hbt_Beton_Konstruktionsbeton' &&
+            'hbt_Beton_Konstruktionsbeton' &&
             element.properties[1].displayValue === 'Tragwerksstützen'
           ) {
             const column = new Column(
@@ -1407,7 +1710,7 @@ export class MainComponent implements OnInit {
               asyncForEach(resNew, (element) => {
                 if (
                   element.properties[0].displayValue ===
-                    'hbt_Beton_Konstruktionsbeton' &&
+                  'hbt_Beton_Konstruktionsbeton' &&
                   element.properties[1].displayValue === 'ROOF'
                 ) {
                   const slab = new Slab(
@@ -2299,6 +2602,7 @@ export class MainComponent implements OnInit {
       return false;
     }
   }
+
   public belongsToZone(selection) {
     let count = 0;
     this.zones.forEach((zone) => {
@@ -2316,6 +2620,7 @@ export class MainComponent implements OnInit {
       return false;
     }
   }
+
   public belongsToAllZones(selection) {
     let count = 0;
     this.allZones.forEach((zone) => {
@@ -2333,6 +2638,7 @@ export class MainComponent implements OnInit {
       return false;
     }
   }
+
   public isWDtoolbarAct(c1, c2, c3, c4, c5) {
     if (c1 === 0 || c2 === 0 || c3 === 0 || c4 === 0 || c5 === 0) {
       return true;
@@ -2581,6 +2887,7 @@ export class MainComponent implements OnInit {
       }
     }
   }
+
   public computeWDbars(selection, zone) {
     zone.wdF = 0;
     zone.wdR = 0;
@@ -2735,6 +3042,7 @@ export class MainComponent implements OnInit {
     });
     this.allZones.push(zone);
   }
+
   public updateWDbars(selection, zone) {
     zone.wdF = 0;
     zone.wdR = 0;
@@ -2854,6 +3162,7 @@ export class MainComponent implements OnInit {
       }
     });
   }
+
   public compute1tradeWDbars(selection, zone) {
     zone.wd = 0;
     const wdControlGroup = this.viewerComponent.viewer.toolbar.getControl(
@@ -3020,6 +3329,7 @@ export class MainComponent implements OnInit {
     });
     this.zones.push(zone);
   }
+
   public update1tradeWDbars(selection, zone) {
     zone.wd = 0;
     const wdControlGroup = this.viewerComponent.viewer.toolbar.getControl(
@@ -3150,6 +3460,7 @@ export class MainComponent implements OnInit {
       }
     });
   }
+
   public createAndUpdateBarChart() {
     this.allTradesBarchart.chart.data.datasets[0].data = [];
     this.allTradesBarchart.chart.data.labels = [];
@@ -3174,6 +3485,7 @@ export class MainComponent implements OnInit {
     });
     this.allTradesBarchart.chart.update();
   }
+
   public createAndUpdate1TradeBarChart() {
     const wdControlGroup = this.viewerComponent.viewer.toolbar.getControl(
       'my-custom-toolbar-WD-controlgroup'
@@ -3215,6 +3527,7 @@ export class MainComponent implements OnInit {
     });
     this.tradeBarchart.chart.update();
   }
+
   public async selectionChanged(event: SelectionChangedEventArgs) {
     console.log('selectionChanged');
     const dbIdArray = (event as any).dbIdArray;
