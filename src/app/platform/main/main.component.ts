@@ -27,11 +27,8 @@ import { Zone } from '../zones/zone';
 import { AuthToken } from 'forge-apis';
 import { ApiService } from 'src/app/_services/api.service';
 import { Dashboard } from '../dashboard/Dashboard';
-<<<<<<< HEAD
 import * as jsPDF from 'jspdf';
-=======
 import { TimetableComponent } from '../timetable/timetable.component';
->>>>>>> d03d98cc36170cd5324597c63019d8a27e8151e5
 
 import * as $ from 'jquery';
 declare var THREE: any;
@@ -73,11 +70,8 @@ export class MainComponent implements OnInit {
   public toolbarEtappen: Autodesk.Viewing.UI.ToolBar;
 
   public inputPanel: Autodesk.Viewing.UI.DockingPanel;
-<<<<<<< HEAD
   public initialInputPanel: Autodesk.Viewing.UI.DockingPanel;
-=======
   public timetablePanel: Autodesk.Viewing.UI.DockingPanel;
->>>>>>> d03d98cc36170cd5324597c63019d8a27e8151e5
 
   public isolatedNodesConcrete: number[] = new Array();
   public isolatedNodesLevels: number[] = new Array();
@@ -1272,12 +1266,9 @@ export class MainComponent implements OnInit {
     }, 5000);
     $('#guiviewer3d-toolbar').append(controlGroup.container);
   }
-<<<<<<< HEAD
   public loadPropInputToolbar() {
-=======
 
   public loadPropToolbar() {
->>>>>>> d03d98cc36170cd5324597c63019d8a27e8151e5
     //Button 1 fro Properties Legend
     const button1 = new Autodesk.Viewing.UI.Button('show-prop');
     button1.addClass('show-prop');
@@ -1314,21 +1305,18 @@ export class MainComponent implements OnInit {
       // this.findStandardSlab();
       // this.findStandardWall();
     };
-<<<<<<< HEAD
 
-=======
     //Button 2 for timetable
-    const button2 = new Autodesk.Viewing.UI.Button('show-timetable');
-    button2.addClass('show-timetable');
-    button2.setToolTip('Show Timetable');
+    const button3 = new Autodesk.Viewing.UI.Button('show-timetable');
+    button3.addClass('show-timetable');
+    button3.setToolTip('Show Timetable');
     //@ts-ignore
-    button2.container.children[0].classList.add('fas', 'fa-stream');
+    button3.container.children[0].classList.add('fas', 'fa-stream');
 
-    controlGroup.addControl(button2);
-    button2.onClick = (event) => {
+    controlGroup.addControl(button3);
+    button3.onClick = (event) => {
       this.showTimetablePanel();
     };
->>>>>>> d03d98cc36170cd5324597c63019d8a27e8151e5
     // There we have to wait since the toolbar is not loaded
     setTimeout(() => {
       this.viewerComponent.viewer.toolbar.addControl(controlGroup);
@@ -1989,13 +1977,8 @@ export class MainComponent implements OnInit {
               this.walls.push(wall);
             }
           } else if (
-<<<<<<< HEAD
             // element.properties[0].displayValue ===
             // 'hbt_Beton_Konstruktionsbeton' &&
-=======
-            element.properties[0].displayValue ===
-            'hbt_Beton_Konstruktionsbeton' &&
->>>>>>> d03d98cc36170cd5324597c63019d8a27e8151e5
             element.properties[1].displayValue === 'Geschossdecken'
           ) {
             const slab = new Slab(
