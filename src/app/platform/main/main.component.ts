@@ -27,6 +27,7 @@ import { Zone } from '../zones/zone';
 import { AuthToken } from 'forge-apis';
 import { ApiService } from 'src/app/_services/api.service';
 import { Dashboard } from '../dashboard/Dashboard';
+import * as jsPDF from 'jspdf';
 
 import * as $ from 'jquery';
 declare var THREE: any;
@@ -37,6 +38,7 @@ import html from './legendTemplate.html';
 import { BarChart } from '../dashboard/PanelBarChart';
 import { LeanBoxesExtension } from '../extensions/leanBoxes';
 import { unescapeIdentifier } from '@angular/compiler';
+// import Rangechart from ../rangechart/Rangechart;
 
 // Function for async forEach
 const asyncForEach = async (array, callback) => {
@@ -46,6 +48,9 @@ const asyncForEach = async (array, callback) => {
 };
 
 import inputHTML from './inputPanel.html';
+
+import initialInputHTML from './initialInputPanel.html';
+import { Rangechart } from '../rangechart/rangechart';
 
 @Component({
   selector: 'app-main',
@@ -61,15 +66,23 @@ export class MainComponent implements OnInit {
   // Graphical Stuff
   public toolbarLevels: Autodesk.Viewing.UI.ToolBar;
   public toolbarConcrete: Autodesk.Viewing.UI.ToolBar;
-  public toolbarTest: Autodesk.Viewing.UI.ToolBar;
+  public toolbarEtappen: Autodesk.Viewing.UI.ToolBar;
 
   public inputPanel: Autodesk.Viewing.UI.DockingPanel;
+  public initialInputPanel: Autodesk.Viewing.UI.DockingPanel;
 
   public isolatedNodesConcrete: number[] = new Array();
   public isolatedNodesLevels: number[] = new Array();
+  public isolatedNodesEtappen: number[] = new Array();
 
   // Model stuff
   public objectsPerLevel: any[] = new Array();
+  public slabDbIds: any[] = new Array();
+  public wallDbIds: any[] = new Array();
+  public slabsPerLevel: any[] = new Array();
+  public slabsToBeSplit: any[] = new Array();
+  public wallsPerLevel: any[] = new Array();
+  public wallsToBeSplit: any[] = new Array();
   public concrObj: any[] = new Array();
   public walls: Wall[] = new Array();
   public slabs: Slab[] = new Array();
@@ -81,6 +94,8 @@ export class MainComponent implements OnInit {
   public panel: Autodesk.Viewing.UI.DockingPanel;
   public tradeBarchart: BarChart;
   public allTradesBarchart: BarChart;
+  public testchart: Rangechart;
+  public etapObjects: any[] = new Array();
 
   @ViewChild(ViewerComponent, { static: false })
   viewerComponent: ViewerComponent;
@@ -90,7 +105,9 @@ export class MainComponent implements OnInit {
     //   this.encodedmodelurn = res.encodedmodelurn;
     // });
     this.encodedmodelurn =
-      'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6bW9kZWwyMDIxLTAxLTE1LTEzLTA1LTI4LWQ0MWQ4Y2Q5OGYwMGIyMDRlOTgwMDk5OGVjZjg0MjdlL2hidF8yMTAxMDVfMTQyOC1TQlowMF9BcmNoaXRla3R1ci5pZmM=';
+      'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6bW9kZWwyMDIxLTAyLTA0LTEzLTExLTMxLWQ0MWQ4Y2Q5OGYwMGIyMDRlOTgwMDk5OGVjZjg0MjdlL0VTQi1TQlpfVE0tQXJiZWl0c3ZlcnNpb24uaWZj';
+    // 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6bW9kZWwyMDIxLTAyLTAzLTA4LTUzLTMxLWQ0MWQ4Y2Q5OGYwMGIyMDRlOTgwMDk5OGVjZjg0MjdlLyVDMyU4OFNCLVNCWl9UTS1BcmJlaXRzdmVyc2lvbi5pZmM=';
+    // 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6bW9kZWwyMDIxLTAxLTE1LTEzLTA1LTI4LWQ0MWQ4Y2Q5OGYwMGIyMDRlOTgwMDk5OGVjZjg0MjdlL2hidF8yMTAxMDVfMTQyOC1TQlowMF9BcmNoaXRla3R1ci5pZmM=';
     this.viewerOptions3d = {
       initializerOptions: {
         env: 'AutodeskProduction',
@@ -130,9 +147,10 @@ export class MainComponent implements OnInit {
         // this.app.openSpinner();
         this.loadLevelToolbar();
         this.loadConcreteToolbar();
-        this.loadPropToolbar();
+        this.loadPropInputToolbar();
         this.loadZoneToolbar();
         this.loadWDToolbar();
+        this.loadEtappenToolbar();
         // this.loadZoneToolbar();
         this.viewerComponent.viewer.setGhosting(false);
         this.tradeBarchart = new BarChart('Geschoss', this.zones);
@@ -141,6 +159,8 @@ export class MainComponent implements OnInit {
           this.tradeBarchart,
           this.allTradesBarchart,
         ]);
+        // var chart = new Rangechart();
+        // chart.render();
         // new Dashboard(this.viewerComponent.viewer, [this.allTradesBarchart]);
         // new PieChart('Material')
 
@@ -660,103 +680,32 @@ export class MainComponent implements OnInit {
       }
     };
     button3.onClick = (event) => {
-      console.log('Optimization Crew Size Formwork Test started');
-      //get current selection
-      const selection = this.viewerComponent.viewer.getSelection();
-      // console.log(selection);
-      this.viewerComponent.viewer.clearSelection();
-      this.allZones.forEach((zone) => {
-        // console.log(zone.dbIds);
-        var count = 0;
-        selection.forEach((dbId) => {
-          if (zone.dbIds.includes(dbId)) {
-            count++;
-          }
-        });
-        if (selection.length !== 0 && selection.length === count) {
-          zone.objects.forEach((obj) => {
-            obj.csF = 4;
-          });
-          // console.log(zone.objects);
-          this.calcWD(this.slabs);
-          this.calcWD(this.walls);
-          this.calcWD(this.columns);
-          this.updateWDbars(selection, zone);
-        }
-      });
-      this.createAndUpdateBarChart();
-
-      this.zones.forEach((zone) => {
-        console.log(zone.dbIds);
-        var count = 0;
-        selection.forEach((dbId) => {
-          if (zone.dbIds.includes(dbId)) {
-            count++;
-          }
-        });
-        if (selection.length !== 0 && selection.length === count) {
-          zone.objects.forEach((obj) => {
-            obj.csF = 4;
-          });
-          // console.log(zone.objects);
-          this.calcWD(this.slabs);
-          this.calcWD(this.walls);
-          this.calcWD(this.columns);
-          this.update1tradeWDbars(selection, zone);
-        }
-      });
-      this.createAndUpdate1TradeBarChart();
+      this.showInputPanel('Change Crew Size Installing Formwork', 'csF');
     };
     button4.onClick = (event) => {
-      console.log('Optimization Crew Size Reinforcement Test started');
-      //get current selection
-      const selection = this.viewerComponent.viewer.getSelection();
-      // console.log(selection);
-      this.viewerComponent.viewer.clearSelection();
-      if (selection.length > 0) {
-        this.allZones.forEach((zone) => {
-          var count = 0;
-          selection.forEach((dbId) => {
-            if (zone.dbIds.includes(dbId)) {
-              count++;
-            }
-          });
-          if (selection.length !== 0 && selection.length === count) {
-            zone.objects.forEach((obj) => {
-              obj.csR = parseInt(
-                prompt(
-                  'Enter a value for Crew Size of Installing Reinforcement',
-                  '3'
-                )
-              );
-            });
-            this.calcWD(this.slabs);
-            this.calcWD(this.walls);
-            this.calcWD(this.columns);
-            this.updateWDbars(selection, zone);
-          }
-        });
-        this.createAndUpdateBarChart();
-      }
+      this.showInputPanel('Change Crew Size Installing Reinforcement', 'csR');
     };
     button5.onClick = (event) => {
-      this.showInputPanel('Change Crewsize Pouring Concrete', 'csC');
+      this.showInputPanel('Change Crew Size Pouring Concrete', 'csC');
     };
     button6.onClick = (event) => {
-      this.showInputPanel('Change Crewsize Strip Formwork', 'csS');
+      this.showInputPanel('Change Crew Size Stripping Formwork', 'csS');
     };
 
     button7.onClick = (event) => {
-      this.showInputPanel('Change Production Rate Inst Formwork', 'prF');
+      this.showInputPanel('Change Production Rate Installing Formwork', 'prF');
     };
     button8.onClick = (event) => {
-      this.showInputPanel('Change Production Rate Inst Reinforcement', 'prR');
+      this.showInputPanel(
+        'Change Production Rate Installing Reinforcement',
+        'prR'
+      );
     };
     button9.onClick = (event) => {
       this.showInputPanel('Change Production Rate Pouring Concrete', 'prC');
     };
     button10.onClick = (event) => {
-      this.showInputPanel('Change Production Rate Strip Formwork', 'prS');
+      this.showInputPanel('Change Production Rate Stripping Formwork', 'prS');
     };
 
     button11.onClick = (event) => {
@@ -1026,7 +975,7 @@ export class MainComponent implements OnInit {
     }, 5000);
     $('#guiviewer3d-toolbar').append(controlGroup.container);
   }
-  public loadPropToolbar() {
+  public loadPropInputToolbar() {
     //Button 1 fro Properties Legend
     const button1 = new Autodesk.Viewing.UI.Button('show-prop');
     button1.addClass('show-prop');
@@ -1041,7 +990,29 @@ export class MainComponent implements OnInit {
       //Test functions
       // console.log('Test started');
       this.showPropLegend();
+      // this.showInitialInputPanel();
+      // this.exportDashboard();
+      this.findStandardSlab();
+      this.findStandardWall();
     };
+    //Button 1 fro Properties Legend
+    const button2 = new Autodesk.Viewing.UI.Button('show-initPanel');
+    button2.addClass('initPanel');
+    button2.setToolTip('Show Initial Input Panel');
+    //@ts-ignore
+    button2.container.children[0].classList.add('fas', 'fa-file-import');
+
+    controlGroup.addControl(button2);
+    button2.onClick = (event) => {
+      //Test functions
+      // console.log('Test started');
+      // this.showPropLegend();
+      this.showInitialInputPanel();
+      // this.exportDashboard();
+      // this.findStandardSlab();
+      // this.findStandardWall();
+    };
+
     // There we have to wait since the toolbar is not loaded
     setTimeout(() => {
       this.viewerComponent.viewer.toolbar.addControl(controlGroup);
@@ -1106,6 +1077,7 @@ export class MainComponent implements OnInit {
       if (event.target.id === 'saveNewSection') {
         // @ts-ignore
         const userInput = document.getElementById('userInput').value;
+        console.log(userInput);
         // get current selection
         const selection = this.viewerComponent.viewer.getSelection();
         // console.log(selection);
@@ -1173,6 +1145,335 @@ export class MainComponent implements OnInit {
       .find('#newInput')[0]
       .appendChild(textDivHeader12 as HTMLElement);
   }
+  public showInitialInputPanel() {
+    // $('#sectionPanel').hide();
+    const container = this.viewerComponent.viewer.container as HTMLElement;
+    this.initialInputPanel = new Autodesk.Viewing.UI.DockingPanel(
+      container,
+      'initialInputPanel',
+      'Initial Input Panel',
+      { localizeTitle: true, addFooter: true }
+    );
+    this.initialInputPanel.setVisible(true);
+    this.initialInputPanel.addVisibilityListener((show) => {
+      // Logic for closing the panel
+      if (!show) {
+        // this.onCloseNewSectionPanel();
+      }
+    });
+    this.initialInputPanel.content = document.createElement('div');
+    const contentDiv = this.initialInputPanel.content as HTMLElement;
+    contentDiv.classList.add('container', 'border-box');
+    contentDiv.style.boxSizing = 'border-box';
+    $(this.initialInputPanel.content).append(initialInputHTML);
+    contentDiv.style.overflowY = 'hidden';
+    contentDiv.style.height = 'calc(100% - 105px)';
+    contentDiv.style.color = 'black';
+    this.initialInputPanel.container.classList.add(
+      'docking-panel-container-solid-color-a'
+    );
+    this.initialInputPanel.container.style.height = '500px';
+    this.initialInputPanel.container.style.width = '500px';
+    this.initialInputPanel.container.style.minWidth = '500px';
+    this.initialInputPanel.container.style.resize = 'none';
+
+    // // FOOTER ==> Orginal Grösse 20 px
+    this.initialInputPanel.footer.style.height = '55px';
+    // this.initialInputPanel.footer.style.paddingLeft = '14px';
+    this.initialInputPanel.footer.style.paddingTop = '12.5px';
+    const valuesDivFooter = document.createElement('div');
+    valuesDivFooter.setAttribute('class', 'p-grid p-align-center');
+
+    const saveButton = document.createElement('button');
+    saveButton.setAttribute('class', 'button-footer-panel');
+    saveButton.setAttribute('style', 'margin-left: 45px');
+    saveButton.setAttribute('id', 'saveNewSection');
+    saveButton.textContent = 'Save';
+    valuesDivFooter.appendChild(saveButton);
+    const cancelButton = document.createElement('button');
+    cancelButton.setAttribute('class', 'button-footer-panel');
+    cancelButton.setAttribute('style', 'margin-left: 60px');
+    cancelButton.setAttribute('id', 'cancelNewSection');
+    cancelButton.textContent = 'Cancel';
+    valuesDivFooter.appendChild(cancelButton);
+    // Workaround, da onclick Button irgendwie nicht funktioniert
+    valuesDivFooter.addEventListener('click', (event) => {
+      // @ts-ignore
+      if (event.target.id === 'saveNewSection') {
+        // @ts-ignore
+        const userInputcsF = document.getElementById('userInputcsF').value;
+        console.log(userInputcsF);
+        // @ts-ignore
+        const userInputcsR = document.getElementById('userInputcsR').value;
+        // @ts-ignore
+        const userInputcsC = document.getElementById('userInputcsC').value;
+        // @ts-ignore
+        const userInputcsS = document.getElementById('userInputcsS').value;
+        // @ts-ignore
+        const userInputprF = document.getElementById('userInputprF').value;
+        // @ts-ignore
+        const userInputprR = document.getElementById('userInputprR').value;
+        // @ts-ignore
+        const userInputprC = document.getElementById('userInputprC').value;
+        // @ts-ignore
+        const userInputprS = document.getElementById('userInputprS').value;
+
+        this.walls.forEach((element) => {
+          element.csF = parseInt(userInputcsF);
+          element.csR = parseInt(userInputcsR);
+          element.csC = parseInt(userInputcsC);
+          element.csS = parseInt(userInputcsS);
+          element.prF = parseFloat(userInputprF);
+          element.prR = parseFloat(userInputprR);
+          element.prC = parseFloat(userInputprC);
+          element.prS = parseFloat(userInputprS);
+        });
+        this.columns.forEach((element) => {
+          element.csF = parseInt(userInputcsF);
+          element.csR = parseInt(userInputcsR);
+          element.csC = parseInt(userInputcsC);
+          element.csS = parseInt(userInputcsS);
+          element.prF = parseFloat(userInputprF);
+          element.prR = parseFloat(userInputprR);
+          element.prC = parseFloat(userInputprC);
+          element.prS = parseFloat(userInputprS);
+        });
+        this.slabs.forEach((element) => {
+          element.csF = parseInt(userInputcsF);
+          element.csR = parseInt(userInputcsR);
+          element.csC = parseInt(userInputcsC);
+          element.csS = parseInt(userInputcsS);
+          element.prF = parseFloat(userInputprF);
+          element.prR = parseFloat(userInputprR);
+          element.prC = parseFloat(userInputprC);
+          element.prS = parseFloat(userInputprS);
+        });
+        this.calcWD(this.slabs);
+        this.calcWD(this.walls);
+        this.calcWD(this.columns);
+        console.log(this.slabs);
+
+        $('#initialInputPanel').hide();
+        // @ts-ignore
+        // document.getElementById('userInput').value = null;
+        const inputContainer = this.initialInputPanel.container;
+        this.viewerComponent.viewer.container.removeChild(inputContainer);
+      }
+      // @ts-ignore
+      else if (event.target.id === 'cancelNewSection') {
+        $('#initialInputPanel').hide();
+        // @ts-ignore
+        // document.getElementById('userInput').value = null;
+        const inputContainer = this.initialInputPanel.container;
+        this.viewerComponent.viewer.container.removeChild(inputContainer);
+      }
+    });
+    this.initialInputPanel.footer.append(valuesDivFooter as HTMLElement);
+
+    this.initialInputPanel.container.appendChild(
+      this.initialInputPanel.content as HTMLElement
+    );
+
+    const textDivHeaderA1 = document.createElement('div');
+    textDivHeaderA1.setAttribute('class', 'p-col-6');
+    textDivHeaderA1.setAttribute('style', 'width: 45%');
+    textDivHeaderA1.innerHTML =
+      '<div class="box-section-new">' +
+      'Crew Size of Installing Formwork [ppl]' +
+      '</div>';
+    textDivHeaderA1.style.color = 'black';
+    $(this.initialInputPanel.container)
+      .find('#NuserInputcsF')[0]
+      .appendChild(textDivHeaderA1 as HTMLElement);
+
+    const textDivHeaderA2 = document.createElement('div');
+    textDivHeaderA2.setAttribute('class', 'p-col-6');
+    textDivHeaderA2.setAttribute('style', 'width: 45%');
+    const inputNumberA = document.createElement('input');
+
+    inputNumberA.setAttribute('class', 'custom-input');
+    inputNumberA.setAttribute('id', 'userInputcsF');
+    inputNumberA.setAttribute('type', 'number');
+    textDivHeaderA2.appendChild(inputNumberA);
+    $(this.initialInputPanel.container)
+      .find('#NuserInputcsF')[0]
+      .appendChild(textDivHeaderA2 as HTMLElement);
+
+    const textDivHeaderB1 = document.createElement('div');
+    textDivHeaderB1.setAttribute('class', 'p-col-6');
+    textDivHeaderB1.setAttribute('style', 'width: 45%');
+    textDivHeaderB1.innerHTML =
+      '<div class="box-section-new">' +
+      'Crew Size of Installing Reinforcement [ppl]' +
+      '</div>';
+    textDivHeaderB1.style.color = 'black';
+    $(this.initialInputPanel.container)
+      .find('#NuserInputcsR')[0]
+      .appendChild(textDivHeaderB1 as HTMLElement);
+
+    const textDivHeaderB2 = document.createElement('div');
+    textDivHeaderB2.setAttribute('class', 'p-col-6');
+    textDivHeaderB2.setAttribute('style', 'width: 45%');
+    const inputNumberB = document.createElement('input');
+
+    inputNumberB.setAttribute('class', 'custom-input');
+    inputNumberB.setAttribute('id', 'userInputcsR');
+    inputNumberB.setAttribute('type', 'number');
+    textDivHeaderB2.appendChild(inputNumberB);
+    $(this.initialInputPanel.container)
+      .find('#NuserInputcsR')[0]
+      .appendChild(textDivHeaderB2 as HTMLElement);
+
+    const textDivHeaderC1 = document.createElement('div');
+    textDivHeaderC1.setAttribute('class', 'p-col-6');
+    textDivHeaderC1.setAttribute('style', 'width: 45%');
+    textDivHeaderC1.innerHTML =
+      '<div class="box-section-new">' +
+      'Crew Size of Pouring Concrete [ppl]' +
+      '</div>';
+    textDivHeaderC1.style.color = 'black';
+    $(this.initialInputPanel.container)
+      .find('#NuserInputcsC')[0]
+      .appendChild(textDivHeaderC1 as HTMLElement);
+
+    const textDivHeaderC2 = document.createElement('div');
+    textDivHeaderC2.setAttribute('class', 'p-col-6');
+    textDivHeaderC2.setAttribute('style', 'width: 45%');
+    const inputNumberC = document.createElement('input');
+
+    inputNumberC.setAttribute('class', 'custom-input');
+    inputNumberC.setAttribute('id', 'userInputcsC');
+    inputNumberC.setAttribute('type', 'number');
+    textDivHeaderC2.appendChild(inputNumberC);
+    $(this.initialInputPanel.container)
+      .find('#NuserInputcsC')[0]
+      .appendChild(textDivHeaderC2 as HTMLElement);
+
+    const textDivHeaderD1 = document.createElement('div');
+    textDivHeaderD1.setAttribute('class', 'p-col-6');
+    textDivHeaderD1.setAttribute('style', 'width: 45%');
+    textDivHeaderD1.innerHTML =
+      '<div class="box-section-new">' +
+      'Crew Size of Stripping Formwork [ppl]' +
+      '</div>';
+    textDivHeaderD1.style.color = 'black';
+    $(this.initialInputPanel.container)
+      .find('#NuserInputcsS')[0]
+      .appendChild(textDivHeaderD1 as HTMLElement);
+
+    const textDivHeaderD2 = document.createElement('div');
+    textDivHeaderD2.setAttribute('class', 'p-col-6');
+    textDivHeaderD2.setAttribute('style', 'width: 45%');
+    const inputNumberD = document.createElement('input');
+
+    inputNumberD.setAttribute('class', 'custom-input');
+    inputNumberD.setAttribute('id', 'userInputcsS');
+    inputNumberD.setAttribute('type', 'number');
+    textDivHeaderD2.appendChild(inputNumberD);
+    $(this.initialInputPanel.container)
+      .find('#NuserInputcsS')[0]
+      .appendChild(textDivHeaderD2 as HTMLElement);
+
+    const textDivHeaderAA1 = document.createElement('div');
+    textDivHeaderAA1.setAttribute('class', 'p-col-6');
+    textDivHeaderAA1.setAttribute('style', 'width: 45%');
+    textDivHeaderAA1.innerHTML =
+      '<div class="box-section-new">' +
+      'Production rate of Installing Formwork [h/m2]' +
+      '</div>';
+    textDivHeaderAA1.style.color = 'black';
+    $(this.initialInputPanel.container)
+      .find('#NuserInputprF')[0]
+      .appendChild(textDivHeaderAA1 as HTMLElement);
+
+    const textDivHeaderAA2 = document.createElement('div');
+    textDivHeaderAA2.setAttribute('class', 'p-col-6');
+    textDivHeaderAA2.setAttribute('style', 'width: 45%');
+    const inputNumberAA = document.createElement('input');
+
+    inputNumberAA.setAttribute('class', 'custom-input');
+    inputNumberAA.setAttribute('id', 'userInputprF');
+    inputNumberAA.setAttribute('type', 'number');
+    textDivHeaderAA2.appendChild(inputNumberAA);
+    $(this.initialInputPanel.container)
+      .find('#NuserInputprF')[0]
+      .appendChild(textDivHeaderAA2 as HTMLElement);
+
+    const textDivHeaderBB1 = document.createElement('div');
+    textDivHeaderBB1.setAttribute('class', 'p-col-6');
+    textDivHeaderBB1.setAttribute('style', 'width: 45%');
+    textDivHeaderBB1.innerHTML =
+      '<div class="box-section-new">' +
+      'Production rate of Installing Reinforcement [h/t]' +
+      '</div>';
+    textDivHeaderBB1.style.color = 'black';
+    $(this.initialInputPanel.container)
+      .find('#NuserInputprR')[0]
+      .appendChild(textDivHeaderBB1 as HTMLElement);
+
+    const textDivHeaderBB2 = document.createElement('div');
+    textDivHeaderBB2.setAttribute('class', 'p-col-6');
+    textDivHeaderBB2.setAttribute('style', 'width: 45%');
+    const inputNumberBB = document.createElement('input');
+
+    inputNumberBB.setAttribute('class', 'custom-input');
+    inputNumberBB.setAttribute('id', 'userInputprR');
+    inputNumberBB.setAttribute('type', 'number');
+    textDivHeaderBB2.appendChild(inputNumberBB);
+    $(this.initialInputPanel.container)
+      .find('#NuserInputprR')[0]
+      .appendChild(textDivHeaderBB2 as HTMLElement);
+
+    const textDivHeaderCC1 = document.createElement('div');
+    textDivHeaderCC1.setAttribute('class', 'p-col-6');
+    textDivHeaderCC1.setAttribute('style', 'width: 45%');
+    textDivHeaderCC1.innerHTML =
+      '<div class="box-section-new">' +
+      'Production rate of Pouring Concrete [h/m3]' +
+      '</div>';
+    textDivHeaderCC1.style.color = 'black';
+    $(this.initialInputPanel.container)
+      .find('#NuserInputprC')[0]
+      .appendChild(textDivHeaderCC1 as HTMLElement);
+
+    const textDivHeaderCC2 = document.createElement('div');
+    textDivHeaderCC2.setAttribute('class', 'p-col-6');
+    textDivHeaderCC2.setAttribute('style', 'width: 45%');
+    const inputNumberCC = document.createElement('input');
+
+    inputNumberCC.setAttribute('class', 'custom-input');
+    inputNumberCC.setAttribute('id', 'userInputprC');
+    inputNumberCC.setAttribute('type', 'number');
+    textDivHeaderCC2.appendChild(inputNumberCC);
+    $(this.initialInputPanel.container)
+      .find('#NuserInputprC')[0]
+      .appendChild(textDivHeaderCC2 as HTMLElement);
+
+    const textDivHeaderDD1 = document.createElement('div');
+    textDivHeaderDD1.setAttribute('class', 'p-col-6');
+    textDivHeaderDD1.setAttribute('style', 'width: 45%');
+    textDivHeaderDD1.innerHTML =
+      '<div class="box-section-new">' +
+      'Production rate of Stripping Formwork [h/m2]' +
+      '</div>';
+    textDivHeaderDD1.style.color = 'black';
+    $(this.initialInputPanel.container)
+      .find('#NuserInputprS')[0]
+      .appendChild(textDivHeaderDD1 as HTMLElement);
+
+    const DtextDivHeaderDD2 = document.createElement('div');
+    DtextDivHeaderDD2.setAttribute('class', 'p-col-6');
+    DtextDivHeaderDD2.setAttribute('style', 'width: 45%');
+    const inputNumberDD = document.createElement('input');
+
+    inputNumberDD.setAttribute('class', 'custom-input');
+    inputNumberDD.setAttribute('id', 'userInputprS');
+    inputNumberDD.setAttribute('type', 'number');
+    DtextDivHeaderDD2.appendChild(inputNumberDD);
+    $(this.initialInputPanel.container)
+      .find('#NuserInputprS')[0]
+      .appendChild(DtextDivHeaderDD2 as HTMLElement);
+  }
 
   public async runDifferentFunc() {
     $('.lds-roller').show();
@@ -1212,6 +1513,8 @@ export class MainComponent implements OnInit {
                   this.calcWD(this.slabs);
                   this.calcWD(this.walls);
                   this.calcWD(this.columns);
+                  this.storeSlabsPerLevel();
+                  this.storeWallsPerLevel();
                   // Store Objects to localstorage
                   // Utils.setColumns(this.columns);
                   // Utils.setFoundations(this.foundations);
@@ -1317,7 +1620,9 @@ export class MainComponent implements OnInit {
         const uniqMat = allValues.filter(
           (item, i, ar) => ar.indexOf(item) === i
         );
-        const concrValues = uniqMat.filter((item) => item.includes('Beton'));
+        const concrValues = uniqMat.filter((item) =>
+          item.includes('hbt_Beton')
+        );
         // console.log(concrValues);
         return asyncForEach(concrValues, async (value) => {
           // console.log(value);
@@ -1368,8 +1673,8 @@ export class MainComponent implements OnInit {
               this.walls.push(wall);
             }
           } else if (
-            element.properties[0].displayValue ===
-              'hbt_Beton_Konstruktionsbeton' &&
+            // element.properties[0].displayValue ===
+            // 'hbt_Beton_Konstruktionsbeton' &&
             element.properties[1].displayValue === 'Geschossdecken'
           ) {
             const slab = new Slab(
@@ -1475,8 +1780,8 @@ export class MainComponent implements OnInit {
               } else if (prop.displayName === 'Dicke') {
                 item.thickness = parseFloat(prop.displayValue);
               } else if (
-                prop.displayName === 'Perimeter'
-                // prop.displayName === 'Umfang' ||
+                prop.displayName === 'Perimeter' ||
+                prop.displayName === 'Umfang'
                 // not all columns especially prefabricated have property perimeter
                 // prop.displayName === 'Umfang_Kreis'
               ) {
@@ -1527,10 +1832,10 @@ export class MainComponent implements OnInit {
           element.csR = 3;
           element.csC = 3;
           element.csS = 3;
-          element.prF = 0.12; // values taken from Semester Project
-          element.prR = 16;
-          element.prC = 0.14;
-          element.prS = 0.12;
+          element.prF = 0.45; // values taken from Semester Project
+          element.prR = 9.2;
+          element.prC = 0.32;
+          element.prS = 0.4;
         });
         break;
       case this.columns:
@@ -1539,10 +1844,10 @@ export class MainComponent implements OnInit {
           element.csR = 3;
           element.csC = 3;
           element.csS = 3;
-          element.prF = 0.12;
-          element.prR = 16;
-          element.prC = 0.14;
-          element.prS = 0.12;
+          element.prF = 0.24;
+          element.prR = 11.9;
+          element.prC = 2;
+          element.prS = 0.2;
         });
         break;
       case this.slabs:
@@ -1551,10 +1856,10 @@ export class MainComponent implements OnInit {
           element.csR = 3;
           element.csC = 3;
           element.csS = 3;
-          element.prF = 0.12;
-          element.prR = 16;
-          element.prC = 0.14;
-          element.prS = 0.12;
+          element.prF = 0.55;
+          element.prR = 8.6;
+          element.prC = 0.67;
+          element.prS = 0.5;
         });
         break;
       case this.foundations:
@@ -1577,18 +1882,35 @@ export class MainComponent implements OnInit {
       case this.walls:
         this.walls.forEach((element) => {
           element.WDwF =
-            (2 *
-              (element.sideArea + element.width * element.height) *
-              element.prF) /
-            element.csF;
-          element.WDwR = (0.085 * element.volume * element.prR) / element.csR; // ?* 0.17tons/m3
-          element.WDwC = (element.volume * element.prC) / element.csC; // ?* tons
+            Math.round(
+              ((2 *
+                (element.sideArea + element.width * element.height) *
+                element.prF) /
+                element.csF +
+                Number.EPSILON) *
+                100
+            ) / 100;
+          element.WDwR =
+            Math.round(
+              ((0.085 * element.volume * element.prR) / element.csR +
+                Number.EPSILON) *
+                100
+            ) / 100; // ?* 0.17tons/m3
+          element.WDwC =
+            Math.round(
+              ((element.volume * element.prC) / element.csC + Number.EPSILON) *
+                100
+            ) / 100; // ?* tons
           element.WDwCR = 8; // 8hours= 1 day
           element.WDwS =
-            (2 *
-              (element.sideArea + element.width * element.height) *
-              element.prS) /
-            element.csS;
+            Math.round(
+              ((2 *
+                (element.sideArea + element.width * element.height) *
+                element.prS) /
+                element.csS +
+                Number.EPSILON) *
+                100
+            ) / 100;
         });
         break;
       case this.columns:
@@ -1597,12 +1919,31 @@ export class MainComponent implements OnInit {
             element.perimeter = 2 * element.Breite * element.Tiefe;
           }
           element.WDcF =
-            (element.perimeter * element.length * element.prF) / element.csF;
-          element.WDcR = (0.15 * element.volume * element.prR) / element.csR;
-          element.WDcC = (element.volume * element.prC) / element.csC;
+            Math.round(
+              ((element.perimeter * element.length * element.prF) /
+                element.csF +
+                Number.EPSILON) *
+                100
+            ) / 100;
+          element.WDcR =
+            Math.round(
+              ((0.15 * element.volume * element.prR) / element.csR +
+                Number.EPSILON) *
+                100
+            ) / 100;
+          element.WDcC =
+            Math.round(
+              ((element.volume * element.prC) / element.csC + Number.EPSILON) *
+                100
+            ) / 100;
           element.WDcCR = 8; // 8hours= 1 day
           element.WDcS =
-            (element.perimeter * element.length * element.prS) / element.csS;
+            Math.round(
+              ((element.perimeter * element.length * element.prS) /
+                element.csS +
+                Number.EPSILON) *
+                100
+            ) / 100;
         });
         break;
       case this.slabs:
@@ -1611,16 +1952,33 @@ export class MainComponent implements OnInit {
             element.thickness = element.width;
           }
           element.WDsF =
-            ((element.area + element.perimeter * element.thickness) *
-              element.prF) /
-            element.csF;
-          element.WDsR = (0.09 * element.volume * element.prR) / element.csR;
-          element.WDsC = (element.volume * element.prC) / element.csC;
-          element.WDsCR = 32; // 32hours= 4 days maybe this should be defined based on area?
+            Math.round(
+              (((element.area + element.perimeter * element.thickness) *
+                element.prF) /
+                element.csF +
+                Number.EPSILON) *
+                100
+            ) / 100;
+          element.WDsR =
+            Math.round(
+              ((0.09 * element.volume * element.prR) / element.csR +
+                Number.EPSILON) *
+                100
+            ) / 100;
+          element.WDsC =
+            Math.round(
+              ((element.volume * element.prC) / element.csC + Number.EPSILON) *
+                100
+            ) / 100;
+          element.WDsCR = 24; // 32hours= 4 days maybe this should be defined based on area?
           element.WDsS =
-            ((element.area + element.perimeter * element.thickness) *
-              element.prS) /
-            element.csS;
+            Math.round(
+              (((element.area + element.perimeter * element.thickness) *
+                element.prS) /
+                element.csS +
+                Number.EPSILON) *
+                100
+            ) / 100;
         });
         break;
       case this.foundations:
@@ -1630,16 +1988,33 @@ export class MainComponent implements OnInit {
             element.thickness = element.width;
           }
           element.WDfF =
-            ((element.area + element.perimeter * element.thickness) *
-              element.prF) /
-            element.csF;
-          element.WDfR = (0.12 * element.volume * element.prR) / element.csR;
-          element.WDfC = (element.volume * element.prC) / element.csC;
+            Math.round(
+              (((element.area + element.perimeter * element.thickness) *
+                element.prF) /
+                element.csF +
+                Number.EPSILON) *
+                100
+            ) / 100;
+          element.WDfR =
+            Math.round(
+              ((0.12 * element.volume * element.prR) / element.csR +
+                Number.EPSILON) *
+                100
+            ) / 100;
+          element.WDfC =
+            Math.round(
+              ((element.volume * element.prC) / element.csC + Number.EPSILON) *
+                100
+            ) / 100;
           element.WDfCR = 32; // 32hours= 4 days maybe this should be defined based on area?
           element.WDfS =
-            ((element.area + element.perimeter * element.thickness) *
-              element.prS) /
-            element.csS;
+            Math.round(
+              (((element.area + element.perimeter * element.thickness) *
+                element.prS) /
+                element.csS +
+                Number.EPSILON) *
+                100
+            ) / 100;
         });
     }
     return category;
@@ -2381,7 +2756,7 @@ export class MainComponent implements OnInit {
           '</div>';
         // @ts-ignore
         $(this.panel.container).find('#lengthProp')[0].childNodes[1].innerHTML =
-          "<div class='box'>" + 'Unset' + '</div>';
+          "<div class='box'>" + correspondingWall.length.toFixed(2) + '</div>';
         // @ts-ignore
         $(this.panel.container).find('#heightProp')[0].childNodes[1].innerHTML =
           "<div class='box'>" + correspondingWall.height.toFixed(2) + '</div>';
@@ -2860,16 +3235,16 @@ export class MainComponent implements OnInit {
       'my-custom-toolbar-WD-controlgroup'
     );
     // @ts-ignore
-    var controlInstFormwork = wdControlGroup._controls[0].getState();
+    const controlInstFormwork = wdControlGroup._controls[0].getState();
     // console.log(controlInstFormwork);
     // @ts-ignore
-    var controlInstReinforcement = wdControlGroup._controls[1].getState();
+    const controlInstReinforcement = wdControlGroup._controls[1].getState();
     // @ts-ignore
-    var controlPourConcrete = wdControlGroup._controls[2].getState();
+    const controlPourConcrete = wdControlGroup._controls[2].getState();
     // @ts-ignore
-    var controlCuring = wdControlGroup._controls[3].getState();
+    const controlCuring = wdControlGroup._controls[3].getState();
     // @ts-ignore
-    var controlStripFormwork = wdControlGroup._controls[4].getState();
+    const controlStripFormwork = wdControlGroup._controls[4].getState();
     selection.forEach((dbId) => {
       // console.log(props)
       // Store the
@@ -3026,16 +3401,16 @@ export class MainComponent implements OnInit {
       'my-custom-toolbar-WD-controlgroup'
     );
     // @ts-ignore
-    var controlInstFormwork = wdControlGroup._controls[0].getState();
+    const controlInstFormwork = wdControlGroup._controls[0].getState();
     // console.log(controlInstFormwork);
     // @ts-ignore
-    var controlInstReinforcement = wdControlGroup._controls[1].getState();
+    const controlInstReinforcement = wdControlGroup._controls[1].getState();
     // @ts-ignore
-    var controlPourConcrete = wdControlGroup._controls[2].getState();
+    const controlPourConcrete = wdControlGroup._controls[2].getState();
     // @ts-ignore
-    var controlCuring = wdControlGroup._controls[3].getState();
+    const controlCuring = wdControlGroup._controls[3].getState();
     // @ts-ignore
-    var controlStripFormwork = wdControlGroup._controls[4].getState();
+    const controlStripFormwork = wdControlGroup._controls[4].getState();
 
     selection.forEach((dbId) => {
       //Case 1: Install Formwork
@@ -3179,16 +3554,16 @@ export class MainComponent implements OnInit {
       'my-custom-toolbar-WD-controlgroup'
     );
     // @ts-ignore
-    var controlInstFormwork = wdControlGroup._controls[0].getState();
+    const controlInstFormwork = wdControlGroup._controls[0].getState();
     // console.log(controlInstFormwork);
     // @ts-ignore
-    var controlInstReinforcement = wdControlGroup._controls[1].getState();
+    const controlInstReinforcement = wdControlGroup._controls[1].getState();
     // @ts-ignore
-    var controlPourConcrete = wdControlGroup._controls[2].getState();
+    const controlPourConcrete = wdControlGroup._controls[2].getState();
     // @ts-ignore
-    var controlCuring = wdControlGroup._controls[3].getState();
+    const controlCuring = wdControlGroup._controls[3].getState();
     // @ts-ignore
-    var controlStripFormwork = wdControlGroup._controls[4].getState();
+    const controlStripFormwork = wdControlGroup._controls[4].getState();
     if (controlInstFormwork === 0) {
       var dataSet = 0;
     } else if (controlInstReinforcement === 0) {
@@ -3215,12 +3590,352 @@ export class MainComponent implements OnInit {
     });
     this.tradeBarchart.chart.update();
   }
+
+  // public exportDashboard() {
+  //   var doc = new jsPDF('p', 'mm', 'a4');
+  //   doc.addHTML(
+  //     document.getElementById('dashboard'),
+  //     15,
+  //     15,
+  //     { background: '#fff' },
+  //     function () {
+  //       doc.save('dashboard.pdf');
+  //     }
+  //   );
+  // }
+
+  public storeSlabsPerLevel() {
+    this.slabs.forEach((slab) => {
+      this.slabDbIds.push(slab.dbId);
+    });
+    this.objectsPerLevel.forEach((floor) => {
+      // console.log(floor);
+      this.slabsPerLevel.push({
+        FloorName: floor.levelName,
+        dbIds: floor.dbIds.filter((value) => this.slabDbIds.includes(value)),
+        WDsPerFloorF: 0,
+        WDsPerFloorR: 0,
+        WDsPerFloorC: 0,
+        WDsPerFloorS: 0,
+        slabsTotalArea: 0,
+      });
+    });
+    // console.log(this.slabsPerLevel);
+
+    this.slabsPerLevel.forEach((level) => {
+      level.dbIds.forEach((dbId) => {
+        const correspondingSlab = this.slabs.find((obj) => obj.dbId === dbId);
+        // console.log(correspondingSlab);
+        level.WDsPerFloorF += correspondingSlab.WDsF;
+        level.WDsPerFloorR += correspondingSlab.WDsR;
+        level.WDsPerFloorC += correspondingSlab.WDsC;
+        level.WDsPerFloorS += correspondingSlab.WDsS;
+        level.slabsTotalArea += correspondingSlab.area;
+      });
+    });
+  }
+  public storeWallsPerLevel() {
+    this.walls.forEach((wall) => {
+      this.wallDbIds.push(wall.dbId);
+    });
+    this.objectsPerLevel.forEach((floor) => {
+      // console.log(floor);
+      this.wallsPerLevel.push({
+        FloorName: floor.levelName,
+        dbIds: floor.dbIds.filter((value) => this.wallDbIds.includes(value)),
+        WDwPerFloorF: 0,
+        WDwPerFloorR: 0,
+        WDwPerFloorC: 0,
+        WDwPerFloorS: 0,
+        wallsTotalLength: 0,
+      });
+    });
+    // console.log(this.wallsPerLevel);
+
+    this.wallsPerLevel.forEach((level) => {
+      level.dbIds.forEach((dbId) => {
+        const correspondingWall = this.walls.find((obj) => obj.dbId === dbId);
+        // console.log(correspondingWall);
+        level.WDwPerFloorF += correspondingWall.WDwF;
+        level.WDwPerFloorR += correspondingWall.WDwR;
+        level.WDwPerFloorC += correspondingWall.WDwC;
+        level.WDwPerFloorS += correspondingWall.WDwS;
+        level.wallsTotalLength += correspondingWall.length;
+      });
+    });
+  }
+  public findStandardSlab() {
+    this.slabsPerLevel.forEach((slab) => {
+      let maxWDs = Math.max(
+        slab.WDsPerFloorF,
+        slab.WDsPerFloorR,
+        slab.WDsPerFloorC,
+        slab.WDsPerFloorS
+      );
+      // console.log(maxWDs);
+      const maxWD = 35;
+      let WDperm2 = maxWDs / slab.slabsTotalArea;
+      // console.log(WDperm2);
+      let standardSize = maxWD / WDperm2;
+      // console.log(standardSize);
+
+      slab.standardArea = standardSize;
+      slab.slabsNumber = Math.round(slab.slabsTotalArea / standardSize);
+    });
+    this.slabsPerLevel.forEach((slab) => {
+      slab.dbIds.forEach((dbId) => {
+        const correspondingSlab = this.slabs.find((obj) => obj.dbId === dbId);
+        if (correspondingSlab.area > slab.standardArea) {
+          this.slabsToBeSplit.push(correspondingSlab.dbId);
+        }
+      });
+    });
+    this.slabsPerLevel.forEach((slab) => {
+      if (slab.slabsNumber <= 1) {
+        slab.standardArea = 'undefined';
+        slab.slabsNumber = NaN;
+      }
+    });
+    console.log(this.slabsPerLevel);
+    console.log(this.slabsToBeSplit);
+    // this.viewerComponent.viewer.isolate(this.slabsToBeSplit);
+  }
+
+  public findStandardWall() {
+    this.wallsPerLevel.forEach((wall) => {
+      let maxWDs = Math.max(
+        wall.WDwPerFloorF,
+        wall.WDwPerFloorR,
+        wall.WDwPerFloorC,
+        wall.WDwPerFloorS
+      );
+      // console.log(maxWDs);
+      const maxWD = 35;
+      let WDperM = maxWDs / wall.wallsTotalLength;
+      // console.log(WDperM);
+      let standardSize = maxWD / WDperM;
+      // console.log(standardSize);
+
+      wall.standardLength = standardSize;
+      wall.wallsNumber = Math.round(wall.wallsTotalLength / standardSize);
+    });
+
+    this.wallsPerLevel.forEach((wall) => {
+      wall.dbIds.forEach((dbId) => {
+        const correspondingWall = this.walls.find((obj) => obj.dbId === dbId);
+        if (correspondingWall.length > wall.standardLength) {
+          this.wallsToBeSplit.push(correspondingWall.dbId);
+        }
+      });
+    });
+    console.log(this.wallsToBeSplit);
+    console.log(this.wallsPerLevel);
+  }
+  public async storeEtappen(): Promise<boolean> {
+    const allDbIds = this.getAllDbIds();
+    return await this.getBulkProperties(allDbIds, [
+      // 'LcIFCProperty:IFCString',
+      'Etappe',
+    ]).then((res) => {
+      const allValues = new Array();
+      return asyncForEach(res, (element) => {
+        allValues.push(element.properties[0].displayValue);
+      }).then(() => {
+        const uniqEtap = allValues.filter(
+          (item, i, ar) => ar.indexOf(item) === i
+        );
+        // const concrValues = uniqMat.filter((item) =>
+        //   item.includes('hbt_Beton')
+        // );
+        console.log(uniqEtap);
+        uniqEtap.sort();
+        const uniqEta = uniqEtap.slice(0, 46);
+        console.log(uniqEta);
+        return asyncForEach(uniqEta, async (value) => {
+          // console.log(value);
+          // search is not case sensitive IMP_BETON includes all objects from IMP_BETON_Fertigteil
+          await this.search(value, 'LcIFCProperty:IFCString').then(
+            (idArray) => {
+              // console.log(idArray);
+              this.etapObjects.push({
+                etappeName: value,
+                dbIds: idArray,
+                id: this.makeid(5),
+              });
+            }
+          );
+        }).then(() => {
+          return true;
+        });
+      });
+    });
+  }
+  public loadEtappenToolbar() {
+    // Button Levels
+    const button1 = new Autodesk.Viewing.UI.Button('showing-Etappen');
+    button1.addClass('showing-Etappen');
+    button1.setToolTip('Etappen');
+    // @ts-ignore
+    button1.container.children[0].classList.add('fas', 'fa-layer-group');
+
+    // SubToolbar
+    const controlGroup = new Autodesk.Viewing.UI.ControlGroup(
+      'my-custom-toolbar-Etappen-controlgroup'
+    );
+    controlGroup.addControl(button1);
+    // Toolbar
+    this.toolbarEtappen = new Autodesk.Viewing.UI.ToolBar(
+      'my-custom-view-toolbar-etappen',
+      { collapsible: false, alignVertically: true }
+    );
+    button1.onClick = (event) => {
+      if (button1.getState() === 1) {
+        button1.setState(0);
+
+        this.etapObjects.forEach((object) => {
+          if (!object.etappeName) {
+            object.etappeName = 'null';
+          }
+          // Braucht einen Anhang an jede Klasse, da CSS Klasse nicht mit [0-9] beginnen kann
+          const annexClass = 'Class_';
+
+          // iterative Button
+          const buttonIterativ = new Autodesk.Viewing.UI.Button(
+            annexClass + object.id
+          );
+
+          // Click Event !! Important !!
+          buttonIterativ.onClick = () => {
+            if (buttonIterativ.getState() === 1) {
+              buttonIterativ.setState(0);
+              if (
+                this.isolatedNodesEtappen.length === 0 &&
+                this.isolatedNodesConcrete.length === 0
+              ) {
+                this.isolatedNodesEtappen = object.dbIds;
+                this.viewerComponent.viewer.isolate(this.isolatedNodesEtappen);
+              } else if (
+                this.isolatedNodesEtappen.length !== 0 &&
+                this.isolatedNodesConcrete.length === 0
+              ) {
+                this.isolatedNodesEtappen = this.isolatedNodesEtappen.concat(
+                  object.dbIds
+                );
+                this.viewerComponent.viewer.isolate(this.isolatedNodesEtappen);
+              } else if (
+                this.isolatedNodesEtappen.length === 0 &&
+                this.isolatedNodesConcrete.length !== 0
+              ) {
+                this.isolatedNodesEtappen = this.isolatedNodesConcrete.filter(
+                  (item) => {
+                    return object.dbIds.indexOf(item) !== -1;
+                  }
+                );
+                if (this.isolatedNodesEtappen.length === 0) {
+                  return null;
+                } else {
+                  this.viewerComponent.viewer.isolate(
+                    this.isolatedNodesEtappen
+                  );
+                }
+              }
+              // this.isolatedNodesEtappen.length !== 0 && this.isolatedNodesConcrete.length !== 0
+              else {
+                this.isolatedNodesEtappen = this.isolatedNodesEtappen.concat(
+                  object.dbIds
+                );
+                this.isolatedNodesEtappen = this.isolatedNodesConcrete.filter(
+                  (item) => {
+                    return this.isolatedNodesEtappen.indexOf(item) !== -1;
+                  }
+                );
+                this.viewerComponent.viewer.isolate(this.isolatedNodesEtappen);
+              }
+            } else {
+              buttonIterativ.setState(1);
+              if (this.isolatedNodesConcrete.length === 0) {
+                this.isolatedNodesEtappen = this.isolatedNodesEtappen.filter(
+                  (item) => {
+                    return object.dbIds.indexOf(item) === -1;
+                  }
+                );
+                this.viewerComponent.viewer.isolate(this.isolatedNodesEtappen);
+              }
+              // this.isolatedNodesConcrete.length !== 0
+              else {
+                this.isolatedNodesEtappen = this.isolatedNodesEtappen.filter(
+                  (item) => {
+                    return object.dbIds.indexOf(item) === -1;
+                  }
+                );
+                this.isolatedNodesEtappen = this.isolatedNodesConcrete.filter(
+                  (item) => {
+                    return this.isolatedNodesEtappen.indexOf(item) !== -1;
+                  }
+                );
+                if (this.isolatedNodesEtappen.length === 0) {
+                  this.viewerComponent.viewer.isolate(
+                    this.isolatedNodesConcrete
+                  );
+                } else {
+                  this.viewerComponent.viewer.isolate(
+                    this.isolatedNodesEtappen
+                  );
+                }
+              }
+            }
+          };
+
+          // test
+
+          buttonIterativ.addClass(annexClass + object.id);
+          controlGroup.addControl(buttonIterativ);
+          // tslint:disable-next-line: max-line-length
+          $('#' + annexClass + object.id).append(
+            '<style>.' +
+              annexClass +
+              object.id +
+              ':before{content: attr(data-before); font-size: 20px; color: white;}</style>'
+          );
+          $('#' + annexClass + object.id).append(
+            '<style>.' +
+              annexClass +
+              object.id +
+              '{width: 178px !important}</style>'
+          );
+          $('#' + annexClass + object.id).append(
+            '<style>.' +
+              annexClass +
+              object.id +
+              '{animation: slideMe .7s ease-in;}</style>'
+          );
+          $('#' + annexClass + object.id.toString()).attr(
+            'data-before',
+            object.etappeName
+          );
+        });
+      } else {
+        button1.setState(1);
+        this.isolatedNodesEtappen = new Array();
+        while (controlGroup.getNumberOfControls() > 1) {
+          const tempID = controlGroup.getControlId(1);
+          controlGroup.removeControl(tempID);
+        }
+      }
+    };
+    this.toolbarEtappen.addControl(controlGroup);
+    $(this.viewerComponent.viewer.container).append(
+      this.toolbarEtappen.container
+    );
+  }
+
   public async selectionChanged(event: SelectionChangedEventArgs) {
     console.log('selectionChanged');
     const dbIdArray = (event as any).dbIdArray;
     this.changePanelValue(dbIdArray);
-    // console.log(this.getLeafComponentsRec(dbIdArray[0]));
-
+    this.storeEtappen();
+    console.log(this.etapObjects);
+    // this.search('', 'Etappe').then((data) => console.log(data));
     // this.storeConcrCategObjects();
     ///////////////////////////// TESTING THREEJS/////////////////////////////////////////
     // this.handleMouseMove(event);
@@ -3241,15 +3956,15 @@ export class MainComponent implements OnInit {
     // console.log('dbid');
     // console.log('----------');
     // console.log(dbIdArray[0]);
-    // var parent = this.viewerComponent.viewer.model
-    //   .getInstanceTree()
-    //   .getNodeParentId(dbIdArray[0]);
+    var parent = this.viewerComponent.viewer.model
+      .getInstanceTree()
+      .getNodeParentId(dbIdArray[0]);
     // console.log('parent');
     // console.log('----------');
     // console.log(parent);
-    // var parentOfParent = this.viewerComponent.viewer.model
-    //   .getInstanceTree()
-    //   .getNodeParentId(parent);
+    var parentOfParent = this.viewerComponent.viewer.model
+      .getInstanceTree()
+      .getNodeParentId(parent);
     // console.log('parentOFparent');
     // console.log('----------');
     // console.log(parentOfParent);
@@ -3259,11 +3974,21 @@ export class MainComponent implements OnInit {
     // console.log('parentOFparentOFparent');
     // console.log('----------');
     // console.log(parentOfParentOfParent);
-    // console.log('dbId DATA');
-    // console.log('----------');
-    // this.viewerComponent.viewer.model.getProperties(dbIdArray[0], (data) =>
-    //   console.log(data)
-    // );
+    console.log('dbId DATA');
+    console.log('----------');
+    this.viewerComponent.viewer.model.getProperties(dbIdArray[0], (data) =>
+      console.log(data)
+    );
+    console.log('parent DATA');
+    console.log('----------');
+    this.viewerComponent.viewer.model.getProperties(parent, (data) =>
+      console.log(data)
+    );
+    console.log('parentof Parent DATA');
+    console.log('----------');
+    this.viewerComponent.viewer.model.getProperties(parentOfParent, (data) =>
+      console.log(data)
+    );
     // console.log('parentDATA');
     // console.log('----------');
     // this.viewerComponent.viewer.model.getProperties(parent, (data) =>

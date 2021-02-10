@@ -16,6 +16,10 @@
   height: 100% !important;
   width: 100% !important;
 }
+#chart {
+  max-width: 650px;
+  margin: 35px auto;
+}
 
 #dashboard {
   position: relative;
@@ -24,6 +28,7 @@
   /* right: 0px; */
   overflow: auto;
   height: calc(100vh - 100px);
+  zoom: 100%;
 }
 
 .transition-width {
@@ -121,18 +126,19 @@
 
 /*Level Toolbar -> Control Group -> Buttons */
 
-:host ::ng-deep #my-custom-view-toolbar-test {
+:host ::ng-deep #my-custom-view-toolbar-etappen {
   right: unset;
   left: 300px;
   width: 200px;
+  overflow: auto;
 }
 
-:host ::ng-deep .showing-testing {
-  width: 28px;
+:host ::ng-deep .showing-Etappen {
+  width: 178px;
 }
 
-:host ::ng-deep .showing-testing:hover {
-  width: 28px;
+:host ::ng-deep .showing-Ettapen:hover {
+  width: 178px;
 }
 
 :host ::ng-deep .crosshair {

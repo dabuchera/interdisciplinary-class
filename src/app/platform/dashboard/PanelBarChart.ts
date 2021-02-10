@@ -1,4 +1,5 @@
 import * as Chart from 'chart.js';
+
 import { DashboardPanelChart } from './DashboardPanel';
 import { Zone } from '../zones/zone';
 

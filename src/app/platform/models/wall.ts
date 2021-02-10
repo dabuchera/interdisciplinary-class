@@ -4,6 +4,7 @@ export class Wall extends Element {
   sideArea: number;
   width: number;
   height: number;
+  length: number;
   WDwF: number;
   WDwR: number;
   WDwC: number;
@@ -29,6 +30,7 @@ export class Wall extends Element {
     sideArea?: number,
     width?: number,
     height?: number,
+    length?: number,
     WDwF?: number,
     WDwR?: number,
     WDwC?: number,
@@ -51,6 +53,7 @@ export class Wall extends Element {
     this.sideArea = sideArea;
     this.width = width;
     this.height = height;
+    this.length = length;
     // First set with fixed values for PR & CS
     this.csF = csF;
     this.prF = prF;

@@ -4,23 +4,23 @@ import { AlertModule } from './_alert';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import {ChartsModule} from 'ng2-charts'
+import { ChartsModule } from 'ng2-charts';
+import { NgApexchartsModule } from 'ng-apexcharts';
 
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { PlatformModule } from './platform/platform.module';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
     AppRoutingModule,
     ProgressSpinnerModule,
     PlatformModule,
     AlertModule,
-    ChartsModule
+    ChartsModule,
+    NgApexchartsModule,
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
