@@ -10,6 +10,7 @@ import {
   ViewerComponent,
 } from '../../viewer/component/viewer.component';
 
+
 import {
   SelectionChangedEventArgs,
   // ExtensionLoadedEventArgs, Mal ausprobiert mit dem ExtensionLoaded Event
