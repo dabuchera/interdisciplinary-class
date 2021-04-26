@@ -44,7 +44,7 @@
 }
 
 .viewer {
-  background-color: #ecb216;
+  /* background-color: #ecb216; */
   /* Gleiche Höhe wie PDF Viewer */
   /* Immer angepasst an Box */
   height: 100%;

@@ -4,7 +4,7 @@
   margin-top: 25px !important;
   margin: auto;
   /* Nur für Development */
-  border: 5px solid #ecb216;
+  border: 5px solid #000000;
 }
 
 :host ::ng-deep #categoryLegend {
@@ -50,7 +50,7 @@
   background-color: #ecb31656;
   width: 80%;
   border-radius: 5px;
-  border-color: #ecb216;
+  border-color: #000000;
   padding: 5px;
 }
 
@@ -59,7 +59,7 @@
   width: 160px;
   transition: background-color 0.2s;
   border-radius: 5px;
-  background-color: #ecb216;
+  background-color: #000000;
   color: white;
   border: 1px solid black;
   margin-top: 2.5px;
@@ -70,7 +70,7 @@
   width: 160px;
   transition: background-color 0.2s;
   border-radius: 5px;
-  background-color: #8b6a0d;
+  background-color: #000000;
   color: white;
   border: 1px solid black;
   margin-top: 2.5px;
@@ -106,7 +106,7 @@
   width: 70px;
   height: 70px;
   border-radius: 50%;
-  background: #ecb216;
+  background: #000000;
   margin: -40px 0 0 -40px;
   opacity: 1 !important;
 }
@@ -195,31 +195,31 @@
 @keyframes p-progress-spinner-color {
   100%,
   0% {
-    stroke: #ecb216;
+    stroke: #000000;
   }
   10% {
-    stroke: #eeba2f;
+    stroke: #1c1c1c;
   }
   20% {
-    stroke: #f0c349;
+    stroke: #383838;
   }
   30% {
-    stroke: #f2cb63;
+    stroke: #555555;
   }
   40% {
-    stroke: #f4d47d;
+    stroke: #717171;
   }
   50% {
-    stroke: #f6dc97;
+    stroke: #8d8d8d;
   }
   60% {
-    stroke: #f8e5b1;
+    stroke: #aaaaaa;
   }
   70% {
-    stroke: #faedcb;
+    stroke: #c6c6c6;
   }
   80% {
-    stroke: #fcf6e5;
+    stroke: #e2e2e2;
   }
   90% {
     stroke: #ffffff;

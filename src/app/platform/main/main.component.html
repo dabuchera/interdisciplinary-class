@@ -1,11 +1,56 @@
+<!-- Dies ist ein Toast für jegliche Warnings -->
+<p-toast key="warning">
+  <ng-template>
+    <div style="text-align: center">
+      <h3>{{message.summary}}</h3>
+      <p>{{message.detail}}</p>
+    </div>
+  </ng-template>
+</p-toast>
+
+<!-- Toast -> Kein Modell in diesem Projekt vorhanden möglich -->
+<p-toast position="center" key="chooseGroup" (onClose)="closeGroupToast()" [baseZIndex]="5000">
+  <ng-template let-message pTemplate="message">
+    <div class="p-grid">
+      <div class="p-col-12" style="text-align: center">
+        <i class="pi pi-exclamation-triangle" style="font-size: 3em"></i>
+        <h3>{{message.summary}}</h3>
+        <p>{{message.detail}}</p>
+      </div>
+      <div class="p-col-4">
+        <button pButton type="button" (click)="choosedGroup1()" label="Group 1" class="ui-button-success"></button>
+      </div>
+      <div class="p-col-4">
+        <button pButton type="button" (click)="choosedGroup2()" label="Group 2" class="ui-button-secondary"></button>
+      </div>
+      <div class="p-col-4">
+        <button pButton type="button" (click)="choosedGroup3()" label="Group 3" class="ui-button-secondary"></button>
+      </div>
+    </div>
+    <!-- <div class="ui-g ui-fluid" style="text-align: center">
+      <div class="ui-g-12">
+        <i class="pi pi-exclamation-triangle" style="font-size: 3em"></i>
+        <h3>{{message.summary}}</h3>
+        <p>{{message.detail}}</p>
+      </div>
+    </div>
+    <div class="ui-g ui-fluid">
+      <div class="ui-g-6">
+        <button pButton type="button" (click)="onConfirm_Toast_noModel()" label="I understand"
+          class="ui-button-success"></button>
+      </div>
+      <div class="ui-g-6">
+        <button pButton type="button" (click)="onRejectnoModel()" label="No" class="ui-button-secondary"></button>
+      </div>
+    </div> -->
+  </ng-template>
+</p-toast>
+
 <div class="p-col-12">
   <div class="p-grid">
     <div class="box-custom-viewer">
-      <app-forge-viewer
-        [viewerOptions]="viewerOptions3d"
-        (onObjectTreeCreated)="runDifferentFunc()"
-        (onSelectionChanged)="selectionChanged($event)"
-      ></app-forge-viewer>
+      <app-forge-viewer [viewerOptions]="viewerOptions3d" (onSelectionChanged)="selectionChanged($event)">
+      </app-forge-viewer>
     </div>
   </div>
 </div>

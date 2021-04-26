@@ -7,7 +7,7 @@ import { DOCUMENT } from '@angular/common';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
-  title = 'bim-lean';
+  title = 'interdisziplinary-course';
 
   constructor(@Inject(DOCUMENT) private document: Document) {}
   public openSpinner() {
@@ -16,5 +16,13 @@ export class AppComponent {
 
   public closeSpinner() {
     this.document.getElementById('spinner').style.height = '0%';
+  }
+
+  public openOverlay() {
+    document.getElementById('overlay').style.height = '100%';
+  }
+
+  public closeOverlay() {
+    document.getElementById('overlay').style.height = '0%';
   }
 }
