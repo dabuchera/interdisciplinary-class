@@ -4,7 +4,7 @@
   margin-top: 25px !important;
   margin: auto;
   /* Nur für Development */
-  border: 5px solid #000000;
+  border: 5px solid #000080;
 }
 
 :host ::ng-deep #categoryLegend {
@@ -15,6 +15,16 @@
   min-width: 270px;
   min-height: 230px;
   background-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+:host ::ng-deep .chooseGroup {
+  background-color: #000080;
+  border: #000080;
+}
+
+:host ::ng-deep .chooseGroup:hover {
+  background-color: #C69502;
+  border: #C69502;
 }
 
 :host ::ng-deep .docking-panel-container-solid-color-a {

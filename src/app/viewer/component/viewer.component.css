@@ -63,8 +63,8 @@
 /* Tooltip Farbe geändert */
 
 :host ::ng-deep .adsk-control-tooltip {
-  background-color: #ecb216 !important;
-  border: 1px solid #ecb216;
+  background-color: #000080 !important;
+  border: 1px solid #000080;
 }
 
 /* Tooltip auf der rechten Seite */
@@ -91,9 +91,9 @@
 /* Background der Buttons geändert */
 
 :host ::ng-deep .adsk-viewing-viewer.dark-theme .adsk-control-group {
-  background-color: #ecb216;
+  background-color: #000080;
   content: "2";
-  color: black;
+  color: white;
 }
 
 /* Wenn aktiv dann nicht blau eingefärbt */

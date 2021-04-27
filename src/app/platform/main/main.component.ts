@@ -101,8 +101,6 @@ export class MainComponent implements OnInit {
       onViewerScriptsLoaded: this.scriptsLoaded,
       onViewerInitialized: async (args: ViewerInitializedEvent) => {
 
-        
-
         // Hide container where model is in
         // $('canvas').hide();
         this.replaceSpinner();
@@ -148,6 +146,7 @@ export class MainComponent implements OnInit {
   closeGroupToast() {
     this.messageService.clear();
     this.app.closeOverlay();
+    this.loadVerticalToolbar();
   }
 
   choosedGroup1() {
@@ -167,6 +166,103 @@ export class MainComponent implements OnInit {
     this.closeGroupToast();
     // tslint:disable-next-line: quotemark
     this.messageService.add({ key: 'warning', severity: 'success', summary: 'Success', detail: "You're seeing the model of Group 3", life: 5000 });
+  }
+
+  public loadVerticalToolbar() {
+    // Button 1
+    const buttonMain = new Autodesk.Viewing.UI.Button('vertical-toolbar-button');
+    buttonMain.addClass('vertical-toolbar-button');
+    // @ts-ignore
+    buttonMain.container.children[0].classList.add('fas', 'fa-question');
+    // SubToolbar
+    const controlGroup = new Autodesk.Viewing.UI.ControlGroup('vertical-toolbar-controlGroup');
+    controlGroup.addControl(buttonMain);
+    // Toolbar
+    const toolbarFacade = new Autodesk.Viewing.UI.ToolBar('vertical-toolbar', { collapsible: false, alignVertically: true });
+    buttonMain.onClick = (event) => {
+      if (buttonMain.getState() === 1) {
+        $('#vertical-toolbar-button').attr('style', 'color: #000000 !important ; background-color: #FFFFFF');
+        buttonMain.setState(0);
+        // this.selectedFacadeEnabled = true;
+        this.messageService.add({ key: 'warning', severity: 'success', summary: 'New', detail: 'Here we can add some functionalities' });
+
+        // this.showValuesOfParameter('facade');
+        var valuesOfParameter: any[];
+        // this.api.getvaluesOfParameter('facade', this.platform.currentProject._id).then(
+        //   res => {
+        //     if (res === null) {
+        //       this.messageService.add({ key: 'warning', severity: 'error', summary: 'Error', detail: 'Something went wrong with GETTING VALUES' });
+        //     }
+        //     else {
+        //       valuesOfParameter = res;
+        //       // console.log('valuesOfParameter');
+        //       // console.log(valuesOfParameter);
+        //       valuesOfParameter.forEach(valueOfParameter => {
+        //         if (!valueOfParameter) {
+        //           valueOfParameter = 'null';
+        //         }
+        //         // Es werden alle Whitespaces gelöscht
+        //         valueOfParameter = valueOfParameter.replace(/ /g, '');
+
+        //         // Braucht einen Anhang an jede Klasse, da CSS Klasse nicht mit [0-9] beginnen kann
+        //         var annexClass = 'Class_';
+
+        //         // iterative Button
+        //         var buttonIterativ = new Autodesk.Viewing.UI.Button(annexClass + valueOfParameter);
+
+        //         // Click Event !! Important !!
+        //         buttonIterativ.onClick = () => {
+        //           // if (buttonIterativ.getState() === 1) {
+        //           //   $('#' + annexClass + valueOfParameter).css('background-color', '#FE3123');
+        //           //   buttonIterativ.setState(0);
+        //           //   this.valueOfParameterFacadeArray.push({
+        //           //     [valueOfParameter]: this.inputs.filter(element => {
+        //           //       return element.facade === valueOfParameter;
+        //           //     })
+        //           //   }
+        //           //   );
+        //           // }
+        //           // else {
+        //           //   buttonIterativ.setState(1);
+        //           //   this.viewerComponent.viewer.unloadExtension('IconMarkupExtension');
+        //           //   $('#' + annexClass + valueOfParameter).css('background-color', '#A80000');
+        //           //   this.valueOfParameterFacadeArray.forEach((element, index) => {
+        //           //     if (Object.keys(element)[0] === valueOfParameter) {
+        //           //       this.valueOfParameterFacadeArray.splice(index, 1);
+        //           //     }
+        //           //   });
+        //           // }
+        //         };
+
+        //         buttonIterativ.addClass(annexClass + valueOfParameter);
+        //         controlGroup.addControl(buttonIterativ);
+        //         // tslint:disable-next-line: max-line-length
+        //         $('#' + annexClass + valueOfParameter).append('<style>.' + annexClass + valueOfParameter + ':before{content: attr(data-before); font-size: 20px; color: white;}</style>');
+        //         $('#' + annexClass + valueOfParameter).append('<style>.' + annexClass + valueOfParameter + '{width: 38px !important}</style>');
+        //         $('#' + annexClass + valueOfParameter).append('<style>.' + annexClass + valueOfParameter + '{animation: slideMe .7s ease-in;}</style>');
+        //         $('#' + annexClass + valueOfParameter.toString()).attr('data-before', valueOfParameter);
+        //       });
+        //     }
+        //   }
+        // );
+      }
+      else {
+        buttonMain.setState(1);
+        // this.selectedFacadeEnabled = false;
+        $('#vertical-toolbar-button').attr('style', 'color: #FFFFFF !important ; background-color: #000080');
+        // this.panel.setVisible(false);
+        this.viewerComponent.viewer.clearThemingColors(this.viewerComponent.viewer.model);
+        this.messageService.add({ key: 'warning', severity: 'success', summary: 'New', detail: 'Here we can add some functionalities' });
+
+        while (controlGroup.getNumberOfControls() > 1) {
+          var tempID = controlGroup.getControlId(1);
+          controlGroup.removeControl(tempID);
+        }
+        this.viewerComponent.viewer.unloadExtension('IconMarkupExtension');
+      }
+    };
+    toolbarFacade.addControl(controlGroup);
+    $(this.viewerComponent.viewer.container).append(toolbarFacade.container);
   }
 
   public async getBulkProperties(ids: number[], propFilter: string[]) {
