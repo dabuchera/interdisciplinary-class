@@ -372,12 +372,12 @@ export class MainComponent implements OnInit {
 
   public async selectionChanged(event: SelectionChangedEventArgs) {
     console.log('selectionChanged');
-    const dbIdArray = (event as any).dbIdArray;
-    this.viewerComponent.viewer.model.getProperties(dbIdArray[0], (data) =>
-      console.log(data)
-    );
+    // const dbIdArray = (event as any).dbIdArray;
+    // this.viewerComponent.viewer.model.getProperties(dbIdArray[0], (data) =>
+    //   console.log(data)
+    // );
 
-    var parent = this.viewerComponent.viewer.model.getInstanceTree().getNodeParentId(dbIdArray[0]);
+    // var parent = this.viewerComponent.viewer.model.getInstanceTree().getNodeParentId(dbIdArray[0]);
   }
 }
 
