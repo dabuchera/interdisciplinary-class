@@ -160,14 +160,14 @@ export class MainComponent implements OnInit {
     this.closeGroupToast();
     // tslint:disable-next-line: quotemark
     this.messageService.add({ key: 'warning', severity: 'success', summary: 'Success', detail: "You're seeing the model of Group 2", life: 5000 });
-    this.viewerComponent.DocumentId = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6Z3JvdXAxL1Rlc3RGb3JnZS5ydnQ';
+    this.viewerComponent.DocumentId = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6Z3JvdXAxL3Rlc3Rmb3JnZS5ydnQ';
   }
 
   choosedGroup3() {
     this.closeGroupToast();
     // tslint:disable-next-line: quotemark
     this.messageService.add({ key: 'warning', severity: 'success', summary: 'Success', detail: "You're seeing the model of Group 3", life: 5000 });
-    this.viewerComponent.DocumentId = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6Z3JvdXAxL1Rlc3RGb3JnZS5ydnQ';
+    this.viewerComponent.DocumentId = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6Z3JvdXAxL3Rlc3Rmb3JnZS5ydnQ';
   }
 
   public loadVerticalToolbar() {
