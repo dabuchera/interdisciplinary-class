@@ -4,9 +4,9 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 ## Set up
 
-For setting up the local development you have to install the following:
+For setting up the local development take the following steps:
 
-# Visaul Studio Code
+# Visual Studio Code
 
 https://code.visualstudio.com/
 
@@ -77,7 +77,7 @@ Do that by
 
 `npm install` 
 
-**Lcoal Start**
+**Local Start**
 
 `ng serve` will start the frontend. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
