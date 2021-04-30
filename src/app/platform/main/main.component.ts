@@ -61,6 +61,9 @@ export class MainComponent implements OnInit {
   // Model stuff
   leafcomponents = [];
 
+  public instanceTree: Autodesk.Viewing.InstanceTree;
+
+
   @ViewChild(ViewerComponent, { static: false })
   viewerComponent: ViewerComponent;
 
@@ -112,6 +115,17 @@ export class MainComponent implements OnInit {
         this.app.openOverlay();
         this.messageService.add({ key: 'chooseGroup', sticky: true, severity: 'warn', summary: 'GROUP', detail: 'Choose your group' });
         // this.messageService.add({ key: 'warning', severity: 'success', summary: 'Success', detail: 'Bucket was deleted correctly!!', life: 10000 });
+
+        const objectTreeCreated = () => {
+
+          console.log('objectTreeCreated');
+
+          // Instantiation of model stuff
+          this.instanceTree = this.viewerComponent.viewer.model.getData().instanceTree;
+        };
+
+        this.viewerComponent.viewer.addEventListener(Autodesk.Viewing.OBJECT_TREE_CREATED_EVENT, objectTreeCreated);
+
 
       },
       // Muss true sein
@@ -378,10 +392,34 @@ export class MainComponent implements OnInit {
 
   public async selectionChanged(event: SelectionChangedEventArgs) {
     console.log('selectionChanged');
-    // const dbIdArray = (event as any).dbIdArray;
+    const dbIdArray = (event as any).dbIdArray;
+
+    console.log('dbIdArray');
+    console.log(dbIdArray);
     // this.viewerComponent.viewer.model.getProperties(dbIdArray[0], (data) =>
     //   console.log(data)
     // );
+
+    //@ts-ignore
+    var nodeFinalName = this.instanceTree.getNodeName(dbIdArray[0]);
+
+    console.log(nodeFinalName);
+    console.log(this.instanceTree);
+
+    //@ts-ignore
+    this.viewerComponent.viewer.model.getProperties(
+      dbIdArray[0],
+      res => {
+        console.log(res);
+      },
+      err => {
+        console.log(err);
+      },
+    );
+
+    // setThemingColor(dbId, color, model, recursive)
+    const color = new THREE.Vector4(256 / 256, 0 / 256, 0 / 256, 1);
+    this.viewerComponent.viewer.setThemingColor(dbIdArray[0], color, this.viewerComponent.viewer.model);
 
     // var parent = this.viewerComponent.viewer.model.getInstanceTree().getNodeParentId(dbIdArray[0]);
   }
