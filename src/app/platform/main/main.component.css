@@ -27,10 +27,6 @@
   border: #C69502;
 }
 
-:host ::ng-deep .docking-panel-container-solid-color-a {
-  background-color: rgba(255, 0, 0, 0) !important;
-}
-
 /* Input Panel Stuff*/
 :host ::ng-deep #initialInputPanel {
   top: 100px;

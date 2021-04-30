@@ -153,21 +153,27 @@ export class MainComponent implements OnInit {
     this.closeGroupToast();
     // tslint:disable-next-line: quotemark
     this.messageService.add({ key: 'warning', severity: 'success', summary: 'Success', detail: "You're seeing the model of Group 1", life: 5000 });
-    this.viewerComponent.DocumentId = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6Z3JvdXAxL1Rlc3RGb3JnZS5ydnQ';
+
+    // ossBucketKey: interdisciplinary_class_fs21                  ossSourceFileObjectKey: model1group1.rvt
+    this.viewerComponent.DocumentId = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6aW50ZXJkaXNjaXBsaW5hcnlfY2xhc3NfZnMyMS9tb2RlbDFncm91cDEucnZ0';
   }
 
   choosedGroup2() {
     this.closeGroupToast();
     // tslint:disable-next-line: quotemark
     this.messageService.add({ key: 'warning', severity: 'success', summary: 'Success', detail: "You're seeing the model of Group 2", life: 5000 });
-    this.viewerComponent.DocumentId = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6Z3JvdXAxL3Rlc3Rmb3JnZS5ydnQ';
+
+    // ossBucketKey: interdisciplinary_class_fs21                  ossSourceFileObjectKey: model1group2.rvt
+    this.viewerComponent.DocumentId = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6aW50ZXJkaXNjaXBsaW5hcnlfY2xhc3NfZnMyMS9tb2RlbDFncm91cDIucnZ0';
   }
 
   choosedGroup3() {
     this.closeGroupToast();
     // tslint:disable-next-line: quotemark
     this.messageService.add({ key: 'warning', severity: 'success', summary: 'Success', detail: "You're seeing the model of Group 3", life: 5000 });
-    this.viewerComponent.DocumentId = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6Z3JvdXAxL3Rlc3Rmb3JnZS5ydnQ';
+
+    // ossBucketKey: interdisciplinary_class_fs21                  ossSourceFileObjectKey: testforge.rvt
+    this.viewerComponent.DocumentId = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6aW50ZXJkaXNjaXBsaW5hcnlfY2xhc3NfZnMyMS90ZXN0Zm9yZ2UucnZ0';
   }
 
   public loadVerticalToolbar() {
