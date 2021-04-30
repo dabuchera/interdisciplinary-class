@@ -18,7 +18,9 @@ Recommendation: Store you Parent folder directly on you C
 
 for example, create a folder
 
-*C:\src*
+***C:\src***
+
+**After the installation, open in VS Code the parent folder you created or want to use for the local development**
 
 # NodeJS
 
@@ -50,32 +52,32 @@ https://git-scm.com/
 
 # Github
 
-After installing the above you can clone the repo, the src to you local environment. Open the parent folder with VS Code
+After installing the above you can clone the repo, the src to you local environment. 
 
-for example
+**Be sure where you want to store the repo. For example in the parent folder we created**
 
-*C:\src*
+***C:\src***
 
 open terminal and run
 
 `git clone https://github.com/dabuchera/interdisciplinary-class.git` 
 
+**After you cloned the repo to your local environment, take care that you open the correct folder.**
+
+***C:\src\interdisciplinary-class***
+
+## First start
+
 ## Local Development
 
+**First Start**
+
+If you start the code for the first time you have to install all npm packages
+Do that by
+
+`npm install` 
+
+**Lcoal Start**
+
 `ng serve` will start the frontend. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
-
-## Development (Server-side rendering)
-
-Run `npm run dev:ssr` for starting server and frontend. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
-
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Production
-
-Run `npm run build:ssr && npm run serve:ssr` Compiles your application and spins up a Nest server to serve your Universal application on `http://localhost:4200/`. 
-
-eth
-eth2020
 
