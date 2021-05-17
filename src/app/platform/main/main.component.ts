@@ -55,6 +55,8 @@ export class MainComponent implements OnInit {
   public viewerOptions3d: ViewerOptions;
   public encodedmodelurn: string;
 
+  public group: number;
+
   // Für ng build github
   public message: any;
 
@@ -62,6 +64,8 @@ export class MainComponent implements OnInit {
   leafcomponents = [];
 
   public instanceTree: Autodesk.Viewing.InstanceTree;
+
+  public propertyDatabase: any;
 
 
   @ViewChild(ViewerComponent, { static: false })
@@ -105,28 +109,24 @@ export class MainComponent implements OnInit {
       onViewerInitialized: async (args: ViewerInitializedEvent) => {
 
         // Hide container where model is in
-        // $('canvas').hide();
+        $('canvas').hide();
         this.replaceSpinner();
         $('.lds-roller').show();
         this.viewerComponent.viewer.setGhosting(false);
         // $('canvas').show();
-        $('.lds-roller').hide();
+
 
         this.app.openOverlay();
         this.messageService.add({ key: 'chooseGroup', sticky: true, severity: 'warn', summary: 'GROUP', detail: 'Choose your group' });
         // this.messageService.add({ key: 'warning', severity: 'success', summary: 'Success', detail: 'Bucket was deleted correctly!!', life: 10000 });
 
-        const objectTreeCreated = () => {
-
-          console.log('objectTreeCreated');
-
+        // @ts-ignore
+        await Autodesk.Viewing.EventUtils.waitUntilGeometryLoaded(this.viewerComponent.viewer).then(res => {
           // Instantiation of model stuff
           this.instanceTree = this.viewerComponent.viewer.model.getData().instanceTree;
-        };
-
-        this.viewerComponent.viewer.addEventListener(Autodesk.Viewing.OBJECT_TREE_CREATED_EVENT, objectTreeCreated);
-
-
+          $('.lds-roller').hide();
+          $('canvas').show();
+        });
       },
       // Muss true sein
       showFirstViewable: true,
@@ -164,30 +164,44 @@ export class MainComponent implements OnInit {
   }
 
   choosedGroup1() {
+    this.group = 1;
     this.closeGroupToast();
     // tslint:disable-next-line: quotemark
     this.messageService.add({ key: 'warning', severity: 'success', summary: 'Success', detail: "You're seeing the model of Group 1", life: 5000 });
 
-    // ossBucketKey: interdisciplinary_class_fs21                  ossSourceFileObjectKey: model1group1.rvt
-    this.viewerComponent.DocumentId = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6aW50ZXJkaXNjaXBsaW5hcnlfY2xhc3NfZnMyMS9tb2RlbDFncm91cDEucnZ0';
+    // model1group1 dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6aW50ZXJkaXNjaXBsaW5hcnlfY2xhc3NfZnMyMS9tb2RlbDFncm91cDEucnZ0
+
+    // ossBucketKey: interdisciplinary_class_fs21                  ossSourceFileObjectKey: model2group1.rvt
+    this.viewerComponent.DocumentId = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6aW50ZXJkaXNjaXBsaW5hcnlfY2xhc3NfZnMyMS9tb2RlbDJncm91cDEucnZ0';
   }
 
   choosedGroup2() {
+    this.group = 2;
     this.closeGroupToast();
     // tslint:disable-next-line: quotemark
     this.messageService.add({ key: 'warning', severity: 'success', summary: 'Success', detail: "You're seeing the model of Group 2", life: 5000 });
 
-    // ossBucketKey: interdisciplinary_class_fs21                  ossSourceFileObjectKey: model1group2.rvt
-    this.viewerComponent.DocumentId = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6aW50ZXJkaXNjaXBsaW5hcnlfY2xhc3NfZnMyMS9tb2RlbDFncm91cDIucnZ0';
+    // model2group2 dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6aW50ZXJkaXNjaXBsaW5hcnlfY2xhc3NfZnMyMS9tb2RlbDFncm91cDIucnZ0
+
+    // ossBucketKey: interdisciplinary_class_fs21                  ossSourceFileObjectKey: model2group2.rvt
+    this.viewerComponent.DocumentId = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6aW50ZXJkaXNjaXBsaW5hcnlfY2xhc3NfZnMyMS9tb2RlbDJncm91cDIucnZ0';
   }
 
   choosedGroup3() {
+    this.group = 3;
     this.closeGroupToast();
     // tslint:disable-next-line: quotemark
     this.messageService.add({ key: 'warning', severity: 'success', summary: 'Success', detail: "You're seeing the model of Group 3", life: 5000 });
 
-    // ossBucketKey: interdisciplinary_class_fs21                  ossSourceFileObjectKey: testforge.rvt
-    this.viewerComponent.DocumentId = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6aW50ZXJkaXNjaXBsaW5hcnlfY2xhc3NfZnMyMS90ZXN0Zm9yZ2UucnZ0';
+    // model1group3 dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6aW50ZXJkaXNjaXBsaW5hcnlfY2xhc3NfZnMyMS9tb2RlbDFncm91cDMucnZ0
+
+    // model2group3 dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6aW50ZXJkaXNjaXBsaW5hcnlfY2xhc3NfZnMyMS9tb2RlbDJncm91cDMucnZ0
+
+    // model3group3 dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6aW50ZXJkaXNjaXBsaW5hcnlfY2xhc3NfZnMyMS9tb2RlbDNncm91cDMucnZ0
+
+    // ossBucketKey: interdisciplinary_class_fs21                  ossSourceFileObjectKey: model4group3.rvt
+    this.viewerComponent.DocumentId = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6aW50ZXJkaXNjaXBsaW5hcnlfY2xhc3NfZnMyMS9tb2RlbDRncm91cDMucnZ0';
+
   }
 
   public loadVerticalToolbar() {
@@ -206,8 +220,8 @@ export class MainComponent implements OnInit {
         $('#vertical-toolbar-button').attr('style', 'color: #000000 !important ; background-color: #FFFFFF');
         buttonMain.setState(0);
         // this.selectedFacadeEnabled = true;
-        this.messageService.add({ key: 'warning', severity: 'success', summary: 'New', detail: 'Here we can add some functionalities' });
-
+        // this.messageService.add({ key: 'warning', severity: 'success', summary: 'New', detail: 'Here we can add some functionalities' });
+        this.coloringModel();
         // this.showValuesOfParameter('facade');
         var valuesOfParameter: any[];
         // this.api.getvaluesOfParameter('facade', this.platform.currentProject._id).then(
@@ -390,36 +404,284 @@ export class MainComponent implements OnInit {
     return this.leafcomponents.slice(-1)[0];
   }
 
+  public coloringModel() {
+    if (this.group === 1) {
+      // @ts-ignore
+      var promise = this.viewerComponent.viewer.model.getPropertyDb().executeUserFunction(`function userFunction(pdb) {
+      var attrIdParameter_geographical_origin = -1;
+      var attrIdParameter_life_cycle_origin = -1;
+      var attrIdParameter_flexibility_rating = -1;
+      var attrIdParameter_end_of_life_potential = -1;
+
+      // Iterate over all attributes and find the index to the one we are interested in
+      pdb.enumAttributes((i, attrDef, attrRaw) => {
+        var name = attrDef.name;
+        if (name === 'geographical_origin') {
+          attrIdParameter_geographical_origin = i;
+          console.log(name);
+          // return true; // to stop iterating over the remaining attributes.
+        }
+        else if (name === 'life_cycle_origin') {
+          attrIdParameter_life_cycle_origin = i;
+        }
+        else if (name === 'flexibility_rating') {
+          attrIdParameter_flexibility_rating = i;
+        }
+        else if (name === 'end_of_life_potential') {
+          attrIdParameter_end_of_life_potential = i;
+        }
+      });
+
+      // Early return is the model doesn't contain data for "Mass".
+      // if (attrIdParameter === -1) {
+      //   return null;
+      // }
+
+      var returnArr = new Array();
+
+      pdb.enumObjects(dbId => {
+
+        // For each part, iterate over their properties.
+        pdb.enumObjectProperties(dbId, (attrId, valId) => {
+
+          if (attrId === attrIdParameter_geographical_origin) {
+            var value = pdb.getAttrValue(attrId, valId);
+            return true;
+          }
+          else if (attrId === attrIdParameter_life_cycle_origin) {
+            var value = pdb.getAttrValue(attrId, valId);
+            return true;
+          }
+          else if (attrId === attrIdParameter_flexibility_rating) {
+            var value = pdb.getAttrValue(attrId, valId);
+            return true;
+          }
+          else if (attrId === attrIdParameter_end_of_life_potential) {
+            var value = pdb.getAttrValue(attrId, valId);
+            return true;
+          }
+        });
+      });
+      return returnArr;
+  }`);
+      const that = this;
+      promise.then(function (retValue) {
+
+        console.log(retValue);
+
+        // if (!retValue) {
+        //   this.messageService.add({ key: 'warning', sticky: true, severity: 'error', summary: 'Coloring', detail: 'Model doesn\'t contain property \'Flexibility_Rating\'.' });
+        //   return;
+        // }
+
+        // console.log(retValue);
+
+        // const colorRed = new THREE.Vector4(237 / 256, 41 / 256, 56 / 256, 1);
+        // const colorOrange = new THREE.Vector4(255 / 256, 140 / 256, 1 / 256, 1);
+        // const colorYellow = new THREE.Vector4(255 / 256, 231 / 256, 51 / 256, 1);
+        // const colorGreen = new THREE.Vector4(0 / 256, 132 / 256, 80 / 256, 1);
+
+        // const instanceTree = that.instanceTree;
+        // const rootNodeId = instanceTree.getRootId();
+        // that.viewerComponent.viewer.setThemingColor(rootNodeId, colorRed, that.viewerComponent.viewer.model, true);
+
+        // // const traverseRecursively = true;
+        // // function callback(dbid) {
+        // //   console.log('Found object ID', dbid);
+        // // }
+        // // instanceTree.enumNodeChildren(rootNodeId, callback, traverseRecursively);
+
+        // retValue[0].forEach(dbid => {
+        //   if (!that.viewerComponent.viewer.model.getInstanceTree().getNodeParentId(dbid)) {
+        //     that.viewerComponent.viewer.setThemingColor(dbid + 2, colorRed, that.viewerComponent.viewer.model, true);
+        //   }
+        //   else {
+        //     that.viewerComponent.viewer.setThemingColor(dbid, colorRed, that.viewerComponent.viewer.model, true);
+        //   }
+        // });
+        // retValue[1].forEach(dbid => {
+        //   if (!that.viewerComponent.viewer.model.getInstanceTree().getNodeParentId(dbid)) {
+        //     that.viewerComponent.viewer.setThemingColor(dbid + 2, colorOrange, that.viewerComponent.viewer.model, true);
+        //   }
+        //   else {
+        //     that.viewerComponent.viewer.setThemingColor(dbid, colorOrange, that.viewerComponent.viewer.model, true);
+        //   }
+        // });
+        // retValue[2].forEach(dbid => {
+        //   if (!that.viewerComponent.viewer.model.getInstanceTree().getNodeParentId(dbid)) {
+        //     that.viewerComponent.viewer.setThemingColor(dbid + 2, colorYellow, that.viewerComponent.viewer.model, true);
+        //   }
+        //   else {
+        //     that.viewerComponent.viewer.setThemingColor(dbid, colorYellow, that.viewerComponent.viewer.model, true);
+        //   }
+        // });
+        // retValue[3].forEach(dbid => {
+        //   if (!that.viewerComponent.viewer.model.getInstanceTree().getNodeParentId(dbid)) {
+        //     that.viewerComponent.viewer.setThemingColor(dbid + 2, colorGreen, that.viewerComponent.viewer.model, true);
+        //   }
+        //   else {
+        //     that.viewerComponent.viewer.setThemingColor(dbid, colorGreen, that.viewerComponent.viewer.model, true);
+        //   }
+        // });
+        // // var mostMassiveId = retValue.id;
+        // // that.viewerComponent.viewer.select(mostMassiveId);
+        // // that.viewerComponent.viewer.fitToView([mostMassiveId]);
+        // // console.log('Most massive part is', mostMassiveId, 'with Mass:', retValue.mass);
+      });
+    }
+
+    else if (this.group === 2) {
+      // @ts-ignore
+      var promise = this.viewerComponent.viewer.model.getPropertyDb().executeUserFunction(`function userFunction(pdb) {
+      var attrIdParameter = -1;
+      // Iterate over all attributes and find the index to the one we are interested in
+      pdb.enumAttributes((i, attrDef, attrRaw) => {
+        const name = attrDef.name;
+        if (name === 'Flexibility_Rating') {
+          attrIdParameter = i;
+          return true; // to stop iterating over the remaining attributes.
+        }
+      });
+
+      // Early return is the model doesn't contain data for "Mass".
+      if (attrIdParameter === -1) {
+          return null;
+      }
+
+      // Now iterate over all parts to find out which one is the largest.
+      var maxValue = 0;
+      var maxValId = -1;
+
+      var returnArr = new Array();
+      returnArr[0] = new Array();
+      returnArr[1] = new Array();
+      returnArr[2] = new Array();
+      returnArr[3] = new Array();
+
+      pdb.enumObjects(dbId => {
+
+      // For each part, iterate over their properties.
+      pdb.enumObjectProperties(dbId, (attrId, valId) => {
+          
+      if (attrId === attrIdParameter) {
+        var value = pdb.getAttrValue(attrId, valId);
+        if (value === 0) {
+          returnArr[0].push(dbId);
+        }
+        else if (value === 1) {
+          returnArr[1].push(dbId);
+        }
+        else if (value === 2) {
+          returnArr[2].push(dbId);
+        }
+        else if (value === 3) {
+          returnArr[3].push(dbId);
+        }
+        return true;
+      }
+    });
+    });
+        return returnArr;
+      }`);
+      const that = this;
+      promise.then(function (retValue) {
+
+        if (!retValue) {
+          this.messageService.add({ key: 'warning', sticky: true, severity: 'error', summary: 'Coloring', detail: 'Model doesn\'t contain property \'Flexibility_Rating\'.' });
+          return;
+        }
+
+        console.log(retValue);
+
+        const colorRed = new THREE.Vector4(237 / 256, 41 / 256, 56 / 256, 1);
+        const colorOrange = new THREE.Vector4(255 / 256, 140 / 256, 1 / 256, 1);
+        const colorYellow = new THREE.Vector4(255 / 256, 231 / 256, 51 / 256, 1);
+        const colorGreen = new THREE.Vector4(0 / 256, 132 / 256, 80 / 256, 1);
+
+        const instanceTree = that.instanceTree;
+        const rootNodeId = instanceTree.getRootId();
+        that.viewerComponent.viewer.setThemingColor(rootNodeId, colorRed, that.viewerComponent.viewer.model, true);
+
+        // const traverseRecursively = true;
+        // function callback(dbid) {
+        //   console.log('Found object ID', dbid);
+        // }
+        // instanceTree.enumNodeChildren(rootNodeId, callback, traverseRecursively);
+
+        retValue[0].forEach(dbid => {
+          if (!that.viewerComponent.viewer.model.getInstanceTree().getNodeParentId(dbid)) {
+            that.viewerComponent.viewer.setThemingColor(dbid + 2, colorRed, that.viewerComponent.viewer.model, true);
+          }
+          else {
+            that.viewerComponent.viewer.setThemingColor(dbid, colorRed, that.viewerComponent.viewer.model, true);
+          }
+        });
+        retValue[1].forEach(dbid => {
+          if (!that.viewerComponent.viewer.model.getInstanceTree().getNodeParentId(dbid)) {
+            that.viewerComponent.viewer.setThemingColor(dbid + 2, colorOrange, that.viewerComponent.viewer.model, true);
+          }
+          else {
+            that.viewerComponent.viewer.setThemingColor(dbid, colorOrange, that.viewerComponent.viewer.model, true);
+          }
+        });
+        retValue[2].forEach(dbid => {
+          if (!that.viewerComponent.viewer.model.getInstanceTree().getNodeParentId(dbid)) {
+            that.viewerComponent.viewer.setThemingColor(dbid + 2, colorYellow, that.viewerComponent.viewer.model, true);
+          }
+          else {
+            that.viewerComponent.viewer.setThemingColor(dbid, colorYellow, that.viewerComponent.viewer.model, true);
+          }
+        });
+        retValue[3].forEach(dbid => {
+          if (!that.viewerComponent.viewer.model.getInstanceTree().getNodeParentId(dbid)) {
+            that.viewerComponent.viewer.setThemingColor(dbid + 2, colorGreen, that.viewerComponent.viewer.model, true);
+          }
+          else {
+            that.viewerComponent.viewer.setThemingColor(dbid, colorGreen, that.viewerComponent.viewer.model, true);
+          }
+        });
+        // var mostMassiveId = retValue.id;
+        // that.viewerComponent.viewer.select(mostMassiveId);
+        // that.viewerComponent.viewer.fitToView([mostMassiveId]);
+        // console.log('Most massive part is', mostMassiveId, 'with Mass:', retValue.mass);
+      });
+    }
+  }
+
   public async selectionChanged(event: SelectionChangedEventArgs) {
     console.log('selectionChanged');
     const dbIdArray = (event as any).dbIdArray;
 
     console.log('dbIdArray');
     console.log(dbIdArray);
-    // this.viewerComponent.viewer.model.getProperties(dbIdArray[0], (data) =>
-    //   console.log(data)
+
+    // console.log('parent');
+    // console.log(this.viewerComponent.viewer.model.getInstanceTree().getNodeParentId(dbIdArray[0]));
+
+    // console.log('child');
+    // console.log(this.viewerComponent.viewer.model.getInstanceTree().getChildCount(dbIdArray[0]));
+
+
+    // //@ts-ignore
+    // var nodeFinalName = this.instanceTree.getNodeName(dbIdArray[0]);
+
+    // console.log(nodeFinalName);
+    // console.log(this.instanceTree);
+
+    // //@ts-ignore
+    // this.viewerComponent.viewer.model.getProperties(
+    //   dbIdArray[0],
+    //   res => {
+    //     console.log(res);
+    //   },
+    //   err => {
+    //     console.log(err);
+    //   },
     // );
 
-    //@ts-ignore
-    var nodeFinalName = this.instanceTree.getNodeName(dbIdArray[0]);
-
-    console.log(nodeFinalName);
-    console.log(this.instanceTree);
-
-    //@ts-ignore
-    this.viewerComponent.viewer.model.getProperties(
-      dbIdArray[0],
-      res => {
-        console.log(res);
-      },
-      err => {
-        console.log(err);
-      },
-    );
-
     // setThemingColor(dbId, color, model, recursive)
-    const color = new THREE.Vector4(256 / 256, 0 / 256, 0 / 256, 1);
-    this.viewerComponent.viewer.setThemingColor(dbIdArray[0], color, this.viewerComponent.viewer.model);
+    // const color = new THREE.Vector4(256 / 256, 0 / 256, 0 / 256, 1);
+    // this.viewerComponent.viewer.setThemingColor(dbIdArray[0], color, this.viewerComponent.viewer.model);
 
     // var parent = this.viewerComponent.viewer.model.getInstanceTree().getNodeParentId(dbIdArray[0]);
   }

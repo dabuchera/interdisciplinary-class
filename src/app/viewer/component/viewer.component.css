@@ -7,7 +7,7 @@
   /* overflow: hidden; */
 }
 
-:host ::ng-deep .docking-panel-scroll{
+/* :host ::ng-deep .docking-panel-scroll{
   background-color: #000080 !important;
 }
 
@@ -25,7 +25,7 @@
 
 :host ::ng-deep .treeview .group {
   background-color: #4040ff !important;
-}
+} */
 
 .row {
   height: 100%;
