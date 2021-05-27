@@ -54,6 +54,8 @@ export class MainComponent implements OnInit {
 
   public viewerOptions3d: ViewerOptions;
   public encodedmodelurn: string;
+  public panel: Autodesk.Viewing.UI.DockingPanel;
+  public buttonMain: Autodesk.Viewing.UI.Button;
 
   public group: number;
 
@@ -118,7 +120,8 @@ export class MainComponent implements OnInit {
 
         this.app.openOverlay();
         this.messageService.add({ key: 'chooseGroup', sticky: true, severity: 'warn', summary: 'GROUP', detail: 'Choose your group' });
-        // this.messageService.add({ key: 'warning', severity: 'success', summary: 'Success', detail: 'Bucket was deleted correctly!!', life: 10000 });
+
+        // this.choosedGroup1();
 
         // @ts-ignore
         await Autodesk.Viewing.EventUtils.waitUntilGeometryLoaded(this.viewerComponent.viewer).then(res => {
@@ -171,8 +174,13 @@ export class MainComponent implements OnInit {
 
     // model1group1 dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6aW50ZXJkaXNjaXBsaW5hcnlfY2xhc3NfZnMyMS9tb2RlbDFncm91cDEucnZ0
 
-    // ossBucketKey: interdisciplinary_class_fs21                  ossSourceFileObjectKey: model2group1.rvt
-    this.viewerComponent.DocumentId = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6aW50ZXJkaXNjaXBsaW5hcnlfY2xhc3NfZnMyMS9tb2RlbDJncm91cDEucnZ0';
+    // model2group1 dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6aW50ZXJkaXNjaXBsaW5hcnlfY2xhc3NfZnMyMS9tb2RlbDJncm91cDEucnZ0
+
+    // model3group1 dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6aW50ZXJkaXNjaXBsaW5hcnlfY2xhc3NfZnMyMS9tb2RlbDNncm91cDEucnZ0
+
+    // ossBucketKey: interdisciplinary_class_fs21                  ossSourceFileObjectKey: model4group1.rvt
+
+    this.viewerComponent.DocumentId = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6aW50ZXJkaXNjaXBsaW5hcnlfY2xhc3NfZnMyMS9tb2RlbDRncm91cDEucnZ0';
   }
 
   choosedGroup2() {
@@ -199,102 +207,35 @@ export class MainComponent implements OnInit {
 
     // model3group3 dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6aW50ZXJkaXNjaXBsaW5hcnlfY2xhc3NfZnMyMS9tb2RlbDNncm91cDMucnZ0
 
-    // ossBucketKey: interdisciplinary_class_fs21                  ossSourceFileObjectKey: model4group3.rvt
-    this.viewerComponent.DocumentId = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6aW50ZXJkaXNjaXBsaW5hcnlfY2xhc3NfZnMyMS9tb2RlbDRncm91cDMucnZ0';
+    // model4group3 dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6aW50ZXJkaXNjaXBsaW5hcnlfY2xhc3NfZnMyMS9tb2RlbDRncm91cDMucnZ0
+
+    // ossBucketKey: interdisciplinary_class_fs21                  ossSourceFileObjectKey: model5group3.rvt
+    this.viewerComponent.DocumentId = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6aW50ZXJkaXNjaXBsaW5hcnlfY2xhc3NfZnMyMS9tb2RlbDVncm91cDMucnZ0';
 
   }
 
   public loadVerticalToolbar() {
     // Button 1
-    const buttonMain = new Autodesk.Viewing.UI.Button('vertical-toolbar-button');
-    buttonMain.addClass('vertical-toolbar-button');
+    this.buttonMain = new Autodesk.Viewing.UI.Button('vertical-toolbar-button');
+    this.buttonMain.addClass('vertical-toolbar-button');
     // @ts-ignore
-    buttonMain.container.children[0].classList.add('fas', 'fa-question');
+    this.buttonMain.container.children[0].classList.add('fas', 'fa-palette');
     // SubToolbar
     const controlGroup = new Autodesk.Viewing.UI.ControlGroup('vertical-toolbar-controlGroup');
-    controlGroup.addControl(buttonMain);
+    controlGroup.addControl(this.buttonMain);
     // Toolbar
     const toolbarFacade = new Autodesk.Viewing.UI.ToolBar('vertical-toolbar', { collapsible: false, alignVertically: true });
-    buttonMain.onClick = (event) => {
-      if (buttonMain.getState() === 1) {
+    this.buttonMain.onClick = (event) => {
+      if (this.buttonMain.getState() === 1) {
         $('#vertical-toolbar-button').attr('style', 'color: #000000 !important ; background-color: #FFFFFF');
-        buttonMain.setState(0);
-        // this.selectedFacadeEnabled = true;
-        // this.messageService.add({ key: 'warning', severity: 'success', summary: 'New', detail: 'Here we can add some functionalities' });
+        this.buttonMain.setState(0);
         this.coloringModel();
-        // this.showValuesOfParameter('facade');
-        var valuesOfParameter: any[];
-        // this.api.getvaluesOfParameter('facade', this.platform.currentProject._id).then(
-        //   res => {
-        //     if (res === null) {
-        //       this.messageService.add({ key: 'warning', severity: 'error', summary: 'Error', detail: 'Something went wrong with GETTING VALUES' });
-        //     }
-        //     else {
-        //       valuesOfParameter = res;
-        //       // console.log('valuesOfParameter');
-        //       // console.log(valuesOfParameter);
-        //       valuesOfParameter.forEach(valueOfParameter => {
-        //         if (!valueOfParameter) {
-        //           valueOfParameter = 'null';
-        //         }
-        //         // Es werden alle Whitespaces gelöscht
-        //         valueOfParameter = valueOfParameter.replace(/ /g, '');
-
-        //         // Braucht einen Anhang an jede Klasse, da CSS Klasse nicht mit [0-9] beginnen kann
-        //         var annexClass = 'Class_';
-
-        //         // iterative Button
-        //         var buttonIterativ = new Autodesk.Viewing.UI.Button(annexClass + valueOfParameter);
-
-        //         // Click Event !! Important !!
-        //         buttonIterativ.onClick = () => {
-        //           // if (buttonIterativ.getState() === 1) {
-        //           //   $('#' + annexClass + valueOfParameter).css('background-color', '#FE3123');
-        //           //   buttonIterativ.setState(0);
-        //           //   this.valueOfParameterFacadeArray.push({
-        //           //     [valueOfParameter]: this.inputs.filter(element => {
-        //           //       return element.facade === valueOfParameter;
-        //           //     })
-        //           //   }
-        //           //   );
-        //           // }
-        //           // else {
-        //           //   buttonIterativ.setState(1);
-        //           //   this.viewerComponent.viewer.unloadExtension('IconMarkupExtension');
-        //           //   $('#' + annexClass + valueOfParameter).css('background-color', '#A80000');
-        //           //   this.valueOfParameterFacadeArray.forEach((element, index) => {
-        //           //     if (Object.keys(element)[0] === valueOfParameter) {
-        //           //       this.valueOfParameterFacadeArray.splice(index, 1);
-        //           //     }
-        //           //   });
-        //           // }
-        //         };
-
-        //         buttonIterativ.addClass(annexClass + valueOfParameter);
-        //         controlGroup.addControl(buttonIterativ);
-        //         // tslint:disable-next-line: max-line-length
-        //         $('#' + annexClass + valueOfParameter).append('<style>.' + annexClass + valueOfParameter + ':before{content: attr(data-before); font-size: 20px; color: white;}</style>');
-        //         $('#' + annexClass + valueOfParameter).append('<style>.' + annexClass + valueOfParameter + '{width: 38px !important}</style>');
-        //         $('#' + annexClass + valueOfParameter).append('<style>.' + annexClass + valueOfParameter + '{animation: slideMe .7s ease-in;}</style>');
-        //         $('#' + annexClass + valueOfParameter.toString()).attr('data-before', valueOfParameter);
-        //       });
-        //     }
-        //   }
-        // );
       }
       else {
-        buttonMain.setState(1);
-        // this.selectedFacadeEnabled = false;
+        this.buttonMain.setState(1);
         $('#vertical-toolbar-button').attr('style', 'color: #FFFFFF !important ; background-color: #000080');
-        // this.panel.setVisible(false);
         this.viewerComponent.viewer.clearThemingColors(this.viewerComponent.viewer.model);
-        this.messageService.add({ key: 'warning', severity: 'success', summary: 'New', detail: 'Here we can add some functionalities' });
-
-        while (controlGroup.getNumberOfControls() > 1) {
-          var tempID = controlGroup.getControlId(1);
-          controlGroup.removeControl(tempID);
-        }
-        this.viewerComponent.viewer.unloadExtension('IconMarkupExtension');
+        this.panel.setVisible(false);
       }
     };
     toolbarFacade.addControl(controlGroup);
@@ -404,6 +345,10 @@ export class MainComponent implements OnInit {
     return this.leafcomponents.slice(-1)[0];
   }
 
+  // Rot    #ED2938   rgb(237,41,56)
+  // Yellow #FFE733   rgb(255,231,51)
+  // Orange #FF8C01   rgb(255,140,1)
+  // Green  #006B3E   rgb(0,107,62)
   public coloringModel() {
     if (this.group === 1) {
       // @ts-ignore
@@ -416,18 +361,17 @@ export class MainComponent implements OnInit {
       // Iterate over all attributes and find the index to the one we are interested in
       pdb.enumAttributes((i, attrDef, attrRaw) => {
         var name = attrDef.name;
-        if (name === 'geographical_origin') {
+        if (name === '1 geographical_origin') {
           attrIdParameter_geographical_origin = i;
-          console.log(name);
           // return true; // to stop iterating over the remaining attributes.
         }
-        else if (name === 'life_cycle_origin') {
+        else if (name === '2 life_cycle_origin') {
           attrIdParameter_life_cycle_origin = i;
         }
-        else if (name === 'flexibility_rating') {
+        else if (name === '4 flexibility_rating') {
           attrIdParameter_flexibility_rating = i;
         }
-        else if (name === 'end_of_life_potential') {
+        else if (name === '5 end_of_life_potential') {
           attrIdParameter_end_of_life_potential = i;
         }
       });
@@ -437,7 +381,18 @@ export class MainComponent implements OnInit {
       //   return null;
       // }
 
+      console.log(attrIdParameter_geographical_origin);
+      console.log(attrIdParameter_life_cycle_origin);
+      console.log(attrIdParameter_flexibility_rating);
+      console.log(attrIdParameter_end_of_life_potential);
+
+
+      // Momentan vier Parameter
       var returnArr = new Array();
+      returnArr[0] = new Array();
+      returnArr[1] = new Array();
+      returnArr[2] = new Array();
+      returnArr[3] = new Array();
 
       pdb.enumObjects(dbId => {
 
@@ -446,87 +401,315 @@ export class MainComponent implements OnInit {
 
           if (attrId === attrIdParameter_geographical_origin) {
             var value = pdb.getAttrValue(attrId, valId);
-            return true;
+            var object = {dbId: dbId, attrIdParameter_geographical_origin: parseInt(value)};
+            returnArr[0].push(object);
           }
           else if (attrId === attrIdParameter_life_cycle_origin) {
             var value = pdb.getAttrValue(attrId, valId);
-            return true;
+            var object = {dbId: dbId, attrIdParameter_life_cycle_origin: parseInt(value)};
+            returnArr[1].push(object);
           }
           else if (attrId === attrIdParameter_flexibility_rating) {
             var value = pdb.getAttrValue(attrId, valId);
-            return true;
+            var object = {dbId: dbId, attrIdParameter_flexibility_rating: parseInt(value)};
+            returnArr[2].push(object);
           }
           else if (attrId === attrIdParameter_end_of_life_potential) {
             var value = pdb.getAttrValue(attrId, valId);
-            return true;
+            var object = {dbId: dbId, attrIdParameter_end_of_life_potential: parseInt(value)};
+            returnArr[3].push(object);
           }
         });
       });
       return returnArr;
   }`);
+
       const that = this;
       promise.then(function (retValue) {
 
         console.log(retValue);
 
-        // if (!retValue) {
-        //   this.messageService.add({ key: 'warning', sticky: true, severity: 'error', summary: 'Coloring', detail: 'Model doesn\'t contain property \'Flexibility_Rating\'.' });
-        //   return;
-        // }
+        var container = that.viewerComponent.viewer.container as HTMLElement;
+        that.panel = new Autodesk.Viewing.UI.DockingPanel(container, 'parameterLegend', 'Parameter Legend: ' + that.group, { localizeTitle: true, addFooter: true });
+        that.panel.setVisible(true);
+        that.panel.content = document.createElement('div');
+        const contentDiv = that.panel.content as HTMLElement;
+        contentDiv.classList.add('container', 'border-box');
+        contentDiv.style.boxSizing = 'border-box';
+        $(that.panel.content).append(html);
+        contentDiv.style.overflowY = 'none';
+        contentDiv.style.height = 'calc(100% - 90px)';
+        contentDiv.style.color = 'black';
+        that.panel.container.classList.add('docking-panel-container-solid-color-a');
+        that.panel.container.style.height = '350px';
+        that.panel.container.style.width = '650px';
+        that.panel.container.style.minWidth = '650px';
+        that.panel.container.style.resize = 'none';
 
-        // console.log(retValue);
+        that.panel.container.appendChild(that.panel.content as HTMLElement);
 
-        // const colorRed = new THREE.Vector4(237 / 256, 41 / 256, 56 / 256, 1);
-        // const colorOrange = new THREE.Vector4(255 / 256, 140 / 256, 1 / 256, 1);
-        // const colorYellow = new THREE.Vector4(255 / 256, 231 / 256, 51 / 256, 1);
-        // const colorGreen = new THREE.Vector4(0 / 256, 132 / 256, 80 / 256, 1);
+        // Event Listener bei Schliessen des Panels -> alle Farben ausgeblendet
+        // let tempViewerComponent = that.viewerComponent;
+        $(that.panel.container).find('.docking-panel-close').click((e) => {
+          that.viewerComponent.viewer.clearThemingColors(that.viewerComponent.viewer.model);
+          that.buttonMain.setState(1);
+          $('#vertical-toolbar-button').attr('style', 'color: #FFFFFF !important ; background-color: #000080');
+          return false;
+        });
 
-        // const instanceTree = that.instanceTree;
-        // const rootNodeId = instanceTree.getRootId();
-        // that.viewerComponent.viewer.setThemingColor(rootNodeId, colorRed, that.viewerComponent.viewer.model, true);
+        // Rot    #ED2938       rgb(237,41,56)
+        // Yellow #FFE733       rgb(255,231,51)
+        // Orange #FF8C01       rgb(255,140,1)
+        // Green  #006B3E       rgb(0,107,62)
+        // Light Green #39d688  rgb(57,214,136)
 
-        // // const traverseRecursively = true;
-        // // function callback(dbid) {
-        // //   console.log('Found object ID', dbid);
-        // // }
-        // // instanceTree.enumNodeChildren(rootNodeId, callback, traverseRecursively);
+        const colorRed = new THREE.Vector4(237 / 256, 41 / 256, 56 / 256, 1);
+        const colorYellow = new THREE.Vector4(255 / 256, 231 / 256, 51 / 256, 1);
+        const colorOrange = new THREE.Vector4(255 / 256, 140 / 256, 1 / 256, 1);
+        const colorGreen = new THREE.Vector4(0 / 256, 107 / 256, 62 / 256, 1);
+        const colorLightGreen = new THREE.Vector4(57 / 256, 214 / 256, 136 / 256, 1);
 
-        // retValue[0].forEach(dbid => {
-        //   if (!that.viewerComponent.viewer.model.getInstanceTree().getNodeParentId(dbid)) {
-        //     that.viewerComponent.viewer.setThemingColor(dbid + 2, colorRed, that.viewerComponent.viewer.model, true);
-        //   }
-        //   else {
-        //     that.viewerComponent.viewer.setThemingColor(dbid, colorRed, that.viewerComponent.viewer.model, true);
-        //   }
-        // });
-        // retValue[1].forEach(dbid => {
-        //   if (!that.viewerComponent.viewer.model.getInstanceTree().getNodeParentId(dbid)) {
-        //     that.viewerComponent.viewer.setThemingColor(dbid + 2, colorOrange, that.viewerComponent.viewer.model, true);
-        //   }
-        //   else {
-        //     that.viewerComponent.viewer.setThemingColor(dbid, colorOrange, that.viewerComponent.viewer.model, true);
-        //   }
-        // });
-        // retValue[2].forEach(dbid => {
-        //   if (!that.viewerComponent.viewer.model.getInstanceTree().getNodeParentId(dbid)) {
-        //     that.viewerComponent.viewer.setThemingColor(dbid + 2, colorYellow, that.viewerComponent.viewer.model, true);
-        //   }
-        //   else {
-        //     that.viewerComponent.viewer.setThemingColor(dbid, colorYellow, that.viewerComponent.viewer.model, true);
-        //   }
-        // });
-        // retValue[3].forEach(dbid => {
-        //   if (!that.viewerComponent.viewer.model.getInstanceTree().getNodeParentId(dbid)) {
-        //     that.viewerComponent.viewer.setThemingColor(dbid + 2, colorGreen, that.viewerComponent.viewer.model, true);
-        //   }
-        //   else {
-        //     that.viewerComponent.viewer.setThemingColor(dbid, colorGreen, that.viewerComponent.viewer.model, true);
-        //   }
-        // });
-        // // var mostMassiveId = retValue.id;
-        // // that.viewerComponent.viewer.select(mostMassiveId);
-        // // that.viewerComponent.viewer.fitToView([mostMassiveId]);
-        // // console.log('Most massive part is', mostMassiveId, 'with Mass:', retValue.mass);
+        ////////////////////////  Geographical Origin  ////////////////////////
+        {
+          const column1row1 = document.createElement('div');
+          column1row1.setAttribute('class', 'p-col-3');
+          column1row1.innerHTML = '<div class="box" style="text-align:center">' + 'Geographical Origin' + '</div>';
+          $(that.panel.container).find('#legend')[0].appendChild(column1row1 as HTMLElement);
+
+          const boxColumn1 = column1row1.children[0];
+          // Event Listeners
+          boxColumn1.addEventListener('mouseover', (event) => {
+            const targetElement = event.target as HTMLElement;
+            targetElement.style.backgroundColor = '#000080';
+            targetElement.style.color = 'white';
+          }, false);
+          boxColumn1.addEventListener('mouseout', (event) => {
+            const targetElement = event.target as HTMLElement;
+            targetElement.style.backgroundColor = 'transparent';
+            targetElement.style.color = 'black';
+          }, false);
+          boxColumn1.addEventListener('click', async (event) => {
+            retValue[0].forEach(obj => {
+              let color;
+              if (obj.attrIdParameter_geographical_origin === 0) {
+                color = colorGreen;
+              }
+              else if (obj.attrIdParameter_geographical_origin === 1) {
+                color = colorYellow;
+              }
+              else if (obj.attrIdParameter_geographical_origin === 2) {
+                color = colorRed;
+              }
+              that.viewerComponent.viewer.setThemingColor(obj.dbId, color, that.viewerComponent.viewer.model, true);
+            });
+          });
+
+          const column1row2 = document.createElement('div');
+          column1row2.setAttribute('class', 'p-col-3');
+          column1row2.innerHTML = '<div class="box" style="background-color:#006B3E;text-align:center">' + '0' + '</div>';
+          column1row2.style.color = 'white';
+          $(that.panel.container).find('#legend')[0].appendChild(column1row2 as HTMLElement);
+
+          const column1row3 = document.createElement('div');
+          column1row3.setAttribute('class', 'p-col-3');
+          column1row3.innerHTML = '<div class="box" style="background-color:#FFE733;text-align:center">' + '1' + '</div>';
+          $(that.panel.container).find('#legend')[0].appendChild(column1row3 as HTMLElement);
+
+          const column1row4 = document.createElement('div');
+          column1row4.setAttribute('class', 'p-col-3');
+          column1row4.innerHTML = '<div class="box" style="background-color:#ED2938;text-align:center">' + '2' + '</div>';
+          column1row4.style.color = 'white';
+          $(that.panel.container).find('#legend')[0].appendChild(column1row4 as HTMLElement);
+
+          // Rot    #ED2938   rgb(237,41,56)
+          // Yellow #FFE733   rgb(255,231,51)
+          // Orange #FF8C01   rgb(255,140,1)
+          // Green  #006B3E   rgb(0,107,62)
+        }
+        ////////////////////////  Life Cycle Origin  ////////////////////////
+        {
+          const column2row1 = document.createElement('div');
+          column2row1.setAttribute('class', 'p-col-3');
+          column2row1.innerHTML = '<div class="box" style="text-align:center">' + 'Life Cycle Origin' + '</div>';
+          $(that.panel.container).find('#legend')[0].appendChild(column2row1 as HTMLElement);
+
+          const boxColumn2 = column2row1.children[0];
+          // Event Listeners
+          boxColumn2.addEventListener('mouseover', (event) => {
+            const targetElement = event.target as HTMLElement;
+            targetElement.style.backgroundColor = '#000080';
+            targetElement.style.color = 'white';
+          }, false);
+          boxColumn2.addEventListener('mouseout', (event) => {
+            const targetElement = event.target as HTMLElement;
+            targetElement.style.backgroundColor = 'transparent';
+            targetElement.style.color = 'black';
+          }, false);
+          boxColumn2.addEventListener('click', async (event) => {
+            retValue[1].forEach(obj => {
+              let color;
+              if (obj.attrIdParameter_life_cycle_origin === 0) {
+                color = colorGreen;
+              }
+              else if (obj.attrIdParameter_life_cycle_origin === 1) {
+                color = colorYellow;
+              }
+              else if (obj.attrIdParameter_life_cycle_origin === 2) {
+                color = colorOrange;
+              }
+              that.viewerComponent.viewer.setThemingColor(obj.dbId, color, that.viewerComponent.viewer.model, true);
+            });
+          });
+
+          const column2row2 = document.createElement('div');
+          column2row2.setAttribute('class', 'p-col-3');
+          column2row2.innerHTML = '<div class="box" style="background-color:#006B3E;text-align:center">' + '0' + '</div>';
+          column2row2.style.color = 'white';
+          $(that.panel.container).find('#legend')[0].appendChild(column2row2 as HTMLElement);
+
+          const column2row3 = document.createElement('div');
+          column2row3.setAttribute('class', 'p-col-3');
+          column2row3.innerHTML = '<div class="box" style="background-color:#FFE733;text-align:center">' + '1' + '</div>';
+          $(that.panel.container).find('#legend')[0].appendChild(column2row3 as HTMLElement);
+
+          const column2row4 = document.createElement('div');
+          column2row4.setAttribute('class', 'p-col-3');
+          column2row4.innerHTML = '<div class="box" style="background-color:#FF8C01;text-align:center">' + '2' + '</div>';
+          column2row4.style.color = 'white';
+          $(that.panel.container).find('#legend')[0].appendChild(column2row4 as HTMLElement);
+
+          // Rot    #ED2938   rgb(237,41,56)
+          // Yellow #FFE733   rgb(255,231,51)
+          // Orange #FF8C01   rgb(255,140,1)
+          // Green  #006B3E   rgb(0,107,62)
+        }
+        ////////////////////////  Flexibility Rating  ////////////////////////
+        {
+          const column3row1 = document.createElement('div');
+          column3row1.setAttribute('class', 'p-col-3');
+          column3row1.innerHTML = '<div class="box" style="text-align:center">' + 'Flexibility Rating' + '</div>';
+          $(that.panel.container).find('#legend')[0].appendChild(column3row1 as HTMLElement);
+
+          const boxColumn3 = column3row1.children[0];
+          // Event Listeners
+          boxColumn3.addEventListener('mouseover', (event) => {
+            const targetElement = event.target as HTMLElement;
+            targetElement.style.backgroundColor = '#000080';
+            targetElement.style.color = 'white';
+          }, false);
+          boxColumn3.addEventListener('mouseout', (event) => {
+            const targetElement = event.target as HTMLElement;
+            targetElement.style.backgroundColor = 'transparent';
+            targetElement.style.color = 'black';
+          }, false);
+          boxColumn3.addEventListener('click', async (event) => {
+            retValue[2].forEach(obj => {
+              let color;
+              if (obj.attrIdParameter_flexibility_rating === 0) {
+                color = colorGreen;
+              }
+              else if (obj.attrIdParameter_flexibility_rating === 1) {
+                color = colorYellow;
+              }
+              else if (obj.attrIdParameter_flexibility_rating === 2) {
+                color = colorRed;
+              }
+              that.viewerComponent.viewer.setThemingColor(obj.dbId, color, that.viewerComponent.viewer.model, true);
+            });
+          });
+
+          const column3row2 = document.createElement('div');
+          column3row2.setAttribute('class', 'p-col-3');
+          column3row2.innerHTML = '<div class="box" style="background-color:#006B3E;text-align:center">' + '0' + '</div>';
+          column3row2.style.color = 'white';
+          $(that.panel.container).find('#legend')[0].appendChild(column3row2 as HTMLElement);
+
+          const column3row3 = document.createElement('div');
+          column3row3.setAttribute('class', 'p-col-3');
+          column3row3.innerHTML = '<div class="box" style="background-color:#FFE733;text-align:center">' + '1' + '</div>';
+          $(that.panel.container).find('#legend')[0].appendChild(column3row3 as HTMLElement);
+
+          const column3row4 = document.createElement('div');
+          column3row4.setAttribute('class', 'p-col-3');
+          column3row4.innerHTML = '<div class="box" style="background-color:#ED2938;text-align:center">' + '2' + '</div>';
+          column3row4.style.color = 'white';
+          $(that.panel.container).find('#legend')[0].appendChild(column3row4 as HTMLElement);
+
+          // Rot    #ED2938       rgb(237,41,56)
+          // Yellow #FFE733       rgb(255,231,51)
+          // Orange #FF8C01       rgb(255,140,1)
+          // Green  #006B3E       rgb(0,107,62)
+          // Light Green #39d688  rgb(57,214,136)
+        }
+        ////////////////////////  End of Life Potential  ////////////////////////
+        {
+          const column4row1 = document.createElement('div');
+          column4row1.setAttribute('class', 'p-col-3');
+          column4row1.innerHTML = '<div class="box" style="text-align:center">' + 'End of Life Potential' + '</div>';
+          $(that.panel.container).find('#legend')[0].appendChild(column4row1 as HTMLElement);
+
+          const box = column4row1.children[0];
+          // Event Listeners
+          box.addEventListener('mouseover', (event) => {
+            const targetElement = event.target as HTMLElement;
+            targetElement.style.backgroundColor = '#000080';
+            targetElement.style.color = 'white';
+          }, false);
+          box.addEventListener('mouseout', (event) => {
+            const targetElement = event.target as HTMLElement;
+            targetElement.style.backgroundColor = 'transparent';
+            targetElement.style.color = 'black';
+          }, false);
+          box.addEventListener('click', async (event) => {
+            retValue[3].forEach(obj => {
+              let color;
+              if (obj.attrIdParameter_end_of_life_potential === 0) {
+                color = colorGreen;
+              }
+              else if (obj.attrIdParameter_end_of_life_potential === 1) {
+                color = colorLightGreen;
+              }
+              else if (obj.attrIdParameter_end_of_life_potential === 2) {
+                color = colorYellow;
+              }
+              else if (obj.attrIdParameter_end_of_life_potential === 3) {
+                color = colorOrange;
+              }
+              else if (obj.attrIdParameter_end_of_life_potential === 4) {
+                color = colorRed;
+              }
+              that.viewerComponent.viewer.setThemingColor(obj.dbId, color, that.viewerComponent.viewer.model, true);
+            });
+          });
+
+          const column4row2 = document.createElement('div');
+          column4row2.setAttribute('class', 'p-col-1');
+          column4row2.innerHTML = '<div class="box" style="background-color:#006B3E;text-align:center">' + '0' + '</div>';
+          column4row2.style.color = 'white';
+          $(that.panel.container).find('#legend')[0].appendChild(column4row2 as HTMLElement);
+
+          const column4row3 = document.createElement('div');
+          column4row3.setAttribute('class', 'p-col-2');
+          column4row3.innerHTML = '<div class="box" style="background-color:#39d688;text-align:center">' + '1' + '</div>';
+          $(that.panel.container).find('#legend')[0].appendChild(column4row3 as HTMLElement);
+
+          const column4row4 = document.createElement('div');
+          column4row4.setAttribute('class', 'p-col-2');
+          column4row4.innerHTML = '<div class="box" style="background-color:#FFE733;text-align:center">' + '2' + '</div>';
+          $(that.panel.container).find('#legend')[0].appendChild(column4row4 as HTMLElement);
+
+          const column5row4 = document.createElement('div');
+          column5row4.setAttribute('class', 'p-col-2');
+          column5row4.innerHTML = '<div class="box" style="background-color:#FF8C01;text-align:center">' + '3' + '</div>';
+          column5row4.style.color = 'white';
+          $(that.panel.container).find('#legend')[0].appendChild(column5row4 as HTMLElement);
+
+          const column6row4 = document.createElement('div');
+          column6row4.setAttribute('class', 'p-col-2');
+          column6row4.innerHTML = '<div class="box" style="background-color:#ED2938;text-align:center">' + '4' + '</div>';
+          column6row4.style.color = 'white';
+          $(that.panel.container).find('#legend')[0].appendChild(column6row4 as HTMLElement);
+        }
       });
     }
 
@@ -668,16 +851,16 @@ export class MainComponent implements OnInit {
     // console.log(nodeFinalName);
     // console.log(this.instanceTree);
 
-    // //@ts-ignore
-    // this.viewerComponent.viewer.model.getProperties(
-    //   dbIdArray[0],
-    //   res => {
-    //     console.log(res);
-    //   },
-    //   err => {
-    //     console.log(err);
-    //   },
-    // );
+    // @ts-ignore
+    this.viewerComponent.viewer.model.getProperties(
+      dbIdArray[0],
+      res => {
+        console.log(res);
+      },
+      err => {
+        console.log(err);
+      },
+    );
 
     // setThemingColor(dbId, color, model, recursive)
     // const color = new THREE.Vector4(256 / 256, 0 / 256, 0 / 256, 1);
