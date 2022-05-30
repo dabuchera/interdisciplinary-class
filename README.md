@@ -70,8 +70,6 @@ open terminal and run
 
 ## Local Development
 
-**First Start**
-
 If you start the code for the first time you have to install all npm packages
 Do that by
 
@@ -81,3 +79,8 @@ Do that by
 
 `ng serve` will start the frontend. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
+## Deployment
+
+Run the following code for deploying on gh-pages
+
+`ng deploy --base-href=/interdisciplinary-class/` 
