@@ -84,3 +84,9 @@ Do that by
 Run the following code for deploying on gh-pages
 
 `ng deploy --base-href=/interdisciplinary-class/` 
+
+## Model Upload
+
+Using Hotmail Account -> ***https://models.autodesk.io/***
+
+Kemp Kit-of-Parts App

@@ -302,11 +302,13 @@ export class MainComponent implements OnInit {
     });
 
     // model1group4 dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6bW9kZWwyMDIyLTA1LTMwLTE4LTA4LTE5LWQ0MWQ4Y2Q5OGYwMGIyMDRlOTgwMDk5OGVjZjg0MjdlL21vZGVsMWdyb3VwNC5ydnQ
+    // model2group4 dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6bW9kZWwyMDIyLTA2LTAyLTA4LTU2LTQ3LWQ0MWQ4Y2Q5OGYwMGIyMDRlOTgwMDk5OGVjZjg0MjdlL21vZGVsMmdyb3VwNC5ydnQ
+
 
     // ossBucketKey: interdisciplinary_class_fs21                  ossSourceFileObjectKey: group3.rvt
 
     this.viewerComponent.DocumentId =
-      'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6bW9kZWwyMDIyLTA1LTMwLTE4LTA4LTE5LWQ0MWQ4Y2Q5OGYwMGIyMDRlOTgwMDk5OGVjZjg0MjdlL21vZGVsMWdyb3VwNC5ydnQ';
+      'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6bW9kZWwyMDIyLTA2LTAyLTA4LTU2LTQ3LWQ0MWQ4Y2Q5OGYwMGIyMDRlOTgwMDk5OGVjZjg0MjdlL21vZGVsMmdyb3VwNC5ydnQ';
   }
 
   public loadVerticalToolbar() {
